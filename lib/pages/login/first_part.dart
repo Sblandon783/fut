@@ -24,6 +24,15 @@ class FirstPart extends StatefulWidget {
 }
 
 class FirstPartState extends State<FirstPart> {
+  final Map<int, String> _list = {
+    1: 'POR',
+    2: 'LTD',
+    3: 'LTI',
+    4: 'DFC',
+    5: 'MD',
+    6: 'MC',
+    7: 'DC'
+  };
   final double _heightProfile = 300;
   bool _isStartSession = true;
   @override
@@ -100,8 +109,16 @@ class FirstPartState extends State<FirstPart> {
                           ],
                         ),
                       ),
-                      CustomDropDown(
-                          key: UniqueKey(), change: widget.changePosition),
+                      SizedBox(
+                        width: 60.0,
+                        child: CustomDropDown(
+                          key: UniqueKey(),
+                          dropdownValue: _list.keys.first.toString(),
+                          list: _list,
+                          change: widget.changePosition,
+                          text: "Posición",
+                        ),
+                      ),
                     ],
                   ),
                 Center(

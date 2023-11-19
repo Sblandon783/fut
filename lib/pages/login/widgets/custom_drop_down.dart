@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
 
-const Map<int, String> list = {
-  1: 'POR',
-  2: 'LTD',
-  3: 'LTI',
-  4: 'DFC',
-  5: 'MD',
-  6: 'MC',
-  7: 'DC'
-};
-
 class CustomDropDown extends StatefulWidget {
+  final String dropdownValue;
+  final Map<int, String> list;
+  final String text;
   final Function({required int pos}) change;
-  const CustomDropDown({Key? key, required this.change}) : super(key: key);
+  final Color colorText;
+  const CustomDropDown({
+    Key? key,
+    required this.dropdownValue,
+    required this.change,
+    required this.list,
+    required this.text,
+    this.colorText = Colors.blue,
+  }) : super(key: key);
 
   @override
   CustomDropDownState createState() => CustomDropDownState();
 }
 
 class CustomDropDownState extends State<CustomDropDown> {
-  String dropdownValue = list.keys.first.toString();
+  late String dropdownValue;
 
   @override
   void initState() {
+    dropdownValue = widget.dropdownValue;
     super.initState();
   }
 
@@ -32,17 +34,23 @@ class CustomDropDownState extends State<CustomDropDown> {
       padding: const EdgeInsets.only(top: 10.0),
       child: Column(
         children: [
-          const Text(
-            "Posición",
-            style: TextStyle(color: Colors.grey, fontSize: 12.0),
-          ),
+          if (widget.text.isNotEmpty)
+            Text(
+              widget.text,
+              style: const TextStyle(color: Colors.grey, fontSize: 12.0),
+            ),
           SizedBox(
             height: 60.0,
             child: DropdownButton<String>(
                 value: dropdownValue,
-                icon: const Icon(Icons.arrow_downward, size: 18),
+                isExpanded: true,
+                icon: Icon(
+                  Icons.arrow_downward,
+                  size: 18,
+                  color: widget.colorText,
+                ),
                 elevation: 16,
-                style: const TextStyle(color: Colors.blue),
+                style: TextStyle(color: widget.colorText),
                 underline: Container(
                   height: 2,
                   color: Colors.blue,
@@ -61,7 +69,7 @@ class CustomDropDownState extends State<CustomDropDown> {
 
   List<DropdownMenuItem<String>> _getListDropDown() {
     List<DropdownMenuItem<String>> listDrop = [];
-    list.forEach((key, value) {
+    widget.list.forEach((key, value) {
       listDrop.add(DropdownMenuItem<String>(
         value: key.toString(),
         child: Text(value),

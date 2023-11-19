@@ -1,107 +1,335 @@
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 
 import '../models/match_model.dart';
 import '../providers/provider_members.dart';
+import 'custom_drop_down.dart';
 
 class MatchInfo extends StatefulWidget {
-  const MatchInfo({super.key});
+  final MatchModel match;
+  final ValueNotifier<int> typeAlignNotifier;
+  const MatchInfo({
+    super.key,
+    required this.match,
+    required this.typeAlignNotifier,
+  });
 
   @override
-  MatchInfoState createState() => MatchInfoState();
+  MatchInfonState createState() => MatchInfonState();
 }
 
-class MatchInfoState extends State<MatchInfo> {
+class MatchInfonState extends State<MatchInfo> {
+  final Map<int, String> _listFields = {
+    1: 'Limber',
+    2: 'Luis Papa',
+  };
+  final Map<int, String> _listHour1 = {
+    1: '18:00',
+    2: '19:00',
+    3: '20:00',
+    4: '21:00'
+  };
+  final Map<int, String> _listHour2 = {
+    1: '18:30',
+    2: '19:30',
+    3: '20:30',
+  };
+  final List<DateTime?> _dates = [];
   final _provider = ProviderMembers();
-
+  late MatchModel _match;
+  bool _show = false;
   @override
   void initState() {
-    _getMatch();
+    _match = MatchModel(
+      id: widget.match.id,
+      date: widget.match.date,
+      hour: widget.match.hour,
+      name: widget.match.name,
+      parsedDate: widget.match.parsedDate,
+      assistants: widget.match.assistants,
+      substitutes: widget.match.substitutes,
+    );
+
+    _setDate();
     super.initState();
   }
 
-  void _getMatch() async => _provider.getMatch();
+  _setDate() => _dates.add(DateTime(widget.match.parsedDate.year,
+      widget.match.parsedDate.month, widget.match.parsedDate.day));
 
   @override
-  Widget build(BuildContext context) => StreamBuilder(
-      stream: _provider.matchStream,
-      builder: (BuildContext context, AsyncSnapshot<MatchModel> snapshot) {
-        if (snapshot.hasData) {
-          return snapshot.data != null
-              ? Padding(
-                  padding: const EdgeInsets.only(bottom: 5.0),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10),
-                      ),
-                      gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        stops: [0.1, 0.7, 0.8, 0.9],
-                        colors: [
-                          Colors.purple,
-                          Color.fromARGB(255, 32, 129, 209),
-                          Color.fromARGB(255, 32, 129, 209),
-                          Color.fromARGB(255, 32, 129, 209),
-                        ],
-                      ),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _generateRow(
-                              icon: Icons.calendar_month_rounded,
-                              text: snapshot.data!.date,
-                            ),
-                            _generateRow(
-                              icon: Icons.timer,
-                              text: snapshot.data!.hour,
-                            ),
-                          ],
-                        ),
-                        _generateRow(
-                          icon: Icons.location_on_outlined,
-                          text: snapshot.data!.name,
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : const SizedBox.shrink();
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      });
-
-  Row _generateRow({required IconData icon, required String text}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Icon(
-          icon,
-          size: 20.0,
-          color: Colors.white,
-        ),
-        Text(
-          text,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontSize: 13.0,
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5.0),
+      child: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(10),
+          ),
+          gradient: LinearGradient(
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            stops: [0.1, 0.7, 0.8, 0.9],
+            colors: [
+              Colors.purple,
+              Color.fromARGB(255, 32, 129, 209),
+              Color.fromARGB(255, 32, 129, 209),
+              Color.fromARGB(255, 32, 129, 209),
+            ],
           ),
         ),
-      ],
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _generateRow(
+                      icon: Icons.calendar_month_rounded,
+                      text: widget.match.date,
+                      onTap: () => _onTap(content: _calenderContent()),
+                    ),
+                    _generateRow(
+                      icon: Icons.timer,
+                      text: widget.match.hour,
+                      onTap: () => _onTap(content: _hourContent()),
+                    ),
+                  ],
+                ),
+                _generateField(),
+              ],
+            ),
+            if (_show)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      style:
+                          ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      onPressed: () {
+                        widget.match.name = _match.name;
+                        widget.match.hour = _match.hour;
+                        widget.match.date = _match.date;
+                        widget.match.parsedDate = _match.parsedDate;
+                        setState(() => _show = false);
+                      },
+                      child: const Text("Cancelar")),
+                  const SizedBox(width: 30.0),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green),
+                      onPressed: () {
+                        _provider.saveMatch(match: widget.match);
+                        setState(() => _show = false);
+                      },
+                      child: const Text("Guardar"))
+                ],
+              )
+          ],
+        ),
+      ),
     );
+  }
+
+  Widget _generateRow({
+    required IconData icon,
+    required String text,
+    required Function() onTap,
+  }) {
+    return GestureDetector(
+      onTap: () => onTap(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Icon(
+            icon,
+            size: 20.0,
+            color: Colors.white,
+          ),
+          Text(
+            text,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 13.0,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _generateField() {
+    return GestureDetector(
+      onTap: () => _onTap(content: _fieldContent()),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.location_on_outlined,
+            size: 20.0,
+            color: Colors.white,
+          ),
+          Text(
+            widget.match.name,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 13.0,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _fieldContent() {
+    String dropdownValue = _listFields.keys
+        .firstWhere((k) => _listFields[k] == widget.match.name,
+            orElse: () => _listFields.keys.first)
+        .toString();
+
+    return SizedBox(
+      width: 90.0,
+      height: 120.0,
+      child: Column(
+        children: [
+          Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: const Padding(
+                  padding: EdgeInsets.all(5.0),
+                  child: Icon(Icons.close, color: Colors.grey),
+                ),
+              )),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: CustomDropDown(
+              key: UniqueKey(),
+              dropdownValue: dropdownValue,
+              list: _listFields,
+              change: _onChangedField,
+              text: "",
+              colorText: Colors.black54,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _calenderContent() {
+    return SizedBox(
+      width: 300.0,
+      height: 400.0,
+      child: Column(
+        children: [
+          Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: const Padding(
+                  padding: EdgeInsets.all(5.0),
+                  child: Icon(Icons.close, color: Colors.grey),
+                ),
+              )),
+          CalendarDatePicker2(
+              config: CalendarDatePicker2Config(
+                calendarType: CalendarDatePicker2Type.single,
+              ),
+              value: _dates,
+              onValueChanged: (dates) {
+                _show = true;
+                widget.match.setDate(dates: dates);
+                _dates.clear();
+                _setDate();
+                setState(() {});
+                Navigator.pop(context);
+              }),
+        ],
+      ),
+    );
+  }
+
+  Widget _hourContent() {
+    Map<int, String> map = widget.match.id == 1 ? _listHour1 : _listHour2;
+    String dropdownValue = map.keys
+        .firstWhere((k) => map[k] == widget.match.hour.trim(),
+            orElse: () => map.keys.first)
+        .toString();
+
+    return SizedBox(
+      width: 90.0,
+      height: 120.0,
+      child: Column(
+        children: [
+          Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: const Padding(
+                  padding: EdgeInsets.all(5.0),
+                  child: Icon(Icons.close, color: Colors.grey),
+                ),
+              )),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: CustomDropDown(
+              key: UniqueKey(),
+              dropdownValue: dropdownValue,
+              list: map,
+              change: _onChangedHour,
+              text: "",
+              colorText: Colors.black54,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _onTap({required Widget content}) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) => AlertDialog(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(5.0))),
+        titlePadding: EdgeInsets.zero,
+        contentPadding: EdgeInsets.zero,
+        content: content,
+        insetPadding: EdgeInsets.zero,
+      ),
+    ).then((dynamic value) {});
+  }
+
+  void _onChangedField({required int pos}) {
+    _show = true;
+    widget.match.id = pos;
+    widget.match.name = _listFields[pos]!;
+
+    widget.typeAlignNotifier.value = pos;
+    setState(() {});
+    Navigator.pop(context);
+  }
+
+  void _onChangedHour({required int pos}) {
+    _show = true;
+    Map<int, String> map = widget.match.id == 1 ? _listHour1 : _listHour2;
+    widget.match.hour = map[pos]!;
+    widget.match.setDate(dates: [widget.match.parsedDate]);
+    setState(() {});
+    Navigator.pop(context);
   }
 }

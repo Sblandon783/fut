@@ -11,7 +11,8 @@ class ProviderMembers {
   final UserPreferences _prefs = UserPreferences();
   final Supabase _supabase = Supabase.instance;
   List<MemberModel> members = [];
-  late MemberModel member;
+  late MemberModel _member;
+  MatchModel? match;
 
   final _memberStreamController =
       StreamController<List<MemberModel>>.broadcast();
@@ -28,16 +29,32 @@ class ProviderMembers {
         .from('player')
         .select('id,name,number,position,date_match');
     MembersModel membersResponse = MembersModel.fromJson(response);
+
     if (membersResponse.members.isNotEmpty) {
-      member = membersResponse.members
+      _member = membersResponse.members
           .firstWhere((element) => element.name == _prefs.userName);
 
-      membersResponse.members.removeWhere((element) => !element.included);
+      //membersResponse.members.removeWhere((element) => !element.included);
       members = membersResponse.members;
-      members.removeWhere((element) => element.name == member.name);
-      if (member.included) {
-        members.add(member);
+      members.removeWhere((element) => element.name == _member.name);
+      if (_member.included) {
+        members.add(_member);
       }
+      if (match != null) {
+        for (var i = 0; i < members.length; i++) {
+          if (match!.assistants.containsKey(members[i].id)) {
+            members[i].setPositionNew(pos: match!.assistants[members[i].id]!);
+            members[i].titular = true;
+          }
+        }
+        for (var i = 0; i < members.length; i++) {
+          if (match!.substitutes.containsKey(members[i].id)) {
+            members[i].titular = false;
+            members[i].added = true;
+          }
+        }
+      }
+
       members = members.reversed.toList();
     }
 
@@ -94,7 +111,7 @@ class ProviderMembers {
 
     members.removeWhere((element) => element.name == _prefs.userName);
     membersSink(members);
-    member.included = false;
+    _member.included = false;
     return false;
   }
 
@@ -102,8 +119,67 @@ class ProviderMembers {
     final List<dynamic> response =
         await _supabase.client.from('match').select();
     MatchModel matchResponse = MatchModel.fromJson(response.first);
+    match = matchResponse;
     matchSink(matchResponse);
   }
 
-  isIncluded() => member.included;
+  isIncluded() => _member.included;
+
+  updateMember(
+      {required MemberModel newMember, required MemberModel oldMember}) {
+    List<MemberModel> list = members.map((member) {
+      if (member.id == newMember.id) {
+        newMember.added = false;
+        newMember.titular = true;
+        return newMember;
+      } else if (oldMember.id == member.id) {
+        member.titular = false;
+      }
+      member.added = false;
+      return member;
+    }).toList();
+
+    membersSink(list);
+  }
+
+  Future<bool> saveAlign({required List<MemberModel> members}) async {
+    List<String> listAssistants = [];
+    List<String> listSubstitutes = [];
+    Map<int, int> mapAssistants = {};
+    Map<int, int> mapSubstitutes = {};
+    for (var i = 0; i < members.length; i++) {
+      if (members[i].titular) {
+        listAssistants.add('${members[i].id}-${members[i].idPositionNew}');
+        mapAssistants[members[i].id] = members[i].idPositionNew;
+      } else {
+        listSubstitutes.add('${members[i].id}-${members[i].idPositionNew}');
+        mapSubstitutes[members[i].id] = members[i].idPositionNew;
+      }
+    }
+
+    match!.assistants = mapAssistants;
+    match!.substitutes = mapSubstitutes;
+
+    return await _supabase.client
+        .from('match')
+        .update({
+          'list_assistants': listAssistants,
+          'list_substitutes': listSubstitutes
+        })
+        .eq('id', 1)
+        .then((value) => true);
+  }
+
+  Future<void> saveMatch({required MatchModel match}) async {
+    return await _supabase.client
+        .from('match')
+        .update({
+          'name_field': match.name,
+          'date': match.parsedDate.toString(),
+        })
+        .eq('id', 1)
+        .then((value) => true);
+  }
+
+  get myIdMember => _member.id;
 }

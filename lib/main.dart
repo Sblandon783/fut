@@ -4,7 +4,6 @@ import 'package:soccer/user_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'pages/home/home_page.dart';
-import 'services/notifi_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

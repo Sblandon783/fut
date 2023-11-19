@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class CustomToggle extends StatefulWidget {
   final Function({required int tabIndex}) changeIndex;
   final int tabIndex;
+  final Map<int, String> tabs;
   const CustomToggle({
     super.key,
     required this.changeIndex,
     required this.tabIndex,
+    required this.tabs,
   });
 
   @override
@@ -19,14 +21,13 @@ class CustomToggleState extends State<CustomToggle> {
     super.initState();
   }
 
-  Map<int, String> get _listTextTabToggle => {0: "Jugadores", 1: "Alineación"};
   @override
   Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: Row(children: _tabs()));
   List<Widget> _tabs() {
     List<Widget> listWidgets = [];
-    _listTextTabToggle
+    widget.tabs
         .forEach((key, value) => listWidgets.add(_tab(key: key, text: value)));
 
     return listWidgets;

@@ -1,3 +1,5 @@
+import 'utils/utils.dart';
+
 class MembersModel {
   List<MemberModel> members;
 
@@ -17,9 +19,12 @@ class MemberModel {
   int number;
   int idPosition;
   String position;
+  int idPositionNew = -1;
+  String positionNew = '';
   String date;
   bool included;
   bool added;
+  bool titular;
 
   MemberModel({
     required this.id,
@@ -30,6 +35,7 @@ class MemberModel {
     required this.date,
     required this.included,
     this.added = false,
+    this.titular = true,
   });
 
   factory MemberModel.fromJson(Map<String, dynamic> json) => MemberModel(
@@ -41,21 +47,20 @@ class MemberModel {
         date: json["date_match"] ?? '',
         included: _isIncluded(date: json["date_match"]),
       );
+
+  setPosition({required int pos}) {
+    idPosition = pos;
+    position = _getPosition(position: pos);
+  }
+
+  setPositionNew({required int pos}) {
+    idPositionNew = pos;
+    positionNew = _getPosition(position: pos);
+  }
 }
 
-const Map<int, String> _mapPosition = {
-  1: 'POR',
-  2: 'LTD',
-  3: 'LTI',
-  4: 'DFC',
-  5: 'MD',
-  6: 'MC',
-  7: 'MI',
-  8: 'MD',
-  9: 'DC'
-};
 _getPosition({required int position}) =>
-    _mapPosition[position] ?? _mapPosition[1];
+    Utils().mapPosition[position] ?? Utils().mapPosition[1];
 
 _isIncluded({required dynamic date}) {
   if (date == null) {

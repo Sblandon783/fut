@@ -1,34 +1,40 @@
-import 'package:intl/intl.dart';
-
-import 'package:intl/date_symbol_data_local.dart'; // for other locales
+import 'utils/utils.dart'; // for other locales
 
 class MatchModel {
   int id;
   String name;
   String date;
   String hour;
+  Map<int, int> assistants;
+  Map<int, int> substitutes;
+  DateTime parsedDate;
 
-  MatchModel(
-      {required this.id,
-      required this.name,
-      required this.date,
-      required this.hour});
+  MatchModel({
+    required this.id,
+    required this.name,
+    required this.date,
+    required this.hour,
+    required this.assistants,
+    required this.substitutes,
+    required this.parsedDate,
+  });
 
   factory MatchModel.fromJson(dynamic json) => MatchModel(
         id: json["id"],
         name: json["name_field"],
-        date: _getDate(date: json["date"]),
-        hour: _getHour(date: json["date"]),
+        date: Utils().getDate(date: json["date"]),
+        hour: Utils().getHour(date: json["date"]),
+        assistants: Utils().getMap(text: json['list_assistants']),
+        substitutes: Utils().getMap(text: json['list_substitutes']),
+        parsedDate: Utils().getParsedDate(date: json["date"]),
       );
-}
 
-_getDate({required String date}) {
-  final DateTime parsedDate = DateTime.parse(date);
-  initializeDateFormatting('es');
-  return DateFormat.MMMEd('es').format(parsedDate).toUpperCase();
-}
+  setDate({required List<DateTime?> dates}) {
+    String date =
+        '${dates.first!.year}-${dates.first!.month}-${dates.first!.day}';
 
-_getHour({required String date}) {
-  final DateTime parsedDate = DateTime.parse(date);
-  return DateFormat.jms().format(parsedDate);
+    final String currentDate = '$date $hour';
+    date = Utils().getDate(date: currentDate);
+    parsedDate = Utils().getParsedDate(date: currentDate);
+  }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:soccer/pages/profile/widgets/profile_pay_day.dart';
 import 'package:soccer/pages/profile/widgets/profile_top_content.dart';
 import 'package:soccer/pages/profile/providers/provider_profile.dart';
-import 'package:soccer/user_preferences.dart';
 
 import '../CustomWidgets/custom_button_exit.dart';
 import 'models/profile_model.dart';

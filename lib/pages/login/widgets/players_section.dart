@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../models/member_model.dart';
 import '../providers/provider_members.dart';
-import 'card_member.dart';
+import 'card_member/card_member.dart';
 
 class PlayersSection extends StatefulWidget {
   const PlayersSection({super.key});
@@ -42,7 +42,7 @@ class PlayersSectionState extends State<PlayersSection> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(height: 20.0),
+                            const SizedBox(height: 8.0),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -90,7 +90,8 @@ class PlayersSectionState extends State<PlayersSection> {
                               ),
                             ),
                             const Divider(color: Colors.grey, height: 5.0),
-                            Flexible(
+                            SizedBox(
+                              height: 290.0,
                               child: ListView(
                                 scrollDirection: Axis.horizontal,
                                 children: _generateMembers(
@@ -132,6 +133,17 @@ class PlayersSectionState extends State<PlayersSection> {
     Future.delayed(const Duration(microseconds: 50))
         .then((value) => _buttonNotifier.value = _provider.isIncluded());
 
-    return members.map((member) => CardMember(member: member)).toList();
+    return members.map((member) {
+      bool isSpecial = member.id == _provider.myIdMember;
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: isSpecial ? 0.0 : 10.0),
+        child: CardMember(
+          member: member,
+          isSpecial: isSpecial,
+          height: isSpecial ? 290.0 : 270.0,
+          width: isSpecial ? 160.0 : 150.0,
+        ),
+      );
+    }).toList();
   }
 }
