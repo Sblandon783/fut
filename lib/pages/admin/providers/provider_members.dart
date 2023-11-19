@@ -22,7 +22,6 @@ class ProviderMembers {
     MembersModel membersResponse = MembersModel.fromJson(response);
 
     members = membersResponse.teams;
-    print(members.length);
     membersSink(members);
   }
 

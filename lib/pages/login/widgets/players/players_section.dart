@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../models/member_model.dart';
-import '../providers/provider_members.dart';
-import 'card_member/card_member.dart';
+import '../../models/member_model.dart';
+import '../../providers/provider_members.dart';
+import '../card_member/card_member.dart';
 
 class PlayersSection extends StatefulWidget {
   const PlayersSection({super.key});

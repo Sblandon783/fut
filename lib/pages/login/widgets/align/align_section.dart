@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/login/widgets/align/check_button.dart';
+import 'package:soccer/pages/login/widgets/align/list_player_content.dart';
+import 'package:soccer/pages/login/widgets/align/list_player_top.dart';
 
-import '../models/match_model.dart';
-import '../models/member_model.dart';
-import '../models/utils/utils.dart';
-import '../providers/provider_members.dart';
-import 'burbble/burbble.dart';
+import '../../models/match_model.dart';
+import '../../models/member_model.dart';
+import '../../models/utils/utils.dart';
+import '../../providers/provider_members.dart';
+import '../burbble/burbble.dart';
+import 'field_background.dart';
 
 class AlignSection extends StatefulWidget {
   final MatchModel match;
@@ -23,6 +27,7 @@ class AlignSectionState extends State<AlignSection> {
   final _provider = ProviderMembers();
   final Utils _utils = Utils();
   final ValueNotifier<bool> _buttonNotifier = ValueNotifier(false);
+  final double _heightImage = 200.0;
   @override
   void initState() {
     super.initState();
@@ -45,60 +50,47 @@ class AlignSectionState extends State<AlignSection> {
                     ? Stack(
                         alignment: AlignmentDirectional.topCenter,
                         children: [
-                          const Positioned(
-                            top: 0,
-                            child: Image(
-                              height: 200.0,
-                              width: 300.0,
-                              image: AssetImage('assets/soccer_field.jpeg'),
-                            ),
-                          ),
-                          ..._generateBurbbles(
-                              members: snapshot.data!, type: type),
-                          Positioned(
-                            top: 180.0,
-                            right: 0,
-                            child: ValueListenableBuilder(
-                              valueListenable: _buttonNotifier,
-                              builder: (context, show, child) => show
-                                  ? Center(
-                                      child: ElevatedButton(
-                                        onPressed: () =>
-                                            _saveAlign(members: snapshot.data!),
-                                        style: ElevatedButton.styleFrom(
-                                            shape: const CircleBorder(),
-                                            padding: const EdgeInsets.all(10.0),
-                                            backgroundColor: Colors.green),
-                                        child: const Icon(
-                                          Icons.check_circle_outline,
-                                          color: Colors.white,
-                                          size: 25.0,
-                                        ),
-                                      ),
-                                    )
-                                  : const SizedBox.shrink(),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            left: 15,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _getTitulares(members: snapshot.data!),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 5.0),
-                                  child: Container(
+                          SizedBox(
+                            width: 300.0,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: _heightImage + 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Flexible(
+                                      child: _getTitulares(
+                                    members: snapshot.data!,
+                                  )),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 5.0,
+                                    ),
+                                    child: Container(
                                       height: 150.0,
                                       width: 1,
-                                      color: Colors.grey),
-                                ),
-                                _getAusents(members: snapshot.data!),
-                              ],
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: _getAusents(members: snapshot.data!),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
+                          const FieldBackground(),
+                          ..._generateBurbbles(
+                            members: snapshot.data!,
+                            type: type,
+                          ),
+                          CheckButton(
+                            notifier: _buttonNotifier,
+                            onTap: () => _saveAlign(
+                              members: snapshot.data!,
+                            ),
+                          )
                         ],
                       )
                     : const Text("Se el primero en enlistarte");
@@ -156,21 +148,9 @@ class AlignSectionState extends State<AlignSection> {
     List<MemberModel> currentMembers = [];
     currentMembers.addAll(members);
     currentMembers.removeWhere((member) => !member.added || !member.titular);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const Text("Titulares"),
-        ...currentMembers
-            .map((member) => Row(
-                  children: [
-                    SizedBox(
-                        width: 30.0, child: Text(member.number.toString())),
-                    Text(member.name)
-                  ],
-                ))
-            .toList(),
-      ],
+    return _generateList(
+      members: currentMembers,
+      isTitular: true,
     );
   }
 
@@ -178,23 +158,47 @@ class AlignSectionState extends State<AlignSection> {
     List<MemberModel> currentMembers = [];
     currentMembers.addAll(members);
     currentMembers.removeWhere((member) => member.added && member.titular);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const Text("Banca"),
-        ...currentMembers.isNotEmpty
-            ? currentMembers
-                .map((member) => Row(
-                      children: [
-                        SizedBox(
-                            width: 30.0, child: Text(member.number.toString())),
-                        Text(member.name)
-                      ],
-                    ))
-                .toList()
-            : [const Text("No hay")]
-      ],
+    return _generateList(
+      members: currentMembers,
+      isTitular: false,
+    );
+  }
+
+  Widget _generateList({
+    required List<MemberModel> members,
+    required bool isTitular,
+  }) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+        color: isTitular ? Colors.green.shade300 : Colors.orange.shade300,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          ListPlayerTop(isTitular: isTitular, count: members.length),
+          Flexible(
+            child: ListView(
+              shrinkWrap: true,
+              padding:
+                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 4.0),
+              children: members.isNotEmpty
+                  ? members
+                      .map((member) => ListPlayerContent(member: member))
+                      .toList()
+                  : [
+                      const Center(
+                          child: Text(
+                        "No hay",
+                        style: TextStyle(color: Colors.white),
+                      ))
+                    ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

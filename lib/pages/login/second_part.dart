@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:soccer/pages/login/widgets/align_section.dart';
+import 'package:soccer/pages/login/widgets/align/align_section.dart';
 import 'package:soccer/pages/login/widgets/custom_toggle.dart';
 import 'package:soccer/pages/login/widgets/match_info.dart';
 
 import 'models/match_model.dart';
 import 'providers/provider_members.dart';
-import 'widgets/players_section.dart';
+import 'widgets/players/players_section.dart';
 
 class SecondPart extends StatefulWidget {
   const SecondPart({super.key});
@@ -17,7 +17,7 @@ class SecondPart extends StatefulWidget {
 class SecondPartState extends State<SecondPart> {
   final _provider = ProviderMembers();
   final Map<int, String> _tabs = {0: "Jugadores", 1: "Alineación"};
-  int _tabIndex = 0;
+  int _tabIndex = 1;
   final ValueNotifier<int> _typeAlignNotifier = ValueNotifier(1);
   final Map<int, String> _listFields = {
     1: 'Limber',

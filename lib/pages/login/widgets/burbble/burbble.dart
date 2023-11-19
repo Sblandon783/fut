@@ -80,9 +80,11 @@ class BurbbleState extends State<Burbble> {
         insetPadding: EdgeInsets.zero,
       ),
     ).then((dynamic value) {
-      MemberModel newMember = value;
-      widget.updateMembers(member: newMember, oldMember: widget.member);
-      setState(() {});
+      if (value != null) {
+        MemberModel newMember = value;
+        widget.updateMembers(member: newMember, oldMember: widget.member);
+        setState(() {});
+      }
     });
   }
 }

@@ -34,7 +34,7 @@ class ProviderMembers {
       _member = membersResponse.members
           .firstWhere((element) => element.name == _prefs.userName);
 
-      //membersResponse.members.removeWhere((element) => !element.included);
+      membersResponse.members.removeWhere((element) => !element.included);
       members = membersResponse.members;
       members.removeWhere((element) => element.name == _member.name);
       if (_member.included) {
