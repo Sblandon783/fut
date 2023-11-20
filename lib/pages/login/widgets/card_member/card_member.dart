@@ -13,13 +13,15 @@ class CardMember extends StatefulWidget {
   final double width;
   final double height;
   final bool isSpecial;
-  const CardMember({
-    super.key,
-    required this.member,
-    this.width = 150.0,
-    this.height = 270.0,
-    this.isSpecial = false,
-  });
+  final bool isSmall;
+  const CardMember(
+      {super.key,
+      required this.member,
+      this.width = 150.0,
+      this.height = 270.0,
+      this.isSpecial = false,
+      this.isSmall = false,
+      s});
 
   @override
   CardMemberState createState() => CardMemberState();
@@ -93,6 +95,7 @@ class CardMemberState extends State<CardMember>
                   TopContent(
                     idPosition: widget.member.idPosition,
                     width: widget.width,
+                    height: widget.isSmall ? 60.0 : widget.height - 150.0,
                     utils: _utils,
                   ),
                   CenterContent(name: widget.member.name, width: widget.width),

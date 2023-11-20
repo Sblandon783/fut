@@ -4,12 +4,14 @@ import '../../models/utils/utils.dart';
 
 class TopContent extends StatelessWidget {
   final double width;
+  final double height;
   final Utils utils;
   final int idPosition;
 
   const TopContent({
     super.key,
     required this.width,
+    required this.height,
     required this.idPosition,
     required this.utils,
   });
@@ -24,7 +26,7 @@ class TopContent extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Image(
-            height: 120.0,
+            height: height,
             width: width,
             image: AssetImage(
                 'assets/${utils.images[idPosition] ?? utils.images[1]}'),

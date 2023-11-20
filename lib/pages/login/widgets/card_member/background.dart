@@ -12,12 +12,15 @@ class Background extends StatelessWidget {
       top: 0.0,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
-        child: Image(
-          width: width,
-          height: height - 24,
-          fit: BoxFit.fitHeight,
-          image: const AssetImage('assets/back_2.png'),
-          color: Colors.white,
+        child: ColorFiltered(
+          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+          child: Image(
+            width: width,
+            height: height - 24,
+            fit: BoxFit.fitHeight,
+            image: const AssetImage('assets/back_2.png'),
+            color: Colors.white,
+          ),
         ),
       ),
     );

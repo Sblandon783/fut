@@ -50,6 +50,17 @@ class AlignSectionState extends State<AlignSection> {
                     ? Stack(
                         alignment: AlignmentDirectional.topCenter,
                         children: [
+                          const FieldBackground(),
+                          ..._generateBurbbles(
+                            members: snapshot.data!,
+                            type: type,
+                          ),
+                          CheckButton(
+                            notifier: _buttonNotifier,
+                            onTap: () => _saveAlign(
+                              members: snapshot.data!,
+                            ),
+                          ),
                           SizedBox(
                             width: 300.0,
                             child: Padding(
@@ -80,17 +91,6 @@ class AlignSectionState extends State<AlignSection> {
                               ),
                             ),
                           ),
-                          const FieldBackground(),
-                          ..._generateBurbbles(
-                            members: snapshot.data!,
-                            type: type,
-                          ),
-                          CheckButton(
-                            notifier: _buttonNotifier,
-                            onTap: () => _saveAlign(
-                              members: snapshot.data!,
-                            ),
-                          )
                         ],
                       )
                     : const Text("Se el primero en enlistarte");
@@ -148,6 +148,7 @@ class AlignSectionState extends State<AlignSection> {
     List<MemberModel> currentMembers = [];
     currentMembers.addAll(members);
     currentMembers.removeWhere((member) => !member.added || !member.titular);
+
     return _generateList(
       members: currentMembers,
       isTitular: true,
@@ -158,6 +159,7 @@ class AlignSectionState extends State<AlignSection> {
     List<MemberModel> currentMembers = [];
     currentMembers.addAll(members);
     currentMembers.removeWhere((member) => member.added && member.titular);
+
     return _generateList(
       members: currentMembers,
       isTitular: false,

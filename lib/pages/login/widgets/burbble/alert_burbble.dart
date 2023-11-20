@@ -22,9 +22,11 @@ class AlertBurbble extends StatefulWidget {
 
 class BAlertBurbbleState extends State<AlertBurbble> {
   late MemberModel _member;
+  late MemberModel _oldMember;
   @override
   void initState() {
     _member = widget.member;
+    _oldMember = widget.member;
 
     super.initState();
   }
@@ -61,33 +63,46 @@ class BAlertBurbbleState extends State<AlertBurbble> {
               )),
             ],
           )),
-          CardMember(member: _member),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(right: 10.0),
-                child: Text("Seleccionar jugador"),
+          if (_oldMember != _member && (_member.id != _oldMember.id)) ...[
+            CardMember(
+              member: _oldMember,
+              height: 190.0,
+              width: 130.0,
+              isSmall: true,
+            ),
+            GestureDetector(
+              onTap: () => Navigator.pop(context, _member),
+              child: const Icon(
+                Icons.change_circle_rounded,
+                color: Colors.green,
+                size: 40.0,
               ),
-              SizedBox(
-                width: 100.0,
-                child: CustomDropDown(
-                  key: UniqueKey(),
-                  dropdownValue: _member.id.toString(),
-                  list: _getMembers(),
-                  change: _changePosition,
-                  text: "",
-                ),
-              ),
-            ],
+            )
+          ],
+          CardMember(
+            member: _member,
+            height: 190.0,
+            width: 130.0,
+            isSmall: true,
           ),
+          SizedBox(
+            width: 150.0,
+            child: CustomDropDown(
+              key: UniqueKey(),
+              dropdownValue: _member.id.toString(),
+              list: _getMembers(),
+              change: _changePosition,
+              text: "Seleccionar jugador",
+            ),
+          ),
+          /*
           Padding(
             padding: const EdgeInsets.only(top: 10.0),
             child: ElevatedButton(
                 onPressed: () => Navigator.pop(context, _member),
                 child: const Text("Realizar cambio")),
           )
+          */
         ],
       ),
     );

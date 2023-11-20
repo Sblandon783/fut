@@ -48,6 +48,14 @@ class MemberModel {
         included: _isIncluded(date: json["date_match"]),
       );
 
+  json() => {
+        "id": id,
+        "name": name,
+        "number": number,
+        "position": idPosition,
+        "date_match": date,
+      };
+
   setPosition({required int pos}) {
     idPosition = pos;
     position = _getPosition(position: pos);
@@ -63,7 +71,8 @@ _getPosition({required int position}) =>
     Utils().mapPosition[position] ?? Utils().mapPosition[1];
 
 _isIncluded({required dynamic date}) {
-  if (date == null) {
+  print(date);
+  if (date == null || date == "") {
     return false;
   }
   DateTime now = DateTime.now();

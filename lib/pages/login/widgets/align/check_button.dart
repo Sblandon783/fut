@@ -9,7 +9,7 @@ class CheckButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 180.0,
+      top: 160.0,
       right: 0,
       child: ValueListenableBuilder(
         valueListenable: notifier,
