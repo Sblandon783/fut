@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:soccer/pages/login/widgets/align/check_button.dart';
+import 'package:soccer/pages/login/widgets/align/align_field/align_field.dart';
 import 'package:soccer/pages/login/widgets/align/list_player_content.dart';
 import 'package:soccer/pages/login/widgets/align/list_player_top.dart';
 
 import '../../models/match_model.dart';
 import '../../models/member_model.dart';
-import '../../models/utils/utils.dart';
+
 import '../../providers/provider_members.dart';
-import '../burbble/burbble.dart';
-import 'field_background.dart';
 
 class AlignSection extends StatefulWidget {
   final MatchModel match;
@@ -25,9 +23,7 @@ class AlignSection extends StatefulWidget {
 
 class AlignSectionState extends State<AlignSection> {
   final _provider = ProviderMembers();
-  final Utils _utils = Utils();
-  final ValueNotifier<bool> _buttonNotifier = ValueNotifier(false);
-  final double _heightImage = 200.0;
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +32,8 @@ class AlignSectionState extends State<AlignSection> {
   }
 
   void _getMembers() async => _provider.getMembers();
+  Map<int, String> map = {1: "as", 2: "hola"};
+  String dropdownValue = "1";
 
   @override
   Widget build(BuildContext context) => ValueListenableBuilder(
@@ -47,33 +45,28 @@ class AlignSectionState extends State<AlignSection> {
                 AsyncSnapshot<List<MemberModel>> snapshot) {
               if (snapshot.hasData) {
                 return snapshot.data!.isNotEmpty
-                    ? Stack(
-                        alignment: AlignmentDirectional.topCenter,
+                    ? Column(
                         children: [
-                          const FieldBackground(),
-                          ..._generateBurbbles(
+                          AlignField(
                             members: snapshot.data!,
-                            type: type,
+                            match: widget.match,
+                            typeAlignNotifier: widget.typeAlignNotifier,
+                            provider: _provider,
                           ),
-                          CheckButton(
-                            notifier: _buttonNotifier,
-                            onTap: () => _saveAlign(
-                              members: snapshot.data!,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 300.0,
-                            child: Padding(
-                              padding: EdgeInsets.only(top: _heightImage + 10),
+                          Flexible(
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: double.infinity,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Flexible(
-                                      child: _getTitulares(
-                                    members: snapshot.data!,
-                                  )),
+                                    child: _getTitulares(
+                                      members: snapshot.data!,
+                                    ),
+                                  ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 5.0,
@@ -100,54 +93,10 @@ class AlignSectionState extends State<AlignSection> {
             });
       });
 
-  List<Widget> _generateBurbbles(
-      {required List<MemberModel> members, required int type}) {
-    List<Widget> childrens = [];
-    for (var i = 0; i < members.length; i++) {
-      members[i].added = false;
-    }
-
-    Map<int, Map<String, double>> map = _utils.getAlign(id: type);
-    map.forEach((key, value) {
-      MemberModel currentMember = _findMember(members: members, position: key);
-      childrens.add(Burbble(
-        idPos: key,
-        pos: value,
-        members: members,
-        member: currentMember,
-        updateMembers: _updateMembers,
-      ));
-    });
-
-    return childrens;
-  }
-
-  _updateMembers(
-      {required MemberModel member, required MemberModel oldMember}) {
-    _buttonNotifier.value = true;
-    _provider.updateMember(newMember: member, oldMember: oldMember);
-    widget.match.assistants = _provider.match!.assistants;
-    widget.match.substitutes = _provider.match!.substitutes;
-  }
-
-  MemberModel _findMember(
-      {required List<MemberModel> members, required int position}) {
-    for (var i = 0; i < members.length; i++) {
-      if (members[i].idPositionNew == position &&
-          !members[i].added &&
-          members[i].titular) {
-        members[i].added = true;
-        return members[i];
-      }
-    }
-    final MemberModel member = _utils.getMember(position: position);
-    return member;
-  }
-
   Widget _getTitulares({required List<MemberModel> members}) {
     List<MemberModel> currentMembers = [];
     currentMembers.addAll(members);
-    currentMembers.removeWhere((member) => !member.added || !member.titular);
+    currentMembers.removeWhere((member) => member.added || !member.titular);
 
     return _generateList(
       members: currentMembers,
@@ -158,7 +107,7 @@ class AlignSectionState extends State<AlignSection> {
   Widget _getAusents({required List<MemberModel> members}) {
     List<MemberModel> currentMembers = [];
     currentMembers.addAll(members);
-    currentMembers.removeWhere((member) => member.added && member.titular);
+    currentMembers.removeWhere((member) => !member.added && member.titular);
 
     return _generateList(
       members: currentMembers,
@@ -202,24 +151,5 @@ class AlignSectionState extends State<AlignSection> {
         ],
       ),
     );
-  }
-
-  Future<void> _saveAlign({required List<MemberModel> members}) async {
-    bool response = await _provider.saveAlign(members: members);
-    if (response) {
-      SnackBar snackBar = SnackBar(
-        content: const Text('Alineación actualizada'),
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () {},
-        ),
-      );
-
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
-    widget.match.assistants = _provider.match!.assistants;
-    widget.match.substitutes = _provider.match!.substitutes;
-    _buttonNotifier.value = false;
   }
 }

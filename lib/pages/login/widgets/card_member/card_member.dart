@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:soccer/pages/login/models/utils/utils.dart';
+import 'package:soccer/pages/login/utils/utils.dart';
 
 import 'package:soccer/pages/login/widgets/card_member/center_content.dart';
 import 'package:soccer/pages/login/widgets/card_member/footer_content.dart';
 
 import '../../models/member_model.dart';
+import 'animated_bounce.dart';
 import 'background.dart';
 import 'top_content.dart';
 
@@ -27,45 +28,22 @@ class CardMember extends StatefulWidget {
   CardMemberState createState() => CardMemberState();
 }
 
-class CardMemberState extends State<CardMember>
-    with SingleTickerProviderStateMixin {
+class CardMemberState extends State<CardMember> {
   final Utils _utils = Utils();
-  late AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 1),
-    vsync: this,
-    lowerBound: 0.95,
-    upperBound: 1,
-  )..repeat(reverse: true);
-  late final Animation<double> _animation = CurvedAnimation(
-    parent: _controller,
-    curve: Curves.easeIn,
-    reverseCurve: Curves.easeInOut,
-  );
+
   @override
   void initState() {
-    _controller = AnimationController(
-      duration: const Duration(seconds: 1),
-      vsync: this,
-      lowerBound: 0.95,
-      upperBound: 1,
-    )..repeat(reverse: true);
     super.initState();
   }
 
   @override
   dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.isSpecial
-        ? ScaleTransition(
-            scale: _animation,
-            child: _content(),
-          )
-        : _content();
+    return widget.isSpecial ? AnimatedBounce(child: _content()) : _content();
   }
 
   Widget _content() {

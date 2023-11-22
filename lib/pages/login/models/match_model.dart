@@ -1,7 +1,8 @@
-import 'utils/utils.dart'; // for other locales
+import '../utils/utils.dart'; // for other locales
 
 class MatchModel {
   int id;
+  int idField;
   String name;
   String date;
   String hour;
@@ -11,6 +12,7 @@ class MatchModel {
 
   MatchModel({
     required this.id,
+    required this.idField,
     required this.name,
     required this.date,
     required this.hour,
@@ -21,7 +23,8 @@ class MatchModel {
 
   factory MatchModel.fromJson(dynamic json) => MatchModel(
         id: json["id"],
-        name: json["name_field"],
+        idField: json["id_field"],
+        name: "",
         date: Utils().getDate(date: json["date"]),
         hour: Utils().getHour(date: json["date"]),
         assistants: Utils().getMap(text: json['list_assistants']),

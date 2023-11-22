@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/member_model.dart';
-import '../../models/utils/utils.dart';
+import '../../utils/utils.dart';
 import '../card_member/card_member.dart';
 import '../custom_drop_down.dart';
 

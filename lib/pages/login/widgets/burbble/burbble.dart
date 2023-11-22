@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/login/widgets/card_member/animated_bounce.dart';
+import 'package:soccer/user_preferences.dart';
 
 import '../../models/member_model.dart';
-import '../../models/utils/utils.dart';
+import '../../utils/utils.dart';
 import 'alert_burbble.dart';
 
 class Burbble extends StatefulWidget {
@@ -25,6 +27,7 @@ class Burbble extends StatefulWidget {
 }
 
 class BurbbleState extends State<Burbble> {
+  UserPreferences _prefs = UserPreferences();
   @override
   void initState() {
     widget.member;
@@ -32,34 +35,40 @@ class BurbbleState extends State<Burbble> {
   }
 
   @override
-  Widget build(BuildContext context) => Positioned(
-        top: widget.pos["top"],
-        right: widget.pos["right"],
-        child: GestureDetector(
-          onTap: () => _onTap(context: context),
-          child: Container(
-            height: 27.0,
-            width: 27.0,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
-              border: Border.all(
-                color: Colors.white,
-              ),
-              color: Utils().mapPosSevenColors[widget.idPos],
-            ),
-            padding: EdgeInsets.zero,
-            child: Center(
-              child: Text(
-                widget.member.titular ? widget.member.number.toString() : '?',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12.0,
-                ),
-              ),
-            ),
+  Widget build(BuildContext context) {
+    final bool myBurbble = widget.member.id == _prefs.userId;
+    Widget child = Container(
+      height: 27.0,
+      width: 27.0,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(20)),
+        border: Border.all(
+          color: Colors.white,
+          width: myBurbble ? 3 : 1,
+        ),
+        color: Utils().mapPosSevenColors[widget.idPos],
+      ),
+      padding: EdgeInsets.zero,
+      child: Center(
+        child: Text(
+          widget.member.titular ? widget.member.number.toString() : '?',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12.0,
           ),
         ),
-      );
+      ),
+    );
+
+    return Positioned(
+      top: widget.pos["top"],
+      right: widget.pos["right"],
+      child: GestureDetector(
+        onTap: () => _onTap(context: context),
+        child: myBurbble ? AnimatedBounce(child: child) : child,
+      ),
+    );
+  }
 
   Future<void> _onTap({required BuildContext context}) {
     return showDialog<void>(

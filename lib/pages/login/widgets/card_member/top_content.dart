@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/utils/utils.dart';
+import '../../utils/utils.dart';
 
 class TopContent extends StatelessWidget {
   final double width;

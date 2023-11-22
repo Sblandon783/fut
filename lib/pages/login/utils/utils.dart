@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
-import '../member_model.dart';
+import '../models/member_model.dart';
 
 class Utils {
   final Map<int, Map<String, double>> _mapPosSeven = {

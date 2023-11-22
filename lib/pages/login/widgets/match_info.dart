@@ -1,5 +1,6 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/login/models/field_model.dart';
 
 import '../models/match_model.dart';
 import '../providers/provider_members.dart';
@@ -8,10 +9,12 @@ import 'custom_drop_down.dart';
 class MatchInfo extends StatefulWidget {
   final MatchModel match;
   final ValueNotifier<int> typeAlignNotifier;
+  final List<FieldModel> fields;
   const MatchInfo({
     super.key,
     required this.match,
     required this.typeAlignNotifier,
+    required this.fields,
   });
 
   @override
@@ -19,29 +22,17 @@ class MatchInfo extends StatefulWidget {
 }
 
 class MatchInfonState extends State<MatchInfo> {
-  final Map<int, String> _listFields = {
-    1: 'Limber',
-    2: 'Luis Papa',
-  };
-  final Map<int, String> _listHour1 = {
-    1: '18:00',
-    2: '19:00',
-    3: '20:00',
-    4: '21:00'
-  };
-  final Map<int, String> _listHour2 = {
-    1: '18:30',
-    2: '19:30',
-    3: '20:30',
-  };
+  late Map<int, String> _listFields = {};
   final List<DateTime?> _dates = [];
   final _provider = ProviderMembers();
   late MatchModel _match;
   bool _show = false;
   @override
   void initState() {
+    _listFields = {for (var field in widget.fields) field.id: field.name};
     _match = MatchModel(
       id: widget.match.id,
+      idField: widget.match.idField,
       date: widget.match.date,
       hour: widget.match.hour,
       name: widget.match.name,
@@ -169,6 +160,9 @@ class MatchInfonState extends State<MatchInfo> {
   }
 
   Widget _generateField() {
+    String name = widget.fields
+        .firstWhere((field) => field.id == widget.match.idField)
+        .name;
     return GestureDetector(
       onTap: () => _onTap(content: _fieldContent()),
       child: Row(
@@ -181,7 +175,7 @@ class MatchInfonState extends State<MatchInfo> {
             color: Colors.white,
           ),
           Text(
-            widget.match.name,
+            name,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -194,9 +188,9 @@ class MatchInfonState extends State<MatchInfo> {
   }
 
   Widget _fieldContent() {
-    String dropdownValue = _listFields.keys
-        .firstWhere((k) => _listFields[k] == widget.match.name,
-            orElse: () => _listFields.keys.first)
+    String dropdownValue = widget.fields
+        .firstWhere((field) => field.id == widget.match.idField)
+        .id
         .toString();
 
     return SizedBox(
@@ -262,8 +256,18 @@ class MatchInfonState extends State<MatchInfo> {
     );
   }
 
+  Map<int, String> _getHour() {
+    FieldModel field = widget.fields
+        .firstWhere((element) => widget.match.idField == element.id);
+    Map<int, String> hours = {};
+    for (var i = 0; i < field.hours.length; i++) {
+      hours[i + 1] = field.hours[i].trim();
+    }
+    return hours;
+  }
+
   Widget _hourContent() {
-    Map<int, String> map = widget.match.id == 1 ? _listHour1 : _listHour2;
+    Map<int, String> map = _getHour();
     String dropdownValue = map.keys
         .firstWhere((k) => map[k] == widget.match.hour.trim(),
             orElse: () => map.keys.first)
@@ -316,9 +320,12 @@ class MatchInfonState extends State<MatchInfo> {
 
   void _onChangedField({required int pos}) {
     _show = true;
-    widget.match.id = pos;
     widget.match.name = _listFields[pos]!;
+    widget.match.idField = pos;
 
+    widget.match.hour =
+        widget.fields.firstWhere((field) => field.id == pos).hours.first.trim();
+    widget.match.setDate(dates: [widget.match.parsedDate]);
     widget.typeAlignNotifier.value = pos;
     setState(() {});
     Navigator.pop(context);
@@ -326,7 +333,7 @@ class MatchInfonState extends State<MatchInfo> {
 
   void _onChangedHour({required int pos}) {
     _show = true;
-    Map<int, String> map = widget.match.id == 1 ? _listHour1 : _listHour2;
+    Map<int, String> map = _getHour();
     widget.match.hour = map[pos]!;
     widget.match.setDate(dates: [widget.match.parsedDate]);
     setState(() {});

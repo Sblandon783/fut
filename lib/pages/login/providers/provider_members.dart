@@ -40,6 +40,7 @@ class ProviderMembers {
       if (_member.included) {
         members.add(_member);
       }
+
       if (match != null) {
         for (var i = 0; i < members.length; i++) {
           if (match!.assistants.containsKey(members[i].id)) {
@@ -101,6 +102,9 @@ class ProviderMembers {
         )
         .eq("password", password);
 
+    if (response.isNotEmpty) {
+      _prefs.userId = response.first["id"] ?? -1;
+    }
     return response.isNotEmpty;
   }
 
@@ -174,10 +178,10 @@ class ProviderMembers {
     return await _supabase.client
         .from('match')
         .update({
-          'name_field': match.name,
+          'id_field': match.idField,
           'date': match.parsedDate.toString(),
         })
-        .eq('id', 1)
+        .eq('id', match.id)
         .then((value) => true);
   }
 

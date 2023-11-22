@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/login/providers/provider_match.dart';
 import 'package:soccer/pages/login/widgets/align/align_section.dart';
 import 'package:soccer/pages/login/widgets/custom_toggle.dart';
 import 'package:soccer/pages/login/widgets/match_info.dart';
 
+import 'models/field_model.dart';
 import 'models/match_model.dart';
-import 'providers/provider_members.dart';
 import 'widgets/players/players_section.dart';
 
 class SecondPart extends StatefulWidget {
@@ -15,14 +16,10 @@ class SecondPart extends StatefulWidget {
 }
 
 class SecondPartState extends State<SecondPart> {
-  final _provider = ProviderMembers();
+  final _provider = ProviderMatch();
   final Map<int, String> _tabs = {0: "Jugadores", 1: "Alineación"};
   int _tabIndex = 1;
   final ValueNotifier<int> _typeAlignNotifier = ValueNotifier(1);
-  final Map<int, String> _listFields = {
-    1: 'Limber',
-    2: 'Luis Papa',
-  };
 
   @override
   void initState() {
@@ -30,7 +27,10 @@ class SecondPartState extends State<SecondPart> {
     super.initState();
   }
 
-  void _getMatch() async => _provider.getMatch();
+  void _getMatch() async {
+    await _provider.getFields();
+    _provider.getMatch();
+  }
 
   @override
   Widget build(BuildContext context) => _generateSecond();
@@ -48,10 +48,11 @@ class SecondPartState extends State<SecondPart> {
               builder:
                   (BuildContext context, AsyncSnapshot<MatchModel> snapshot) {
                 if (snapshot.hasData) {
-                  int field = _listFields.keys.firstWhere(
-                      (k) => _listFields[k] == _provider.match!.name,
-                      orElse: () => _listFields.keys.first);
-                  _typeAlignNotifier.value = field;
+                  FieldModel fieldCurrent = _provider.fields.fields.firstWhere(
+                      (field) => field.name == _provider.match!.name,
+                      orElse: () => _provider.fields.fields.first);
+
+                  _typeAlignNotifier.value = fieldCurrent.id;
 
                   return snapshot.data != null
                       ? Column(
@@ -59,6 +60,7 @@ class SecondPartState extends State<SecondPart> {
                             MatchInfo(
                               match: snapshot.data!,
                               typeAlignNotifier: _typeAlignNotifier,
+                              fields: _provider.fields.fields,
                             ),
                             CustomToggle(
                               key: UniqueKey(),
@@ -88,7 +90,7 @@ class SecondPartState extends State<SecondPart> {
   Widget _generateCard({required Widget child}) {
     return Container(
       width: 330.0,
-      height: _tabIndex == 0 ? 430.0 : 400.0,
+      height: _tabIndex == 0 ? 430.0 : 420.0,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
       ),

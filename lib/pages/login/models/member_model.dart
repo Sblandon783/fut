@@ -1,4 +1,4 @@
-import 'utils/utils.dart';
+import '../utils/utils.dart';
 
 class MembersModel {
   List<MemberModel> members;
@@ -71,7 +71,6 @@ _getPosition({required int position}) =>
     Utils().mapPosition[position] ?? Utils().mapPosition[1];
 
 _isIncluded({required dynamic date}) {
-  print(date);
   if (date == null || date == "") {
     return false;
   }
