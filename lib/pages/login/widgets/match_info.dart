@@ -2,13 +2,14 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/models/field_model.dart';
 
+import '../models/field_notifier.dart';
 import '../models/match_model.dart';
 import '../providers/provider_members.dart';
 import 'custom_drop_down.dart';
 
 class MatchInfo extends StatefulWidget {
   final MatchModel match;
-  final ValueNotifier<int> typeAlignNotifier;
+  final ValueNotifier<FieldNotifier> typeAlignNotifier;
   final List<FieldModel> fields;
   const MatchInfo({
     super.key,
@@ -33,6 +34,7 @@ class MatchInfonState extends State<MatchInfo> {
     _match = MatchModel(
       id: widget.match.id,
       idField: widget.match.idField,
+      idAlign: widget.match.idAlign,
       date: widget.match.date,
       hour: widget.match.hour,
       name: widget.match.name,
@@ -326,7 +328,8 @@ class MatchInfonState extends State<MatchInfo> {
     widget.match.hour =
         widget.fields.firstWhere((field) => field.id == pos).hours.first.trim();
     widget.match.setDate(dates: [widget.match.parsedDate]);
-    widget.typeAlignNotifier.value = pos;
+    widget.typeAlignNotifier.value = FieldNotifier(
+        idField: pos, idAlign: widget.typeAlignNotifier.value.idAlign);
     setState(() {});
     Navigator.pop(context);
   }

@@ -3,6 +3,7 @@ import '../utils/utils.dart'; // for other locales
 class MatchModel {
   int id;
   int idField;
+  int idAlign;
   String name;
   String date;
   String hour;
@@ -13,6 +14,7 @@ class MatchModel {
   MatchModel({
     required this.id,
     required this.idField,
+    required this.idAlign,
     required this.name,
     required this.date,
     required this.hour,
@@ -24,6 +26,7 @@ class MatchModel {
   factory MatchModel.fromJson(dynamic json) => MatchModel(
         id: json["id"],
         idField: json["id_field"],
+        idAlign: json["id_align"],
         name: "",
         date: Utils().getDate(date: json["date"]),
         hour: Utils().getHour(date: json["date"]),

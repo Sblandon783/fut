@@ -7,35 +7,97 @@ import 'package:intl/intl.dart';
 import '../models/member_model.dart';
 
 class Utils {
-  final Map<int, Map<String, double>> _mapPosSeven = {
-    1: {"top": 85.0, "right": 30.0}, //'POR',
-    2: {"top": 135.0, "right": 60.0}, //'LTD',
-    3: {"top": 35.0, "right": 60.0}, //'LTI',
-    //4: {"top": 85.0, "right": 110.0}, //'DFC',
-    5: {"top": 140.0, "right": 160.0}, //'MD',
-    6: {"top": 85.0, "right": 110.0}, //'MC',
-    7: {"top": 35.0, "right": 160.0}, //'MI',
-    //8: {"top": 140.0, "right": 200.0}, //'MD',
-    9: {"top": 85.0, "right": 200.0} //'DC'
+  final Map<int, dynamic> _mapPosSix = {
+    1: {
+      "name": "2-1-2-1",
+      "positions": {
+        1: {"top": 85.0, "right": 30.0}, //'POR',
+        2: {"top": 135.0, "right": 60.0}, //'LTD',
+        3: {"top": 35.0, "right": 60.0}, //'LTI',
+        5: {"top": 140.0, "right": 160.0}, //'MD',
+        6: {"top": 85.0, "right": 110.0}, //'MC',
+        7: {"top": 35.0, "right": 160.0}, //'MI',
+      },
+    },
+    2: {
+      "name": "1-2-2-1",
+      "positions": {
+        1: {"top": 85.0, "right": 30.0}, //'POR',
+        2: {"top": 135.0, "right": 60.0}, //'LTD',
+        3: {"top": 35.0, "right": 60.0}, //'LTI',
+        5: {"top": 130.0, "right": 120.0}, //'MD',
+        6: {"top": 45.0, "right": 120.0}, //'MC',
+        7: {"top": 85.0, "right": 180.0}, //'MI',
+      }
+    },
+    3: {
+      "name": "2-3-1",
+      "positions": {
+        1: {"top": 85.0, "right": 30.0}, //'POR',
+        2: {"top": 135.0, "right": 60.0}, //'LTD',
+        3: {"top": 35.0, "right": 60.0}, //'LTI',
+        5: {"top": 140.0, "right": 160.0}, //'MD',
+        6: {"top": 85.0, "right": 60.0}, //'MC',
+        7: {"top": 35.0, "right": 160.0}, //'MI',
+      }
+    }
   };
 
-  final Map<int, Map<String, double>> _mapPosSix = {
-    1: {"top": 85.0, "right": 30.0}, //'POR',
-    2: {"top": 135.0, "right": 60.0}, //'LTD',
-    3: {"top": 35.0, "right": 60.0}, //'LTI',
-    //4: {"top": 85.0, "right": 110.0}, //'DFC',
-    5: {"top": 140.0, "right": 160.0}, //'MD',
-    6: {"top": 85.0, "right": 110.0}, //'MC',
-    7: {"top": 35.0, "right": 160.0}, //'MI',
-    //8: {"top": 140.0, "right": 200.0}, //'MD',
+  final Map<int, dynamic> _mapPosSeven = {
+    1: {
+      "name": "1-2-1-2-1",
+      "positions": {
+        1: {"top": 85.0, "right": 30.0}, //'POR',
+        2: {"top": 135.0, "right": 60.0}, //'LTD',
+        3: {"top": 35.0, "right": 60.0}, //'LTI',
+        5: {"top": 140.0, "right": 160.0}, //'MD',
+        6: {"top": 85.0, "right": 110.0}, //'MC',
+        7: {"top": 35.0, "right": 160.0}, //'MI',
+        9: {"top": 85.0, "right": 200.0} //'DC'
+      },
+    },
+    2: {
+      "name": "2-2-2-1",
+      "positions": {
+        1: {"top": 85.0, "right": 30.0}, //'POR',
+        2: {"top": 135.0, "right": 60.0}, //'LTD',
+        3: {"top": 35.0, "right": 60.0}, //'LTI',
+        5: {"top": 120.0, "right": 120.0}, //'MD',
+        6: {"top": 55.0, "right": 120.0}, //'MC',
+        7: {"top": 45.0, "right": 200.0}, //'MI',
+        9: {"top": 135.0, "right": 200.0} //'DC'
+      }
+    },
+    3: {
+      "name": "2-1-1-2-1",
+      "positions": {
+        1: {"top": 85.0, "right": 30.0}, //'POR',
+        2: {"top": 135.0, "right": 60.0}, //'LTD',
+        3: {"top": 35.0, "right": 60.0}, //'LTI',
+        5: {"top": 85.0, "right": 140.0}, //'MD',
+        6: {"top": 85.0, "right": 80.0}, //'MC',
+        7: {"top": 40.0, "right": 200.0}, //'MI',
+        9: {"top": 135.0, "right": 200.0} //'DC'
+      }
+    }
   };
 
-  Map<int, Map<String, double>> getAlign({required int id}) {
-    Map<int, Map<int, Map<String, double>>> map = {
-      1: _mapPosSix,
-      2: _mapPosSeven,
-    };
-    return map[id] ?? _mapPosSeven;
+  Map<int, Map<String, double>> getAlign(
+      {required int idField, required int idAlign}) {
+    Map<int, Map<int, dynamic>> map = {};
+    Map<int, dynamic> currentMap = idField == 1 ? _mapPosSix : _mapPosSeven;
+    currentMap.forEach((key, value) {
+      map[key] = value["positions"];
+    });
+    return map[idAlign] ?? currentMap[1]["positions"];
+  }
+
+  Map<int, String> getNameAlign() {
+    Map<int, String> map = {};
+    _mapPosSeven.forEach((key, value) {
+      map[key] = value["name"];
+    });
+    return map;
   }
 
   final Map<int, MaterialColor> _mapPosSevenColors = {

@@ -31,34 +31,37 @@ class ProviderMembers {
     MembersModel membersResponse = MembersModel.fromJson(response);
 
     if (membersResponse.members.isNotEmpty) {
-      _member = membersResponse.members
-          .firstWhere((element) => element.name == _prefs.userName);
+      getListMembers(membersResponse.members);
+    }
+  }
 
-      membersResponse.members.removeWhere((element) => !element.included);
-      members = membersResponse.members;
-      members.removeWhere((element) => element.name == _member.name);
-      if (_member.included) {
-        members.add(_member);
-      }
+  getListMembers(List<MemberModel> membersCurrents) {
+    _member = membersCurrents
+        .firstWhere((element) => element.name == _prefs.userName);
 
-      if (match != null) {
-        for (var i = 0; i < members.length; i++) {
-          if (match!.assistants.containsKey(members[i].id)) {
-            members[i].setPositionNew(pos: match!.assistants[members[i].id]!);
-            members[i].titular = true;
-          }
-        }
-        for (var i = 0; i < members.length; i++) {
-          if (match!.substitutes.containsKey(members[i].id)) {
-            members[i].titular = false;
-            members[i].added = true;
-          }
-        }
-      }
-
-      members = members.reversed.toList();
+    membersCurrents.removeWhere((element) => !element.included);
+    members = membersCurrents;
+    members.removeWhere((element) => element.name == _member.name);
+    if (_member.included) {
+      members.add(_member);
     }
 
+    if (match != null) {
+      for (var i = 0; i < members.length; i++) {
+        if (match!.assistants.containsKey(members[i].id)) {
+          members[i].setPositionNew(pos: match!.assistants[members[i].id]!);
+          members[i].titular = true;
+        }
+      }
+      for (var i = 0; i < members.length; i++) {
+        if (match!.substitutes.containsKey(members[i].id)) {
+          members[i].titular = false;
+          members[i].added = true;
+        }
+      }
+    }
+
+    members = members.reversed.toList();
     membersSink(members);
   }
 
@@ -146,7 +149,10 @@ class ProviderMembers {
     membersSink(list);
   }
 
-  Future<bool> saveAlign({required List<MemberModel> members}) async {
+  Future<bool> saveAlign(
+      {required List<MemberModel> members,
+      required int idField,
+      required int idAlign}) async {
     List<String> listAssistants = [];
     List<String> listSubstitutes = [];
     Map<int, int> mapAssistants = {};
@@ -168,7 +174,9 @@ class ProviderMembers {
         .from('match')
         .update({
           'list_assistants': listAssistants,
-          'list_substitutes': listSubstitutes
+          'list_substitutes': listSubstitutes,
+          'id_field': idField,
+          'id_align': idAlign,
         })
         .eq('id', 1)
         .then((value) => true);

@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/login/utils/utils.dart';
 
 import '../../custom_drop_down.dart';
 
 class AlignType extends StatefulWidget {
   final int type;
-  const AlignType({super.key, required this.type});
+  final Function({required int id}) updateAlign;
+  final Function() onTap;
+  const AlignType({
+    super.key,
+    required this.type,
+    required this.updateAlign,
+    required this.onTap,
+  });
 
   @override
   AlignTypeState createState() => AlignTypeState();
 }
 
 class AlignTypeState extends State<AlignType> {
+  final Utils _utils = Utils();
   final double _heightImage = 200.0;
+  String dropdownValue = "1";
+  bool _show = false;
   @override
   void initState() {
+    dropdownValue = widget.type.toString();
     super.initState();
   }
-
-  Map<int, String> map = {1: "as", 2: "hola"};
-  String dropdownValue = "1";
 
   @override
   Widget build(BuildContext context) => _generateAligns();
@@ -28,7 +37,7 @@ class AlignTypeState extends State<AlignType> {
       top: _heightImage + 5.0,
       right: 10.0,
       child: GestureDetector(
-        onTap: () {}, //() => _onTap(content: _fieldContent()),
+        onTap: () => _onTap(content: _fieldContent()),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -46,42 +55,52 @@ class AlignTypeState extends State<AlignType> {
                 fontSize: 13.0,
               ),
             ),
+            if (_show)
+              GestureDetector(
+                onTap: () {
+                  widget.onTap();
+                  setState(() => _show = false);
+                },
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 2.0),
+                  child: Icon(
+                    Icons.check_circle,
+                    color: Colors.green,
+                    size: 25.0,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
     );
   }
 
-  String _getAlignType() {
-    print(widget.type);
-    return widget.type == 1 ? "2-1-2-1" : "2-2-2-1";
-  }
-
-  Map<int, String> _listFields = {1: "2-1-2-1", 2: "1-2-2-1", 3: "1-1-3-1"};
+  String _getAlignType() =>
+      _utils.getNameAlign()[int.parse(dropdownValue)] ?? '';
 
   Widget _fieldContent() {
-    String dropdownValue = '1';
-
     return SizedBox(
       width: 90.0,
       height: 120.0,
       child: Column(
         children: [
           Align(
-              alignment: Alignment.centerRight,
-              child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: const Padding(
-                  padding: EdgeInsets.all(5.0),
-                  child: Icon(Icons.close, color: Colors.grey),
-                ),
-              )),
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: const Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Icon(Icons.close, color: Colors.grey),
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: CustomDropDown(
               key: UniqueKey(),
               dropdownValue: dropdownValue,
-              list: _listFields,
+              list: _utils.getNameAlign(),
               change: _onChangedField,
               text: "Alineaciones",
               colorText: Colors.black54,
@@ -92,7 +111,12 @@ class AlignTypeState extends State<AlignType> {
     );
   }
 
-  void _onChangedField({required int pos}) {}
+  void _onChangedField({required int pos}) {
+    widget.updateAlign(id: pos);
+    dropdownValue = pos.toString();
+    _show = true;
+    Navigator.pop(context);
+  }
 
   Future<void> _onTap({required Widget content}) {
     return showDialog<void>(

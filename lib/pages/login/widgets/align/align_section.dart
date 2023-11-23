@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/login/models/field_notifier.dart';
 import 'package:soccer/pages/login/widgets/align/align_field/align_field.dart';
 import 'package:soccer/pages/login/widgets/align/list_player_content.dart';
 import 'package:soccer/pages/login/widgets/align/list_player_top.dart';
@@ -10,7 +11,7 @@ import '../../providers/provider_members.dart';
 
 class AlignSection extends StatefulWidget {
   final MatchModel match;
-  final ValueNotifier<int> typeAlignNotifier;
+  final ValueNotifier<FieldNotifier> typeAlignNotifier;
   const AlignSection({
     super.key,
     required this.match,
@@ -32,13 +33,12 @@ class AlignSectionState extends State<AlignSection> {
   }
 
   void _getMembers() async => _provider.getMembers();
-  Map<int, String> map = {1: "as", 2: "hola"};
-  String dropdownValue = "1";
 
   @override
   Widget build(BuildContext context) => ValueListenableBuilder(
       valueListenable: widget.typeAlignNotifier,
       builder: (context, type, child) {
+        _getMembers();
         return StreamBuilder(
             stream: _provider.membersStream,
             builder: (BuildContext context,

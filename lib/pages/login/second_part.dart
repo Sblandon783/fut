@@ -5,6 +5,7 @@ import 'package:soccer/pages/login/widgets/custom_toggle.dart';
 import 'package:soccer/pages/login/widgets/match_info.dart';
 
 import 'models/field_model.dart';
+import 'models/field_notifier.dart';
 import 'models/match_model.dart';
 import 'widgets/players/players_section.dart';
 
@@ -19,7 +20,8 @@ class SecondPartState extends State<SecondPart> {
   final _provider = ProviderMatch();
   final Map<int, String> _tabs = {0: "Jugadores", 1: "Alineación"};
   int _tabIndex = 1;
-  final ValueNotifier<int> _typeAlignNotifier = ValueNotifier(1);
+  final ValueNotifier<FieldNotifier> _typeAlignNotifier =
+      ValueNotifier(FieldNotifier(idField: -1, idAlign: -1));
 
   @override
   void initState() {
@@ -52,7 +54,9 @@ class SecondPartState extends State<SecondPart> {
                       (field) => field.name == _provider.match!.name,
                       orElse: () => _provider.fields.fields.first);
 
-                  _typeAlignNotifier.value = fieldCurrent.id;
+                  _typeAlignNotifier.value = FieldNotifier(
+                      idField: fieldCurrent.id,
+                      idAlign: _provider.match!.idAlign);
 
                   return snapshot.data != null
                       ? Column(

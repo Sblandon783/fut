@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/login/models/field_notifier.dart';
 import 'package:soccer/pages/login/widgets/align/align_field/align_type.dart';
 import 'package:soccer/pages/login/widgets/align/check_button.dart';
 
@@ -13,7 +14,7 @@ import '../field_background.dart';
 class AlignField extends StatefulWidget {
   final List<MemberModel> members;
   final MatchModel match;
-  final ValueNotifier<int> typeAlignNotifier;
+  final ValueNotifier<FieldNotifier> typeAlignNotifier;
   final ProviderMembers provider;
   const AlignField({
     super.key,
@@ -36,8 +37,6 @@ class AlignFieldState extends State<AlignField> {
     super.initState();
   }
 
-  Map<int, String> map = {1: "as", 2: "hola"};
-
   @override
   Widget build(BuildContext context) => SizedBox(
         height: 230.0,
@@ -50,22 +49,30 @@ class AlignFieldState extends State<AlignField> {
                   const FieldBackground(),
                   CheckButton(
                     notifier: _buttonNotifier,
-                    onTap: _saveAlign,
+                    onTap: () => _saveAlign(type: type),
                   ),
-                  ..._generateBurbbles(type: type),
-                  AlignType(type: type),
+                  ..._generateBurbbles(
+                      idField: type.idField, idAlign: type.idAlign),
+                  AlignType(
+                    type: type.idAlign,
+                    updateAlign: _updateAlign,
+                    onTap: () => _saveAlign(type: type),
+                  ),
                 ],
               );
             }),
       );
 
-  List<Widget> _generateBurbbles({required int type}) {
+  List<Widget> _generateBurbbles({required int idField, required int idAlign}) {
+    print(idAlign);
     List<Widget> childrens = [];
     for (var i = 0; i < widget.members.length; i++) {
       widget.members[i].added = false;
     }
 
-    Map<int, Map<String, double>> map = _utils.getAlign(id: type);
+    Map<int, Map<String, double>> map =
+        _utils.getAlign(idField: idField, idAlign: idAlign);
+
     map.forEach((key, value) {
       MemberModel currentMember =
           _findMember(members: widget.members, position: key);
@@ -79,6 +86,12 @@ class AlignFieldState extends State<AlignField> {
     });
 
     return childrens;
+  }
+
+  _updateAlign({required int id}) {
+    FieldNotifier type = FieldNotifier(
+        idField: widget.typeAlignNotifier.value.idField, idAlign: id);
+    widget.typeAlignNotifier.value = type;
   }
 
   _updateMembers(
@@ -103,8 +116,9 @@ class AlignFieldState extends State<AlignField> {
     return member;
   }
 
-  Future<void> _saveAlign() async {
-    bool response = await widget.provider.saveAlign(members: widget.members);
+  Future<void> _saveAlign({required FieldNotifier type}) async {
+    bool response = await widget.provider.saveAlign(
+        members: widget.members, idField: type.idField, idAlign: type.idAlign);
     if (response) {
       SnackBar snackBar = SnackBar(
         content: const Text('Alineación actualizada'),
