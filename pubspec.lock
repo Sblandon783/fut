@@ -134,6 +134,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.3"
+  flip_card:
+    dependency: "direct main"
+    description:
+      name: flip_card
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -457,6 +464,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.4"
+  radar_chart:
+    dependency: "direct main"
+    description:
+      name: radar_chart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   realtime_client:
     dependency: transitive
     description:

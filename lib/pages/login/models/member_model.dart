@@ -1,3 +1,5 @@
+import 'package:soccer/pages/login/models/atribbute_model.dart';
+
 import '../utils/utils.dart';
 
 class MembersModel {
@@ -25,6 +27,7 @@ class MemberModel {
   bool included;
   bool added;
   bool titular;
+  AttributesModel attributes;
 
   MemberModel({
     required this.id,
@@ -36,6 +39,7 @@ class MemberModel {
     required this.included,
     this.added = false,
     this.titular = true,
+    required this.attributes,
   });
 
   factory MemberModel.fromJson(Map<String, dynamic> json) => MemberModel(
@@ -46,6 +50,9 @@ class MemberModel {
         position: _getPosition(position: json["position"]),
         date: json["date_match"] ?? '',
         included: _isIncluded(date: json["date_match"]),
+        attributes: json["attributes"] != null
+            ? AttributesModel.fromJson(json["attributes"])
+            : AttributesModel.fromJson(Utils().attributesDefault),
       );
 
   json() => {

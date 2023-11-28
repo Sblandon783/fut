@@ -27,7 +27,8 @@ class ProviderMembers {
   Future getMembers() async {
     final List<dynamic> response = await _supabase.client
         .from('player')
-        .select('id,name,number,position,date_match');
+        .select('id,name,number,position,date_match, attributes');
+
     MembersModel membersResponse = MembersModel.fromJson(response);
 
     if (membersResponse.members.isNotEmpty) {

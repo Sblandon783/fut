@@ -1,4 +1,6 @@
+import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/login/models/atribbute_model.dart';
 import 'package:soccer/pages/login/utils/utils.dart';
 
 import 'package:soccer/pages/login/widgets/card_member/center_content.dart';
@@ -6,7 +8,10 @@ import 'package:soccer/pages/login/widgets/card_member/footer_content.dart';
 
 import '../../models/member_model.dart';
 import 'animated_bounce.dart';
+import 'attribute/attributes_draw.dart';
 import 'background.dart';
+import 'footer_atribbute_content.dart';
+
 import 'top_content.dart';
 
 class CardMember extends StatefulWidget {
@@ -15,14 +20,14 @@ class CardMember extends StatefulWidget {
   final double height;
   final bool isSpecial;
   final bool isSmall;
-  const CardMember(
-      {super.key,
-      required this.member,
-      this.width = 150.0,
-      this.height = 270.0,
-      this.isSpecial = false,
-      this.isSmall = false,
-      s});
+  const CardMember({
+    super.key,
+    required this.member,
+    this.width = 150.0,
+    this.height = 270.0,
+    this.isSpecial = false,
+    this.isSmall = false,
+  });
 
   @override
   CardMemberState createState() => CardMemberState();
@@ -30,7 +35,7 @@ class CardMember extends StatefulWidget {
 
 class CardMemberState extends State<CardMember> {
   final Utils _utils = Utils();
-
+  late Color _color;
   @override
   void initState() {
     super.initState();
@@ -43,45 +48,75 @@ class CardMemberState extends State<CardMember> {
 
   @override
   Widget build(BuildContext context) {
+    _color = _utils.mapPosSevenColors[widget.member.idPosition];
     return widget.isSpecial ? AnimatedBounce(child: _content()) : _content();
   }
 
   Widget _content() {
-    Color color = _utils.mapPosSevenColors[widget.member.idPosition];
+    return FlipCard(
+      fill: Fill.fillBack,
+      direction: FlipDirection.HORIZONTAL,
+      side: CardSide.FRONT,
+      front: _genarateCard(child: _frontCard()),
+      back: _genarateCard(child: _backCard()),
+    );
+  }
+
+  Widget _genarateCard({required Widget child}) {
     return SizedBox(
       height: widget.height,
       child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
-            elevation: widget.isSpecial ? 8 : 5,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              side: widget.isSpecial
-                  ? BorderSide(color: color, width: 3.0)
-                  : BorderSide.none,
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          elevation: widget.isSpecial ? 8 : 5,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            side: widget.isSpecial
+                ? BorderSide(color: _color, width: 3.0)
+                : BorderSide.none,
+          ),
+          child: Container(
+            height: widget.height,
+            width: widget.width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: _color,
             ),
-            child: Container(
-              height: widget.height,
-              width: widget.width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: color,
-              ),
-              child: Stack(
-                children: [
-                  Background(width: widget.width, height: widget.height),
-                  TopContent(
-                    idPosition: widget.member.idPosition,
-                    width: widget.width,
-                    height: widget.isSmall ? 60.0 : widget.height - 150.0,
-                    utils: _utils,
-                  ),
-                  CenterContent(name: widget.member.name, width: widget.width),
-                  FooterContent(member: widget.member, width: widget.width)
-                ],
-              ),
-            ),
-          )),
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _frontCard() {
+    return Stack(
+      children: [
+        Background(width: widget.width, height: widget.height),
+        TopContent(
+          idPosition: widget.member.idPosition,
+          width: widget.width,
+          height: widget.isSmall ? 60.0 : widget.height - 150.0,
+          utils: _utils,
+        ),
+        CenterContent(name: widget.member.name, width: widget.width),
+        FooterContent(member: widget.member, width: widget.width)
+      ],
+    );
+  }
+
+  Widget _backCard() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        AttributesDraw(attributes: widget.member.attributes, color: _color),
+        Background(width: widget.width, height: widget.height),
+        CenterContent(name: widget.member.name, width: widget.width),
+        FooterAtribbuteContent(
+          attributes: widget.member.attributes,
+          width: widget.width,
+        )
+      ],
     );
   }
 }

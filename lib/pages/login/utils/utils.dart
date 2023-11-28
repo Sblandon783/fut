@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:soccer/pages/login/models/atribbute_model.dart';
 
 import '../models/member_model.dart';
 
@@ -141,6 +142,14 @@ class Utils {
 
   get images => _images;
 
+  Map<dynamic, dynamic> attributesDefault = {
+    "attack": 50,
+    "technique": 50,
+    "creative": 50,
+    "tactic": 50,
+    "defense": 50
+  };
+
   MemberModel getMember({required int position}) {
     final MemberModel member = MemberModel(
       id: -1,
@@ -151,6 +160,7 @@ class Utils {
       date: '',
       included: false,
       titular: false,
+      attributes: AttributesModel.fromJson(attributesDefault),
     );
     return member;
   }

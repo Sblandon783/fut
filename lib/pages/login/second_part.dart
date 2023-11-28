@@ -19,7 +19,7 @@ class SecondPart extends StatefulWidget {
 class SecondPartState extends State<SecondPart> {
   final _provider = ProviderMatch();
   final Map<int, String> _tabs = {0: "Jugadores", 1: "Alineación"};
-  int _tabIndex = 1;
+  int _tabIndex = 0;
   final ValueNotifier<FieldNotifier> _typeAlignNotifier =
       ValueNotifier(FieldNotifier(idField: -1, idAlign: -1));
 
