@@ -72,24 +72,35 @@ class PlayersSectionState extends State<PlayersSection> {
                                     Clipboard.setData(ClipboardData(
                                         text: 'Lista de jugadares\n$text'));
                                   },
-                                  child: const Icon(Icons.copy, size: 16.0),
+                                  child: const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10.0),
+                                    child: Icon(Icons.copy, size: 16.0),
+                                  ),
                                 ),
                               ],
                             ),
-                            ValueListenableBuilder(
-                              valueListenable: _buttonNotifier,
-                              builder: (context, show, child) => Center(
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    'Total ${_provider.members.length}',
-                                    style: const TextStyle(
-                                        color: Colors.grey, fontSize: 12.0),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: ValueListenableBuilder(
+                                valueListenable: _buttonNotifier,
+                                builder: (context, show, child) => Center(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      'Total ${_provider.members.length}',
+                                      style: const TextStyle(
+                                          color: Colors.grey, fontSize: 12.0),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                            const Divider(color: Colors.grey, height: 5.0),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Divider(color: Colors.grey, height: 5.0),
+                            ),
                             SizedBox(
                               height: 290.0,
                               child: ListView(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/providers/provider_match.dart';
-import 'package:soccer/pages/login/widgets/align/align_section.dart';
+import 'package:soccer/pages/align/align_section.dart';
 import 'package:soccer/pages/login/widgets/custom_toggle.dart';
 import 'package:soccer/pages/login/widgets/match_info.dart';
 

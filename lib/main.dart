@@ -3,7 +3,7 @@ import 'package:soccer/routes/routes.dart';
 import 'package:soccer/user_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'pages/home/home_page.dart';
+import 'pages/routines/routines_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,16 +24,20 @@ void main() async {
 class MyApp extends StatelessWidget {
   bool isLogin = false;
   String initialRoute = "/login";
-
+  final UserPreferences _prefs = UserPreferences();
   @override
   Widget build(BuildContext context) {
+    if (_prefs.isLogin) {
+      initialRoute = "/login";
+    }
+
     return MaterialApp(
       title: 'Componets App',
       debugShowCheckedModeBanner: false,
       initialRoute: initialRoute,
       routes: getAplicationRoutes(),
       onGenerateRoute: (RouteSettings settings) {
-        return MaterialPageRoute(builder: (context) => const HomePage());
+        return MaterialPageRoute(builder: (context) => const RoutinesPage());
       },
     );
   }

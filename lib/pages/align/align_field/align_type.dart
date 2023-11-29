@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/utils/utils.dart';
 
-import '../../custom_drop_down.dart';
+import '../../login/widgets/custom_drop_down.dart';
 
 class AlignType extends StatefulWidget {
   final int type;

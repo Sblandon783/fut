@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/models/field_notifier.dart';
-import 'package:soccer/pages/login/widgets/align/align_field/align_field.dart';
-import 'package:soccer/pages/login/widgets/align/list_player_content.dart';
-import 'package:soccer/pages/login/widgets/align/list_player_top.dart';
+import 'package:soccer/pages/align/align_field/align_field.dart';
+import 'package:soccer/pages/align/list_player_content.dart';
+import 'package:soccer/pages/align/list_player_top.dart';
 
-import '../../models/match_model.dart';
-import '../../models/member_model.dart';
+import '../login/models/match_model.dart';
+import '../login/models/member_model.dart';
 
-import '../../providers/provider_members.dart';
+import '../login/providers/provider_members.dart';
 
 class AlignSection extends StatefulWidget {
   final MatchModel match;

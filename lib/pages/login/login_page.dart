@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:soccer/pages/login/second_part.dart';
 
+import '../../tabs_page.dart';
 import '../../user_preferences.dart';
 import 'first_part.dart';
 import 'providers/provider_members.dart';
@@ -115,8 +116,12 @@ class LoginPageState extends State<LoginPage> {
       barrierDismissible: false,
       builder: (context) {
         Future.delayed(const Duration(seconds: 3), () {
+          final route = MaterialPageRoute(builder: (context) => TabsPage());
+          Navigator.push(context, route);
+          /*
           setState(() => _firstPart = false);
           Navigator.pop(context);
+          */
         });
         return AlertDialog(
           shape:

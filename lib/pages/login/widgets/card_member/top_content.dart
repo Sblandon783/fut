@@ -28,6 +28,7 @@ class TopContent extends StatelessWidget {
           child: Image(
             height: height,
             width: width,
+            color: Colors.white,
             image: AssetImage(
                 'assets/${utils.images[idPosition] ?? utils.images[1]}'),
           ),

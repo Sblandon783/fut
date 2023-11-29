@@ -58,8 +58,8 @@ class MatchInfonState extends State<MatchInfo> {
         width: double.infinity,
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
+            bottomLeft: Radius.circular(10),
+            bottomRight: Radius.circular(10),
           ),
           gradient: LinearGradient(
             begin: Alignment.topRight,

@@ -1,25 +1,29 @@
 import 'dart:async';
 
+import 'package:soccer/user_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../user_preferences.dart';
-import '../models/profile_model.dart';
+import '../../login/models/member_model.dart';
 
 class ProviderProfile {
   ProviderProfile();
-
-  final Supabase _supabase = Supabase.instance;
   final UserPreferences _prefs = UserPreferences();
+  final Supabase _supabase = Supabase.instance;
 
-  final _profileStreamController = StreamController<ProfileModel>.broadcast();
-  Function(ProfileModel) get profileSink => _profileStreamController.sink.add;
-  Stream<ProfileModel> get profileStream => _profileStreamController.stream;
+  late MemberModel _member;
 
-  getProfile() async {
-    final int idUser = _prefs.userId;
+  final _memberStreamController = StreamController<MemberModel>.broadcast();
+  Function(MemberModel) get memberSink => _memberStreamController.sink.add;
+  Stream<MemberModel> get memberStream => _memberStreamController.stream;
+
+  Future getMyProfile() async {
     final List<dynamic> response = await _supabase.client
-        .rpc('get_user_profile', params: {'_id_user': idUser});
-    ProfileModel profile = ProfileModel.fromJson(response[0]);
-    profileSink(profile);
+        .from('player')
+        .select('id,name,number,position,date_match, attributes')
+        .eq('id', _prefs.userId);
+    print(response);
+    MemberModel memberResponse = MemberModel.fromJson(response.first);
+    _member = memberResponse;
+    memberSink(_member);
   }
 }

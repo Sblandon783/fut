@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/models/field_notifier.dart';
-import 'package:soccer/pages/login/widgets/align/align_field/align_type.dart';
-import 'package:soccer/pages/login/widgets/align/check_button.dart';
+import 'package:soccer/pages/align/align_field/align_type.dart';
+import 'package:soccer/pages/align/check_button.dart';
 
-import '../../../models/match_model.dart';
-import '../../../models/member_model.dart';
-import '../../../utils/utils.dart';
-import '../../../providers/provider_members.dart';
-import '../../burbble/burbble.dart';
+import '../../login/models/match_model.dart';
+import '../../login/models/member_model.dart';
+import '../../login/utils/utils.dart';
+import '../../login/providers/provider_members.dart';
+import '../../login/widgets/burbble/burbble.dart';
 
 import '../field_background.dart';
 

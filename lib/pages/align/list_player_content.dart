@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/member_model.dart';
+import '../login/models/member_model.dart';
 
 class ListPlayerContent extends StatelessWidget {
   final MemberModel member;

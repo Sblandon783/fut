@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/admin/models/profile_model.dart';
 import 'package:soccer/pages/admin/views/members_view.dart';
-import 'package:soccer/pages/profile/models/profile_model.dart';
+
 import 'package:soccer/pages/profile/providers/provider_profile.dart';
 import 'package:soccer/user_preferences.dart';
 
@@ -35,7 +36,7 @@ class _AdminPageState extends State<AdminPage> {
 
   _getProfile() async {
     _prefs.userId = 1;
-    await _providersProfile.getProfile();
+    //await _providersProfile.getProfile();
   }
 
   @override
@@ -75,7 +76,7 @@ class _AdminPageState extends State<AdminPage> {
                 Colors.purple.shade400,
               ],
             ),
-          ),
+          ), /*
           child: StreamBuilder(
             stream: _providersProfile.profileStream,
             builder:
@@ -90,7 +91,7 @@ class _AdminPageState extends State<AdminPage> {
                             ],
                           )
                         : const Center(child: CircularProgressIndicator()),
-          ),
+          ),*/
         ),
       );
 

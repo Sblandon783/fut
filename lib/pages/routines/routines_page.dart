@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:soccer/pages/routines/widgets/views/my_routines_view.dart';
 import 'package:soccer/pages/login/login_page.dart';
 
-import '../../services/notifi_service.dart';
 import '../../user_preferences.dart';
-import 'widgets/views/watch_exercise_routine_view.dart';
+import '../login/models/field_model.dart';
+import '../login/models/field_notifier.dart';
+import '../login/models/match_model.dart';
+import '../login/providers/provider_match.dart';
+import '../login/widgets/match_info.dart';
+import '../login/widgets/players/players_section.dart';
 
 class RoutinesPage extends StatefulWidget {
   const RoutinesPage({Key? key}) : super(key: key);
@@ -15,10 +18,14 @@ class RoutinesPage extends StatefulWidget {
 
 class RoutinesPageState extends State<RoutinesPage> {
   final UserPreferences _prefs = UserPreferences();
+  final _provider = ProviderMatch();
+  final ValueNotifier<FieldNotifier> _typeAlignNotifier =
+      ValueNotifier(FieldNotifier(idField: -1, idAlign: -1));
+
   @override
   void initState() {
     _prefs.isModeAdmin = false;
-    //NotificationService().start(_prefs.nextDatePayment);
+    _getMatch();
     super.initState();
   }
 
@@ -30,7 +37,7 @@ class RoutinesPageState extends State<RoutinesPage> {
         appBar: AppBar(
           backgroundColor: Colors.blue.shade700,
           centerTitle: false,
-          title: const Text("Super Gym APP"),
+          title: const Text("Fut APP"),
           automaticallyImplyLeading: false,
           elevation: 0,
           actions: [
@@ -47,152 +54,75 @@ class RoutinesPageState extends State<RoutinesPage> {
             )
           ],
         ),
-        body: _generateContent(),
+        backgroundColor: Colors.grey.shade300,
+        body: _generateSecond(),
       ),
     );
   }
 
-  Widget _generateContent() => Container(
-        width: double.infinity,
-        color: const Color.fromARGB(255, 238, 238, 238),
-        child: _generateInformation(),
-      );
+  Widget _generateSecond() => StreamBuilder(
+      stream: _provider.matchStream,
+      builder: (BuildContext context, AsyncSnapshot<MatchModel> snapshot) {
+        if (snapshot.hasData) {
+          FieldModel fieldCurrent = _provider.fields.fields.firstWhere(
+              (field) => field.name == _provider.match!.name,
+              orElse: () => _provider.fields.fields.first);
 
-  Widget _generateInformation() {
-    return Column(
-      children: [
-        Flexible(
-          child: GestureDetector(
-            onTap: _watchAllExercises,
-            child: _generateCard(isFirts: true),
-          ),
-        ),
-        const SizedBox(height: 1.0),
-        Flexible(
-          child: GestureDetector(
-            onTap: _myRoutines,
-            child: _generateCard(isFirts: false),
-          ),
-        ),
-        const SizedBox(height: 1.0),
-      ],
-    );
-  }
+          _typeAlignNotifier.value = FieldNotifier(
+              idField: fieldCurrent.id, idAlign: _provider.match!.idAlign);
 
-  Widget _generateCard({required bool isFirts}) => Container(
-        width: double.infinity,
-        height: double.infinity,
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: isFirts ? Alignment.topCenter : Alignment.bottomCenter,
-            end: isFirts ? Alignment.bottomCenter : Alignment.topCenter,
-            colors: [
-              Colors.blue.shade700,
-              Colors.blue.shade500,
-              Colors.blue.shade400,
-              Colors.purple.shade300,
-              Colors.purple.shade400,
-            ],
-          ),
-        ),
-        child: Center(
-          child: SizedBox(
-            height: 260.0,
-            width: 300.0,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Positioned(
-                  bottom: 0,
-                  child: Card(
-                    elevation: 10,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: isFirts
-                              ? [
-                                  Colors.blue.shade400,
-                                  Colors.purple.shade300,
-                                  Colors.purple.shade400,
-                                ]
-                              : [
-                                  Colors.blue.shade400,
-                                  Colors.blue.shade500,
-                                  Colors.blue.shade700,
-                                ],
-                        ),
-                      ),
-                      height: 120.0,
-                      width: 200,
-                      alignment: Alignment.bottomCenter,
-                      padding: const EdgeInsets.all(5.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            isFirts
-                                ? "Ver ejercicios".toUpperCase()
-                                : "Ver mis rutinas".toUpperCase(),
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 20.0),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10.0),
-                            child: Text(
-                              isFirts
-                                  ? "Todos los ejercicios que tenemos disponibles."
-                                  : "Todos las rutinas que tienes agregadas.",
-                              style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12.0),
-                              textAlign: TextAlign.center,
+          return snapshot.data != null
+              ? SingleChildScrollView(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Container(
+                        constraints:
+                            const BoxConstraints(minWidth: 100, maxWidth: 600),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            _generateCard(
+                              child: PlayersSection(
+                                key: UniqueKey(),
+                              ),
                             ),
-                          ),
-                        ],
+                            MatchInfo(
+                              match: snapshot.data!,
+                              typeAlignNotifier: _typeAlignNotifier,
+                              fields: _provider.fields.fields,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Positioned(
-                  bottom: isFirts ? 105.0 : 80.0,
-                  child: SizedBox(
-                      height: isFirts ? 130.0 : 200.0,
-                      child: Image(
-                        image: AssetImage(isFirts
-                            ? 'assets/routine.png'
-                            : 'assets/routine4.png'),
-                      )),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+                )
+              : const SizedBox.shrink();
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      });
 
-  void _myRoutines() {
-    final route = MaterialPageRoute(
-        builder: (context) => MyRoutinesView(
-              userId: _prefs.isAdmin ? -1 : _prefs.userId,
-            ));
-    Navigator.push(context, route);
+  Widget _generateCard({required Widget child}) {
+    return Container(
+      width: double.infinity,
+      height: 420.0,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+        ),
+        color: Colors.white,
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: child,
+    );
   }
 
-  void _watchAllExercises() {
-    final route = MaterialPageRoute(
-        builder: (context) => const WatchExerciseRoutineView(
-              idRoutine: -1,
-            ));
-    Navigator.push(context, route);
+  void _getMatch() async {
+    await _provider.getFields();
+    _provider.getMatch();
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
-import 'package:soccer/pages/login/models/atribbute_model.dart';
 import 'package:soccer/pages/login/utils/utils.dart';
 
 import 'package:soccer/pages/login/widgets/card_member/center_content.dart';
@@ -20,6 +19,8 @@ class CardMember extends StatefulWidget {
   final double height;
   final bool isSpecial;
   final bool isSmall;
+  final bool isFlip;
+  final bool reverse;
   const CardMember({
     super.key,
     required this.member,
@@ -27,6 +28,8 @@ class CardMember extends StatefulWidget {
     this.height = 270.0,
     this.isSpecial = false,
     this.isSmall = false,
+    this.isFlip = true,
+    this.reverse = false,
   });
 
   @override
@@ -53,13 +56,20 @@ class CardMemberState extends State<CardMember> {
   }
 
   Widget _content() {
-    return FlipCard(
-      fill: Fill.fillBack,
-      direction: FlipDirection.HORIZONTAL,
-      side: CardSide.FRONT,
-      front: _genarateCard(child: _frontCard()),
-      back: _genarateCard(child: _backCard()),
-    );
+    Widget frontCard = _genarateCard(child: _frontCard());
+    return widget.isSmall
+        ? frontCard
+        : widget.isFlip
+            ? FlipCard(
+                fill: Fill.fillBack,
+                direction: FlipDirection.HORIZONTAL,
+                side: CardSide.FRONT,
+                front: frontCard,
+                back: _genarateCard(child: _backCard()),
+              )
+            : widget.reverse
+                ? _genarateCard(child: _backCard())
+                : frontCard;
   }
 
   Widget _genarateCard({required Widget child}) {
