@@ -27,6 +27,14 @@ class AttributesModel {
         defense: AttributeModel(
             name: _mapTranslate[_defensekStr]!, total: response[_defensekStr]),
       );
+
+  Map<String, int> json() => {
+        "attack": attack.total,
+        "tactic": tactic.total,
+        "defense": defense.total,
+        "creative": creative.total,
+        "technique": technique.total
+      };
 }
 
 class AttributeModel {

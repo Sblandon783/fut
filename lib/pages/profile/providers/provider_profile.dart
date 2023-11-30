@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:soccer/pages/login/models/atribbute_model.dart';
 import 'package:soccer/user_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -21,9 +22,18 @@ class ProviderProfile {
         .from('player')
         .select('id,name,number,position,date_match, attributes')
         .eq('id', _prefs.userId);
-    print(response);
+
     MemberModel memberResponse = MemberModel.fromJson(response.first);
     _member = memberResponse;
     memberSink(_member);
+  }
+
+  Future<bool> updateMyAttributes(
+      {required Map<String, int> attributes}) async {
+    await _supabase.client
+        .from('player')
+        .update({'attributes': attributes}).eq('id', _prefs.userId);
+
+    return true;
   }
 }

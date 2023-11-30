@@ -27,7 +27,7 @@ class Burbble extends StatefulWidget {
 }
 
 class BurbbleState extends State<Burbble> {
-  UserPreferences _prefs = UserPreferences();
+  final UserPreferences _prefs = UserPreferences();
   @override
   void initState() {
     widget.member;

@@ -54,6 +54,7 @@ class AlignFieldState extends State<AlignField> {
                   ..._generateBurbbles(
                       idField: type.idField, idAlign: type.idAlign),
                   AlignType(
+                    idField: type.idField,
                     type: type.idAlign,
                     updateAlign: _updateAlign,
                     onTap: () => _saveAlign(type: type),
@@ -64,7 +65,6 @@ class AlignFieldState extends State<AlignField> {
       );
 
   List<Widget> _generateBurbbles({required int idField, required int idAlign}) {
-    print(idAlign);
     List<Widget> childrens = [];
     for (var i = 0; i < widget.members.length; i++) {
       widget.members[i].added = false;

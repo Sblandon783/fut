@@ -15,9 +15,9 @@ class Utils {
         1: {"top": 85.0, "right": 30.0}, //'POR',
         2: {"top": 135.0, "right": 60.0}, //'LTD',
         3: {"top": 35.0, "right": 60.0}, //'LTI',
-        5: {"top": 140.0, "right": 160.0}, //'MD',
+        5: {"top": 35.0, "right": 160.0}, //'MI',
         6: {"top": 85.0, "right": 110.0}, //'MC',
-        7: {"top": 35.0, "right": 160.0}, //'MI',
+        7: {"top": 140.0, "right": 160.0}, //'MD',
       },
     },
     2: {
@@ -26,9 +26,9 @@ class Utils {
         1: {"top": 85.0, "right": 30.0}, //'POR',
         2: {"top": 135.0, "right": 60.0}, //'LTD',
         3: {"top": 35.0, "right": 60.0}, //'LTI',
-        5: {"top": 130.0, "right": 120.0}, //'MD',
+        5: {"top": 85.0, "right": 180.0}, //'MI',
         6: {"top": 45.0, "right": 120.0}, //'MC',
-        7: {"top": 85.0, "right": 180.0}, //'MI',
+        7: {"top": 130.0, "right": 120.0}, //'MD',
       }
     },
     3: {
@@ -37,9 +37,9 @@ class Utils {
         1: {"top": 85.0, "right": 30.0}, //'POR',
         2: {"top": 135.0, "right": 60.0}, //'LTD',
         3: {"top": 35.0, "right": 60.0}, //'LTI',
-        5: {"top": 140.0, "right": 160.0}, //'MD',
+        5: {"top": 35.0, "right": 160.0}, //'MI',
         6: {"top": 85.0, "right": 60.0}, //'MC',
-        7: {"top": 35.0, "right": 160.0}, //'MI',
+        7: {"top": 140.0, "right": 160.0}, //'MD',
       }
     }
   };
@@ -51,9 +51,9 @@ class Utils {
         1: {"top": 85.0, "right": 30.0}, //'POR',
         2: {"top": 135.0, "right": 60.0}, //'LTD',
         3: {"top": 35.0, "right": 60.0}, //'LTI',
-        5: {"top": 140.0, "right": 160.0}, //'MD',
+        5: {"top": 35.0, "right": 160.0}, //'MI',
         6: {"top": 85.0, "right": 110.0}, //'MC',
-        7: {"top": 35.0, "right": 160.0}, //'MI',
+        7: {"top": 140.0, "right": 160.0}, //'MD',
         9: {"top": 85.0, "right": 200.0} //'DC'
       },
     },
@@ -63,9 +63,9 @@ class Utils {
         1: {"top": 85.0, "right": 30.0}, //'POR',
         2: {"top": 135.0, "right": 60.0}, //'LTD',
         3: {"top": 35.0, "right": 60.0}, //'LTI',
-        5: {"top": 120.0, "right": 120.0}, //'MD',
+        5: {"top": 45.0, "right": 200.0}, //'MI',
         6: {"top": 55.0, "right": 120.0}, //'MC',
-        7: {"top": 45.0, "right": 200.0}, //'MI',
+        7: {"top": 120.0, "right": 120.0}, //'MD',
         9: {"top": 135.0, "right": 200.0} //'DC'
       }
     },
@@ -75,9 +75,9 @@ class Utils {
         1: {"top": 85.0, "right": 30.0}, //'POR',
         2: {"top": 135.0, "right": 60.0}, //'LTD',
         3: {"top": 35.0, "right": 60.0}, //'LTI',
-        5: {"top": 85.0, "right": 140.0}, //'MD',
+        5: {"top": 40.0, "right": 200.0}, //'MI',
         6: {"top": 85.0, "right": 80.0}, //'MC',
-        7: {"top": 40.0, "right": 200.0}, //'MI',
+        7: {"top": 85.0, "right": 140.0}, //'MD',
         9: {"top": 135.0, "right": 200.0} //'DC'
       }
     }
@@ -87,15 +87,17 @@ class Utils {
       {required int idField, required int idAlign}) {
     Map<int, Map<int, dynamic>> map = {};
     Map<int, dynamic> currentMap = idField == 1 ? _mapPosSix : _mapPosSeven;
+
     currentMap.forEach((key, value) {
       map[key] = value["positions"];
     });
     return map[idAlign] ?? currentMap[1]["positions"];
   }
 
-  Map<int, String> getNameAlign() {
+  Map<int, String> getNameAlign({required int idField}) {
     Map<int, String> map = {};
-    _mapPosSeven.forEach((key, value) {
+    Map<int, dynamic> currentMap = idField == 1 ? _mapPosSix : _mapPosSeven;
+    currentMap.forEach((key, value) {
       map[key] = value["name"];
     });
     return map;
@@ -192,5 +194,15 @@ class Utils {
     DateFormat dateFormat = DateFormat("HH:mm");
     String string = dateFormat.format(parsedDate);
     return string;
+  }
+
+  Color getColorAttributes({required int total}) {
+    if (total <= 50) {
+      return Colors.red;
+    } else if (total > 50 && total < 75) {
+      return Colors.orange;
+    } else {
+      return Colors.green;
+    }
   }
 }

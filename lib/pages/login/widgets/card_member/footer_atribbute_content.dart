@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/login/utils/utils.dart';
 
 import '../../models/atribbute_model.dart';
 
@@ -69,7 +70,7 @@ class FooterAtribbuteContent extends StatelessWidget {
         Text(
           total.toString(),
           style: TextStyle(
-            color: _getColor(total: total),
+            color: Utils().getColorAttributes(total: total),
             fontWeight: FontWeight.bold,
             fontSize: 11.0,
           ),
@@ -84,15 +85,5 @@ class FooterAtribbuteContent extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Color _getColor({required int total}) {
-    if (total <= 50) {
-      return Colors.red;
-    } else if (total > 50 && total < 75) {
-      return Colors.orange;
-    } else {
-      return Colors.green;
-    }
   }
 }

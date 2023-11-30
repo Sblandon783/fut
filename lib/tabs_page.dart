@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/align/align_page.dart';
-import 'package:soccer/pages/routines/routines_page.dart';
+import 'package:soccer/pages/home/home_page.dart';
+
 import 'package:soccer/user_preferences.dart';
 
 import 'pages/profile/profile_page.dart';
@@ -13,7 +14,7 @@ class TabsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: _generateTabs().length,
-      initialIndex: 2,
+      initialIndex: 0,
       child: Scaffold(
         body: _createBody(),
         bottomNavigationBar: _createTabs(),
@@ -39,7 +40,7 @@ class TabsPage extends StatelessWidget {
     return const TabBarView(
       children: <Widget>[
         //Center(child: HomePage()),
-        Center(child: RoutinesPage()),
+        Center(child: HomePage()),
         Center(child: AlignPage()),
         Center(child: ProfilePage()),
         // if (_prefs.isAdmin) const Center(child: AdminPage()),

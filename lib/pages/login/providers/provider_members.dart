@@ -61,7 +61,7 @@ class ProviderMembers {
         }
       }
     }
-
+    _prefs.userId = _member.id;
     members = members.reversed.toList();
     membersSink(members);
   }

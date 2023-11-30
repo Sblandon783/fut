@@ -165,6 +165,7 @@ class MatchInfonState extends State<MatchInfo> {
     String name = widget.fields
         .firstWhere((field) => field.id == widget.match.idField)
         .name;
+
     return GestureDetector(
       onTap: () => _onTap(content: _fieldContent()),
       child: Row(

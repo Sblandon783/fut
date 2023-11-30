@@ -9,6 +9,8 @@ class AttributesDraw extends StatelessWidget {
   final AttributesModel attributes;
   final Color color;
   final int _length = 5;
+  final bool isStack;
+  final bool isBlack;
   final List<double> values1 = [
     1,
     1,
@@ -28,48 +30,48 @@ class AttributesDraw extends StatelessWidget {
     super.key,
     required this.attributes,
     required this.color,
+    this.isStack = true,
+    this.isBlack = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final List<double> values2 = [
-      _convert(attributes.attack.total),
-      _convert(attributes.technique.total),
-      _convert(attributes.creative.total),
       _convert(attributes.tactic.total),
       _convert(attributes.defense.total),
+      _convert(attributes.technique.total),
+      _convert(attributes.attack.total),
+      _convert(attributes.creative.total),
     ];
-    return Positioned(
-      top: 10,
-      child: SizedBox(
-        width: 140,
-        height: 125,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            RadarChart(
-              length: _length,
-              radius: 50,
-              initialAngle: pi / 3,
-              backgroundColor: Colors.white,
-              borderStroke: 1,
-              borderColor: Colors.grey,
-              radialStroke: 1,
-              radialColor: Colors.grey,
-              radars: [
-                RadarTile(
-                  values: values2,
-                  borderStroke: 2,
-                  borderColor: color,
-                  backgroundColor: color.withOpacity(0.4),
-                ),
-              ],
-            ),
-            ..._labelsList.map((data) => _label(data: data)).toList(),
-          ],
-        ),
+    SizedBox child = SizedBox(
+      width: 140,
+      height: 125,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          RadarChart(
+            length: _length,
+            radius: 50,
+            initialAngle: pi / 3,
+            backgroundColor: Colors.white,
+            borderStroke: 1,
+            borderColor: Colors.grey,
+            radialStroke: 1,
+            radialColor: Colors.grey,
+            radars: [
+              RadarTile(
+                values: values2,
+                borderStroke: 2,
+                borderColor: color,
+                backgroundColor: color.withOpacity(0.4),
+              ),
+            ],
+          ),
+          ..._labelsList.map((data) => _label(data: data)).toList(),
+        ],
       ),
     );
+    return isStack ? Positioned(top: 10, child: child) : child;
   }
 
   Widget _label({required Map<dynamic, dynamic> data}) => Positioned(
@@ -79,9 +81,9 @@ class AttributesDraw extends StatelessWidget {
         right: data["right"],
         child: Text(
           data["text"],
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w500,
-            color: Colors.white,
+            color: isBlack ? Colors.black : Colors.white,
             fontSize: 12.0,
           ),
         ),

@@ -45,7 +45,7 @@ class NotificationService {
     String? date,
   }) async {
     final moonLanding = DateTime.parse('$date 14:53:00.000');
-    print(moonLanding);
+
     return notificationsPlugin.zonedSchedule(
         id,
         title,

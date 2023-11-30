@@ -29,11 +29,18 @@ class LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     _firstPart = !_prefs.isLogin;
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_prefs.isLogin) {
+      Future.delayed(const Duration(milliseconds: 10), () {
+        final route = MaterialPageRoute(builder: (context) => TabsPage());
+        Navigator.push(context, route);
+      });
+    }
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(

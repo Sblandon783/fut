@@ -4,11 +4,13 @@ import 'package:soccer/pages/login/utils/utils.dart';
 import '../../login/widgets/custom_drop_down.dart';
 
 class AlignType extends StatefulWidget {
+  final int idField;
   final int type;
   final Function({required int id}) updateAlign;
   final Function() onTap;
   const AlignType({
     super.key,
+    required this.idField,
     required this.type,
     required this.updateAlign,
     required this.onTap,
@@ -77,7 +79,8 @@ class AlignTypeState extends State<AlignType> {
   }
 
   String _getAlignType() =>
-      _utils.getNameAlign()[int.parse(dropdownValue)] ?? '';
+      _utils.getNameAlign(idField: widget.idField)[int.parse(dropdownValue)] ??
+      '';
 
   Widget _fieldContent() {
     return SizedBox(
@@ -100,7 +103,7 @@ class AlignTypeState extends State<AlignType> {
             child: CustomDropDown(
               key: UniqueKey(),
               dropdownValue: dropdownValue,
-              list: _utils.getNameAlign(),
+              list: _utils.getNameAlign(idField: widget.idField),
               change: _onChangedField,
               text: "Alineaciones",
               colorText: Colors.black54,

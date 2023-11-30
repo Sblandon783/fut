@@ -3,7 +3,7 @@ import 'package:soccer/routes/routes.dart';
 import 'package:soccer/user_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'pages/routines/routines_page.dart';
+import 'pages/home/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
       initialRoute: initialRoute,
       routes: getAplicationRoutes(),
       onGenerateRoute: (RouteSettings settings) {
-        return MaterialPageRoute(builder: (context) => const RoutinesPage());
+        return MaterialPageRoute(builder: (context) => const HomePage());
       },
     );
   }
