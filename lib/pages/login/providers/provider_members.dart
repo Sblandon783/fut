@@ -24,7 +24,7 @@ class ProviderMembers {
   Function(MatchModel) get matchSink => _matchStreamController.sink.add;
   Stream<MatchModel> get matchStream => _matchStreamController.stream;
 
-  Future getMembers() async {
+  Future getMembers({required int idMvp}) async {
     final List<dynamic> response = await _supabase.client
         .from('player')
         .select('id,name,number,position,date_match, attributes');
@@ -32,15 +32,26 @@ class ProviderMembers {
     MembersModel membersResponse = MembersModel.fromJson(response);
 
     if (membersResponse.members.isNotEmpty) {
-      getListMembers(membersResponse.members);
+      getListMembers(membersCurrents: membersResponse.members, idMvp: idMvp);
     }
   }
 
-  getListMembers(List<MemberModel> membersCurrents) {
+  Map<int, String> getMembersMap() {
+    Map<int, String> map = {};
+    for (var member in members) {
+      map[member.id] = member.name;
+    }
+
+    return map;
+  }
+
+  getListMembers({
+    required List<MemberModel> membersCurrents,
+    required int idMvp,
+  }) {
     _member = membersCurrents
         .firstWhere((element) => element.name == _prefs.userName);
 
-    membersCurrents.removeWhere((element) => !element.included);
     members = membersCurrents;
     members.removeWhere((element) => element.name == _member.name);
     if (_member.included) {
@@ -52,17 +63,26 @@ class ProviderMembers {
         if (match!.assistants.containsKey(members[i].id)) {
           members[i].setPositionNew(pos: match!.assistants[members[i].id]!);
           members[i].titular = true;
+          members[i].included = true;
         }
       }
       for (var i = 0; i < members.length; i++) {
         if (match!.substitutes.containsKey(members[i].id)) {
           members[i].titular = false;
           members[i].added = true;
+          members[i].included = true;
         }
       }
     }
+    membersCurrents.removeWhere((element) => !element.included);
     _prefs.userId = _member.id;
     members = members.reversed.toList();
+    for (var element in membersCurrents) {
+      if (element.id == idMvp) {
+        element.isMPV = true;
+        break;
+      }
+    }
     membersSink(members);
   }
 
@@ -192,6 +212,30 @@ class ProviderMembers {
         })
         .eq('id', match.id)
         .then((value) => true);
+  }
+
+  Future<void> updateMPV(
+      {required MatchModel match, required int newVote}) async {
+    List<String> listMVP = [];
+    match.mapMVP.forEach((key, value) => listMVP.add('$key-$value'));
+    listMVP.add('${_prefs.userId}-$newVote');
+
+    return await _supabase.client
+        .from('match')
+        .update({
+          'list_mvp': listMVP,
+        })
+        .eq('id', match.id)
+        .then((value) => true);
+  }
+
+  Future<bool> endMatch(
+      {required bool isFinished, required int idMatch}) async {
+    await _supabase.client
+        .from('match')
+        .update({'isFinished': !isFinished, "list_mvp": ""}).eq('id', idMatch);
+
+    return true;
   }
 
   get myIdMember => _member.id;

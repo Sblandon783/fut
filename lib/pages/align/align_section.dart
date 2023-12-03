@@ -32,7 +32,7 @@ class AlignSectionState extends State<AlignSection> {
     _getMembers();
   }
 
-  void _getMembers() async => _provider.getMembers();
+  void _getMembers() async => _provider.getMembers(idMvp: -1);
 
   @override
   Widget build(BuildContext context) => ValueListenableBuilder(

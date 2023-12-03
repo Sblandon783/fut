@@ -168,6 +168,7 @@ class Utils {
   }
 
   Map<int, int> getMap({required String text}) {
+    if (text.isEmpty) return {};
     List<String> list = json.decode(text).cast<String>();
     Map<int, int> map = {
       for (String v in list)
@@ -205,4 +206,21 @@ class Utils {
       return Colors.green;
     }
   }
+
+  getMVP(dynamic value) {
+    if (value == "") {
+      return -1;
+    }
+    Map<int, int> map = Utils().getMap(text: value);
+    return findMax(map.values.toList());
+  }
+
+  findMax(Iterable list) => list
+      .fold(
+          {},
+          (map, element) =>
+              map..update(element, (value) => value + 1, ifAbsent: () => 1))
+      .entries
+      .reduce((e1, e2) => e1.value > e2.value ? e1 : e2)
+      .key;
 }

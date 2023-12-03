@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/providers/provider_match.dart';
 import 'package:soccer/pages/align/align_section.dart';
 import 'package:soccer/pages/login/widgets/custom_toggle.dart';
-import 'package:soccer/pages/login/widgets/match_info.dart';
+import 'package:soccer/pages/login/widgets/match/match_info.dart';
 
 import '../home/widgets/players/players_section.dart';
 import 'models/field_model.dart';
@@ -61,26 +61,33 @@ class SecondPartState extends State<SecondPart> {
                   return snapshot.data != null
                       ? Column(
                           children: [
+                            /*
                             MatchInfo(
                               match: snapshot.data!,
                               typeAlignNotifier: _typeAlignNotifier,
                               fields: _provider.fields.fields,
                             ),
+                            */
                             CustomToggle(
                               key: UniqueKey(),
                               changeIndex: _changeIndex,
                               tabIndex: _tabIndex,
                               tabs: _tabs,
                             ),
+                            /*
                             _generateCard(
                               child: _tabIndex == 0
-                                  ? PlayersSection(key: UniqueKey())
+                                  ? PlayersSection(
+                                      key: UniqueKey(),
+                                      idMVP: -1,provider: ,
+                                    )
                                   : AlignSection(
                                       key: UniqueKey(),
                                       match: snapshot.data!,
                                       typeAlignNotifier: _typeAlignNotifier,
                                     ),
                             ),
+                            */
                           ],
                         )
                       : const SizedBox.shrink();

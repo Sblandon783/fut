@@ -4,6 +4,7 @@ import 'package:soccer/pages/login/utils/utils.dart';
 
 import 'package:soccer/pages/login/widgets/card_member/center_content.dart';
 import 'package:soccer/pages/login/widgets/card_member/footer_content.dart';
+import 'package:soccer/pages/login/widgets/card_member/mvp_content.dart';
 
 import '../../models/member_model.dart';
 import 'animated_bounce.dart';
@@ -109,6 +110,7 @@ class CardMemberState extends State<CardMember> {
           height: widget.isSmall ? 60.0 : widget.height - 150.0,
           utils: _utils,
         ),
+        if (widget.member.isMPV) MVPContent(width: widget.width),
         CenterContent(name: widget.member.name, width: widget.width),
         FooterContent(member: widget.member, width: widget.width)
       ],

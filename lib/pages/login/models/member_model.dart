@@ -27,6 +27,7 @@ class MemberModel {
   bool included;
   bool added;
   bool titular;
+  bool isMPV;
   AttributesModel attributes;
 
   MemberModel({
@@ -39,6 +40,7 @@ class MemberModel {
     required this.included,
     this.added = false,
     this.titular = true,
+    this.isMPV = false,
     required this.attributes,
   });
 

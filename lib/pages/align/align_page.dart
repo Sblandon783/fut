@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/providers/provider_match.dart';
 import 'package:soccer/pages/align/align_section.dart';
-import 'package:soccer/pages/login/widgets/match_info.dart';
-import 'package:soccer/user_preferences.dart';
 
-import '../login/login_page.dart';
 import '../login/models/field_model.dart';
 import '../login/models/field_notifier.dart';
 import '../login/models/match_model.dart';
@@ -21,7 +18,6 @@ class AlignPageState extends State<AlignPage> {
 
   final ValueNotifier<FieldNotifier> _typeAlignNotifier =
       ValueNotifier(FieldNotifier(idField: -1, idAlign: -1));
-  final UserPreferences _prefs = UserPreferences();
 
   @override
   void initState() {
@@ -37,33 +33,7 @@ class AlignPageState extends State<AlignPage> {
   @override
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blue.shade700,
-          centerTitle: false,
-          title: const Text("Align"),
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 5.0),
-              child: GestureDetector(
-                  onTap: () {
-                    _prefs.isLogin = false;
-                    final route = MaterialPageRoute(
-                        builder: (context) => const LoginPage());
-                    Navigator.push(context, route);
-                  },
-                  child: const Icon(Icons.exit_to_app_rounded)),
-            )
-          ],
-        ),
-        backgroundColor: Colors.white,
-        body: _generateSecond(),
-      ),
-    );
+    return _generateSecond();
   }
 
   Widget _generateSecond() => Center(
@@ -88,14 +58,6 @@ class AlignPageState extends State<AlignPage> {
                               key: UniqueKey(),
                               match: snapshot.data!,
                               typeAlignNotifier: _typeAlignNotifier,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 330.0,
-                            child: MatchInfo(
-                              match: snapshot.data!,
-                              typeAlignNotifier: _typeAlignNotifier,
-                              fields: _provider.fields.fields,
                             ),
                           ),
                         ],

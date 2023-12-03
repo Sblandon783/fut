@@ -41,7 +41,7 @@ class TabsPage extends StatelessWidget {
       children: <Widget>[
         //Center(child: HomePage()),
         Center(child: HomePage()),
-        Center(child: AlignPage()),
+        //Center(child: AlignPage()),
         Center(child: ProfilePage()),
         // if (_prefs.isAdmin) const Center(child: AdminPage()),
       ],
@@ -51,7 +51,7 @@ class TabsPage extends StatelessWidget {
   List<Widget> _generateTabs() {
     return <Widget>[
       const Tab(icon: Icon(Icons.home)),
-      const Tab(icon: Icon(Icons.note_alt_sharp)),
+      //const Tab(icon: Icon(Icons.note_alt_sharp)),
       const Tab(icon: Icon(Icons.person_rounded)),
       if (_prefs.isAdmin)
         const Tab(icon: Icon(Icons.admin_panel_settings_rounded)),

@@ -1,21 +1,27 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/models/field_model.dart';
+import 'package:soccer/pages/login/widgets/match/match_mvp.dart';
+import 'package:soccer/user_preferences.dart';
 
-import '../models/field_notifier.dart';
-import '../models/match_model.dart';
-import '../providers/provider_members.dart';
-import 'custom_drop_down.dart';
+import '../../models/field_notifier.dart';
+import '../../models/match_model.dart';
+import '../../providers/provider_members.dart';
+import '../custom_drop_down.dart';
 
 class MatchInfo extends StatefulWidget {
   final MatchModel match;
   final ValueNotifier<FieldNotifier> typeAlignNotifier;
   final List<FieldModel> fields;
+
+  final ProviderMembers providerMembers;
+
   const MatchInfo({
     super.key,
     required this.match,
     required this.typeAlignNotifier,
     required this.fields,
+    required this.providerMembers,
   });
 
   @override
@@ -25,7 +31,8 @@ class MatchInfo extends StatefulWidget {
 class MatchInfonState extends State<MatchInfo> {
   late Map<int, String> _listFields = {};
   final List<DateTime?> _dates = [];
-  final _provider = ProviderMembers();
+  final UserPreferences _prefs = UserPreferences();
+
   late MatchModel _match;
   bool _show = false;
   @override
@@ -41,6 +48,10 @@ class MatchInfonState extends State<MatchInfo> {
       parsedDate: widget.match.parsedDate,
       assistants: widget.match.assistants,
       substitutes: widget.match.substitutes,
+      idMPV: widget.match.idMPV,
+      mapMVP: widget.match.mapMVP,
+      teamOneGoals: widget.match.teamOneGoals,
+      teamSecondGoals: widget.match.teamSecondGoals,
     );
 
     _setDate();
@@ -56,22 +67,28 @@ class MatchInfonState extends State<MatchInfo> {
       padding: const EdgeInsets.only(bottom: 5.0),
       child: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(10),
             bottomRight: Radius.circular(10),
           ),
           gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            stops: [0.1, 0.7, 0.8, 0.9],
-            colors: [
-              Colors.purple,
-              Color.fromARGB(255, 32, 129, 209),
-              Color.fromARGB(255, 32, 129, 209),
-              Color.fromARGB(255, 32, 129, 209),
-            ],
-          ),
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              stops: const [0.1, 0.7, 0.8, 0.9],
+              colors: widget.match.isFinished
+                  ? [
+                      Colors.red,
+                      Color.fromARGB(255, 73, 149, 211),
+                      Color.fromARGB(255, 32, 129, 209),
+                      Color.fromARGB(255, 32, 129, 209),
+                    ]
+                  : [
+                      Colors.purple,
+                      Color.fromARGB(255, 32, 129, 209),
+                      Color.fromARGB(255, 32, 129, 209),
+                      Color.fromARGB(255, 32, 129, 209),
+                    ]),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
         child: Column(
@@ -97,6 +114,27 @@ class MatchInfonState extends State<MatchInfo> {
                     ),
                   ],
                 ),
+                Column(
+                  children: [
+                    if (widget.match.isFinished)
+                      MatchMVP(
+                        providerMembers: widget.providerMembers,
+                        match: _match,
+                      ),
+                    if (_prefs.userId == 23 && !widget.match.isFinished)
+                      ElevatedButton(
+                          onPressed: () {
+                            widget.providerMembers.endMatch(
+                                isFinished: widget.match.isFinished,
+                                idMatch: widget.match.id);
+                            setState(() {
+                              widget.match.isFinished =
+                                  !widget.match.isFinished;
+                            });
+                          },
+                          child: const Text("Iniciar partido")),
+                  ],
+                ),
                 _generateField(),
               ],
             ),
@@ -120,7 +158,7 @@ class MatchInfonState extends State<MatchInfo> {
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green),
                       onPressed: () {
-                        _provider.saveMatch(match: widget.match);
+                        widget.providerMembers.saveMatch(match: widget.match);
                         setState(() => _show = false);
                       },
                       child: const Text("Guardar"))
@@ -249,6 +287,7 @@ class MatchInfonState extends State<MatchInfo> {
               onValueChanged: (dates) {
                 _show = true;
                 widget.match.setDate(dates: dates);
+
                 _dates.clear();
                 _setDate();
                 setState(() {});
@@ -332,7 +371,7 @@ class MatchInfonState extends State<MatchInfo> {
     widget.typeAlignNotifier.value = FieldNotifier(
         idField: pos, idAlign: widget.typeAlignNotifier.value.idAlign);
     setState(() {});
-    Navigator.pop(context);
+    Navigator.pop(context, widget.match);
   }
 
   void _onChangedHour({required int pos}) {
@@ -341,6 +380,6 @@ class MatchInfonState extends State<MatchInfo> {
     widget.match.hour = map[pos]!;
     widget.match.setDate(dates: [widget.match.parsedDate]);
     setState(() {});
-    Navigator.pop(context);
+    Navigator.pop(context, widget.match);
   }
 }

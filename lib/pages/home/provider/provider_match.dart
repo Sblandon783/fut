@@ -17,7 +17,7 @@ class ProviderMatch {
   Function(MatchModel) get matchSink => _matchStreamController.sink.add;
   Stream<MatchModel> get matchStream => _matchStreamController.stream;
 
-  late FieldsModel fields;
+  List<FieldModel> fields = [];
 
   Future<bool> addMe() async {
     DateTime now = DateTime.now();
@@ -46,9 +46,9 @@ class ProviderMatch {
     return true;
   }
 
-  Future getMatch() async {
+  Future getMatch({required int id}) async {
     final List<dynamic> response =
-        await _supabase.client.from('match').select();
+        await _supabase.client.from('match').select().eq("id", id);
     MatchModel matchResponse = MatchModel.fromJson(response.first);
     match = matchResponse;
     matchSink(matchResponse);
@@ -60,7 +60,7 @@ class ProviderMatch {
 
     FieldsModel fieldResponse = FieldsModel.fromJson(response);
 
-    fields = fieldResponse;
+    fields = fieldResponse.fields;
     //match = fieldResponse;
     //matchSink(fieldResponse);
   }

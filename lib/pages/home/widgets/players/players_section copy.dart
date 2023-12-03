@@ -25,7 +25,7 @@ class PlayersSectionState extends State<PlayersSection> {
   @override
   Widget build(BuildContext context) => _playersSection();
 
-  void _getMembers() async => _provider.getMembers();
+  void _getMembers() async => _provider.getMembers(idMvp: -1);
 
   Widget _playersSection() {
     return Column(

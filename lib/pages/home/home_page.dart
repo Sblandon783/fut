@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/login_page.dart';
+import 'package:soccer/pages/login/widgets/custom_toggle.dart';
 
 import '../../user_preferences.dart';
-import '../login/models/field_model.dart';
+
 import '../login/models/field_notifier.dart';
 import '../login/models/match_model.dart';
+import '../login/providers/provider_members.dart';
+import '../login/widgets/match/match_card/match_card.dart';
 
-import '../login/widgets/match_info.dart';
-
-import 'provider/provider_match.dart';
-import 'widgets/players/players_section.dart';
+import 'provider/provider_matches.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -20,14 +20,18 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final UserPreferences _prefs = UserPreferences();
-  final _provider = ProviderMatch();
+  final ProviderMatches _provider = ProviderMatches();
+  final ProviderMembers _providerMembers = ProviderMembers();
   final ValueNotifier<FieldNotifier> _typeAlignNotifier =
       ValueNotifier(FieldNotifier(idField: -1, idAlign: -1));
-
+  final String _ednMatchStr = "Partidos finalizados";
+  final String _soonMatchStr = "Próximos partidos";
+  Map<int, String> tabs = {1: "Partidos finalizado", 2: "Próximos partidos"};
+  int _tabIndex = 1;
   @override
   void initState() {
     _prefs.isModeAdmin = false;
-    _getMatch();
+    _getMatches();
     super.initState();
   }
 
@@ -39,7 +43,7 @@ class HomePageState extends State<HomePage> {
         appBar: AppBar(
           backgroundColor: Colors.blue.shade700,
           centerTitle: false,
-          title: const Text("Fut APP"),
+          title: const Text("Home"),
           automaticallyImplyLeading: false,
           elevation: 0,
           actions: [
@@ -57,47 +61,22 @@ class HomePageState extends State<HomePage> {
           ],
         ),
         backgroundColor: Colors.grey.shade300,
-        body: _generateSecond(),
+        body: _generateContent(),
       ),
     );
   }
 
-  Widget _generateSecond() => StreamBuilder(
-      stream: _provider.matchStream,
-      builder: (BuildContext context, AsyncSnapshot<MatchModel> snapshot) {
+  Widget _generateContent() => StreamBuilder(
+      stream: _provider.matchesStream,
+      builder: (BuildContext context, AsyncSnapshot<MatchesModel> snapshot) {
         if (snapshot.hasData) {
-          FieldModel fieldCurrent = _provider.fields.fields.firstWhere(
-              (field) => field.name == _provider.match!.name,
-              orElse: () => _provider.fields.fields.first);
-
-          _typeAlignNotifier.value = FieldNotifier(
-              idField: fieldCurrent.id, idAlign: _provider.match!.idAlign);
-
           return snapshot.data != null
               ? SingleChildScrollView(
                   child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                        constraints:
-                            const BoxConstraints(minWidth: 100, maxWidth: 600),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            _generateCard(
-                              child: PlayersSection(
-                                key: UniqueKey(),
-                              ),
-                            ),
-                            MatchInfo(
-                              match: snapshot.data!,
-                              typeAlignNotifier: _typeAlignNotifier,
-                              fields: _provider.fields.fields,
-                            ),
-                          ],
-                        ),
-                      ),
+                    child: Container(
+                      constraints:
+                          const BoxConstraints(minWidth: 100, maxWidth: 600),
+                      child: _content(matches: snapshot.data!.matches),
                     ),
                   ),
                 )
@@ -107,24 +86,53 @@ class HomePageState extends State<HomePage> {
         }
       });
 
-  Widget _generateCard({required Widget child}) {
-    return Container(
-      width: double.infinity,
-      height: 420.0,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(10),
-          topRight: Radius.circular(10),
+  Widget _content({required List<MatchModel> matches}) {
+    final List<MatchModel> matchesCurrent = _tabIndex == 1
+        ? matches.where((match) => match.isFinished).toList()
+        : matches.where((match) => !match.isFinished).toList();
+
+    return Column(
+      children: [
+        Container(
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(
+            vertical: 10.0,
+            horizontal: 2.0,
+          ),
+          child: CustomToggle(
+            changeIndex: _changeIndex,
+            tabIndex: _tabIndex,
+            tabs: tabs,
+          ),
         ),
-        color: Colors.white,
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: child,
+        _column(matches: matchesCurrent)
+      ],
     );
   }
 
-  void _getMatch() async {
+  _changeIndex({required int tabIndex}) => setState(() => _tabIndex = tabIndex);
+
+  Widget _column({
+    required List<MatchModel> matches,
+  }) =>
+      SingleChildScrollView(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: matches
+                .map(
+                  (match) => MatchCard(
+                    match: match,
+                    typeAlignNotifier: _typeAlignNotifier,
+                    fields: _provider.fields,
+                    providerMembers: _providerMembers,
+                  ),
+                )
+                .toList()),
+      );
+
+  void _getMatches() async {
     await _provider.getFields();
-    _provider.getMatch();
+    _provider.getMatches();
   }
 }

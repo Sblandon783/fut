@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../login/models/match_model.dart';
 import '../../../login/models/member_model.dart';
 import '../../../login/providers/provider_members.dart';
 import '../../../login/widgets/card_member/card_member.dart';
 
 class PlayersSection extends StatefulWidget {
-  const PlayersSection({super.key});
+  final ProviderMembers provider;
+  final int idMVP;
+  final bool isFinishedMatch;
+
+  const PlayersSection({
+    super.key,
+    required this.idMVP,
+    required this.provider,
+    required this.isFinishedMatch,
+  });
 
   @override
   PlayersSectionState createState() => PlayersSectionState();
 }
 
 class PlayersSectionState extends State<PlayersSection> {
-  final _provider = ProviderMembers();
   final ValueNotifier<bool> _buttonNotifier = ValueNotifier(false);
 
   @override
@@ -25,14 +34,14 @@ class PlayersSectionState extends State<PlayersSection> {
   @override
   Widget build(BuildContext context) => _playersSection();
 
-  void _getMembers() async => _provider.getMembers();
+  void _getMembers() async => widget.provider.getMembers(idMvp: widget.idMVP);
 
   Widget _playersSection() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         StreamBuilder(
-            stream: _provider.membersStream,
+            stream: widget.provider.membersStream,
             builder: (BuildContext context,
                 AsyncSnapshot<List<MemberModel>> snapshot) {
               if (snapshot.hasData) {
@@ -50,7 +59,7 @@ class PlayersSectionState extends State<PlayersSection> {
                                 const Spacer(),
                                 const Center(
                                   child: Text(
-                                    "Participantes de hoy",
+                                    "Participantes",
                                     style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       color: Colors.blue,
@@ -89,7 +98,7 @@ class PlayersSectionState extends State<PlayersSection> {
                                   child: Align(
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      'Total ${_provider.members.length}',
+                                      'Total ${widget.provider.members.length}',
                                       style: const TextStyle(
                                           color: Colors.grey, fontSize: 12.0),
                                     ),
@@ -117,35 +126,37 @@ class PlayersSectionState extends State<PlayersSection> {
                 return const Center(child: CircularProgressIndicator());
               }
             }),
-        ValueListenableBuilder(
-          valueListenable: _buttonNotifier,
-          builder: (context, show, child) => Center(
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: show ? Colors.red : Colors.blue,
-                  ),
-                  onPressed: () async {
-                    bool addMe =
-                        await (show ? _provider.deleteMe() : _provider.addMe());
-                    if (addMe) {
-                      _getMembers();
-                    } else {
-                      _buttonNotifier.value = _provider.isIncluded();
-                    }
-                  },
-                  child:
-                      Text(show ? "Darme de baja" : "Agregarme como leyenda"))),
-        ),
+        if (!widget.isFinishedMatch)
+          ValueListenableBuilder(
+            valueListenable: _buttonNotifier,
+            builder: (context, show, child) => Center(
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: show ? Colors.red : Colors.blue,
+                    ),
+                    onPressed: () async {
+                      bool addMe = await (show
+                          ? widget.provider.deleteMe()
+                          : widget.provider.addMe());
+                      if (addMe) {
+                        _getMembers();
+                      } else {
+                        _buttonNotifier.value = widget.provider.isIncluded();
+                      }
+                    },
+                    child: Text(
+                        show ? "Darme de baja" : "Agregarme como leyenda"))),
+          ),
       ],
     );
   }
 
   List<Widget> _generateMembers({required List<MemberModel> members}) {
     Future.delayed(const Duration(microseconds: 50))
-        .then((value) => _buttonNotifier.value = _provider.isIncluded());
+        .then((value) => _buttonNotifier.value = widget.provider.isIncluded());
 
     return members.map((member) {
-      bool isSpecial = member.id == _provider.myIdMember;
+      bool isSpecial = member.id == widget.provider.myIdMember;
       return Padding(
         padding: EdgeInsets.symmetric(vertical: isSpecial ? 0.0 : 10.0),
         child: CardMember(
