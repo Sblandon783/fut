@@ -33,6 +33,7 @@ class FirstPartState extends State<FirstPart> {
     6: 'MC',
     7: 'DC'
   };
+  bool _show = false;
   final double _heightProfile = 300;
   bool _isStartSession = true;
   @override
@@ -85,10 +86,15 @@ class FirstPartState extends State<FirstPart> {
                 ),
                 TextField(
                   controller: widget.passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
+                  obscureText: !_show,
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
                     labelText: 'Contraseña',
+                    suffixIcon: GestureDetector(
+                        onTap: () => setState(() => _show = !_show),
+                        child: Icon(_show
+                            ? Icons.remove_red_eye_sharp
+                            : Icons.remove_red_eye_outlined)),
                   ),
                   maxLength: 20,
                 ),

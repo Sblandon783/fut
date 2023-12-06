@@ -83,6 +83,7 @@ class ProviderMembers {
         break;
       }
     }
+
     membersSink(members);
   }
 

@@ -39,7 +39,7 @@ class MemberModel {
     required this.date,
     required this.included,
     this.added = false,
-    this.titular = true,
+    this.titular = false,
     this.isMPV = false,
     required this.attributes,
   });

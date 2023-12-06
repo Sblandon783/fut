@@ -10,7 +10,6 @@ import '../../models/match_model.dart';
 
 import '../../providers/provider_members.dart';
 import '../custom_toggle.dart';
-import 'match_card/match_card.dart';
 
 import '../../../home/widgets/players/players_section.dart';
 
@@ -109,7 +108,11 @@ class MatchViewState extends State<MatchView> {
                     provider: _providerMembers,
                     isFinishedMatch: widget.match.isFinished,
                   )
-                : AlignPage(key: UniqueKey()),
+                : AlignPage(
+                    key: UniqueKey(),
+                    match: widget.match,
+                    fields: widget.fields,
+                  ),
           ),
         ],
       ),

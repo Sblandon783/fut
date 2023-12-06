@@ -68,9 +68,8 @@ class MatchTopState extends State<MatchTop> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
+          padding: const EdgeInsets.only(top: 15.0, left: 20.0, right: 20.0),
           child: Container(
-            height: 160.0,
             constraints: const BoxConstraints(minWidth: 100, maxWidth: 600),
             child: MatchCard(
               match: widget.match,
