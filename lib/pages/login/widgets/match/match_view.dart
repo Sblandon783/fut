@@ -40,6 +40,7 @@ class MatchViewState extends State<MatchView> {
   void initState() {
     _prefs.isModeAdmin = false;
     _providerMembers.match = widget.match;
+
     super.initState();
   }
 

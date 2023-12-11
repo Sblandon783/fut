@@ -153,8 +153,17 @@ class PlayersSectionState extends State<PlayersSection> {
           isSpecial: isSpecial,
           height: isSpecial ? 290.0 : 270.0,
           width: isSpecial ? 160.0 : 150.0,
+          updatePerformance: _updatePerformance,
         ),
       );
     }).toList();
+  }
+
+  Future<bool> _updatePerformance({
+    required int idMember,
+    required Map<dynamic, dynamic> performance,
+    required int idMatch,
+  }) async {
+    return true;
   }
 }

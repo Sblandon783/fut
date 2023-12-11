@@ -1,20 +1,25 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
+
 import 'package:soccer/pages/login/utils/utils.dart';
 
 import 'package:soccer/pages/login/widgets/card_member/center_content.dart';
 import 'package:soccer/pages/login/widgets/card_member/footer_content.dart';
 import 'package:soccer/pages/login/widgets/card_member/mvp_content.dart';
+import 'package:soccer/user_preferences.dart';
 
 import '../../models/member_model.dart';
+import 'alert_poll_performance.dart';
 import 'animated_bounce.dart';
 import 'attribute/attributes_draw.dart';
 import 'background.dart';
 import 'footer_atribbute_content.dart';
 
+import 'performance_by_match.dart';
 import 'top_content.dart';
 
 class CardMember extends StatefulWidget {
+  final int idMatch;
   final MemberModel member;
   final double width;
   final double height;
@@ -22,8 +27,16 @@ class CardMember extends StatefulWidget {
   final bool isSmall;
   final bool isFlip;
   final bool reverse;
+  final Future<bool> Function({
+    required int idMember,
+    required int idMatch,
+    required Map<dynamic, dynamic> performance,
+  }) updatePerformance;
+
+  final Map<dynamic, dynamic> performance;
   const CardMember({
     super.key,
+    this.idMatch = -1,
     required this.member,
     this.width = 150.0,
     this.height = 270.0,
@@ -31,6 +44,8 @@ class CardMember extends StatefulWidget {
     this.isSmall = false,
     this.isFlip = true,
     this.reverse = false,
+    this.performance = const {},
+    required this.updatePerformance,
   });
 
   @override
@@ -38,10 +53,14 @@ class CardMember extends StatefulWidget {
 }
 
 class CardMemberState extends State<CardMember> {
+  final UserPreferences _prefs = UserPreferences();
   final Utils _utils = Utils();
+
+  double _performance = 0.0;
   late Color _color;
   @override
   void initState() {
+    _getPerformance();
     super.initState();
   }
 
@@ -112,7 +131,17 @@ class CardMemberState extends State<CardMember> {
         ),
         if (widget.member.isMPV) MVPContent(width: widget.width),
         CenterContent(name: widget.member.name, width: widget.width),
-        FooterContent(member: widget.member, width: widget.width)
+        FooterContent(
+          member: widget.member,
+          width: widget.width,
+          bottom: widget.performance.isNotEmpty ? 30.0 : 10.0,
+        ),
+        if (widget.performance.isNotEmpty)
+          PerformanceByMatch(
+            performance: _performance,
+            width: widget.width,
+            onTap: _onTap,
+          )
       ],
     );
   }
@@ -127,8 +156,59 @@ class CardMemberState extends State<CardMember> {
         FooterAtribbuteContent(
           attributes: widget.member.attributes,
           width: widget.width,
-        )
+        ),
       ],
     );
+  }
+
+  _onTap() {
+    if (_prefs.userId == widget.member.id) {
+      return;
+    }
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) => AlertDialog(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(5.0))),
+        titlePadding: EdgeInsets.zero,
+        contentPadding: EdgeInsets.zero,
+        content: AlertPollPerformance(changePerformace: _changePerformance),
+        insetPadding: EdgeInsets.zero,
+      ),
+    ).then((dynamic value) {});
+  }
+
+  _changePerformance({required String value}) async {
+    double performance = value.isEmpty ? 5.0 : double.parse(value);
+
+    widget.performance[_prefs.userId.toString()] = performance;
+
+    if (widget.performance[-1] != null) {
+      widget.performance.remove(-1);
+    }
+    bool response = await widget.updatePerformance(
+        idMember: widget.member.id,
+        performance: widget.performance,
+        idMatch: widget.idMatch);
+    if (response) {
+      _getPerformance();
+      setState(() {});
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
+    }
+  }
+
+  _getPerformance() {
+    _performance = 0.0;
+    if (widget.performance.isEmpty) {
+      return 5.0;
+    }
+
+    widget.performance
+        .forEach((key, value) => _performance = _performance + value);
+    _performance = (_performance / widget.performance.length);
+    _performance = double.parse(_performance.toStringAsFixed(2));
   }
 }

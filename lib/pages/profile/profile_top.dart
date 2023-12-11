@@ -40,10 +40,19 @@ class ProfileTopState extends State<ProfileTop> {
               isFlip: false,
               reverse: false,
               isSmall: true,
+              updatePerformance: _updatePerformance,
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<bool> _updatePerformance({
+    required int idMember,
+    required Map<dynamic, dynamic> performance,
+    required int idMatch,
+  }) async {
+    return true;
   }
 }

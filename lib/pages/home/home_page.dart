@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/home/widgets/match_of_day.dart';
 import 'package:soccer/pages/login/login_page.dart';
 import 'package:soccer/pages/login/widgets/custom_toggle.dart';
 
@@ -24,13 +25,13 @@ class HomePageState extends State<HomePage> {
   final ProviderMembers _providerMembers = ProviderMembers();
   final ValueNotifier<FieldNotifier> _typeAlignNotifier =
       ValueNotifier(FieldNotifier(idField: -1, idAlign: -1));
-  final String _ednMatchStr = "Partidos finalizados";
-  final String _soonMatchStr = "Próximos partidos";
+
   Map<int, String> tabs = {1: "Partidos finalizado", 2: "Próximos partidos"};
   int _tabIndex = 1;
   @override
   void initState() {
     _prefs.isModeAdmin = false;
+
     _getMatches();
     super.initState();
   }
@@ -71,13 +72,11 @@ class HomePageState extends State<HomePage> {
       builder: (BuildContext context, AsyncSnapshot<MatchesModel> snapshot) {
         if (snapshot.hasData) {
           return snapshot.data != null
-              ? SingleChildScrollView(
-                  child: Center(
-                    child: Container(
-                      constraints:
-                          const BoxConstraints(minWidth: 100, maxWidth: 600),
-                      child: _content(matches: snapshot.data!.matches),
-                    ),
+              ? Center(
+                  child: Container(
+                    constraints:
+                        const BoxConstraints(minWidth: 100, maxWidth: 600),
+                    child: _content(matches: snapshot.data!.matches),
                   ),
                 )
               : const SizedBox.shrink();
@@ -91,8 +90,28 @@ class HomePageState extends State<HomePage> {
         ? matches.where((match) => match.isFinished).toList()
         : matches.where((match) => !match.isFinished).toList();
 
+    DateTime now = DateTime.now();
+    DateTime date = DateTime(now.year, now.month, now.day);
+
+    final List<MatchModel> matchesCurrentToday = matches
+        .where((match) =>
+            DateTime(match.parsedDate.year, match.parsedDate.month,
+                match.parsedDate.day) ==
+            date)
+        .toList();
+    if (matchesCurrentToday.isNotEmpty) {
+      matchesCurrent.remove(matchesCurrentToday.first);
+    }
+
     return Column(
       children: [
+        if (matchesCurrentToday.isNotEmpty)
+          MatchOfDay(
+            typeAlignNotifier: _typeAlignNotifier,
+            providerMembers: _providerMembers,
+            match: matchesCurrentToday.first,
+            fields: _provider.fields,
+          ),
         Container(
           color: Colors.white,
           padding: const EdgeInsets.symmetric(
@@ -110,29 +129,39 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  _changeIndex({required int tabIndex}) => setState(() => _tabIndex = tabIndex);
+  Widget _column({required List<MatchModel> matches}) => matches.isEmpty
+      ? const Padding(
+          padding: EdgeInsets.only(top: 50.0),
+          child: Text(
+            "No hay partidos disponnibles",
+            textAlign: TextAlign.center,
+          ),
+        )
+      : Flexible(
+          child: SingleChildScrollView(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: matches
+                    .map(
+                      (match) => _generateMatch(match: match),
+                    )
+                    .toList()),
+          ),
+        );
 
-  Widget _column({
-    required List<MatchModel> matches,
-  }) =>
-      SingleChildScrollView(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: matches
-                .map(
-                  (match) => MatchCard(
-                    match: match,
-                    typeAlignNotifier: _typeAlignNotifier,
-                    fields: _provider.fields,
-                    providerMembers: _providerMembers,
-                  ),
-                )
-                .toList()),
+  Widget _generateMatch({required MatchModel match}) => MatchCard(
+        match: match,
+        typeAlignNotifier: _typeAlignNotifier,
+        fields: _provider.fields,
+        providerMembers: _providerMembers,
       );
 
   void _getMatches() async {
     await _provider.getFields();
     _provider.getMatches();
   }
+
+  void _changeIndex({required int tabIndex}) =>
+      setState(() => _tabIndex = tabIndex);
 }

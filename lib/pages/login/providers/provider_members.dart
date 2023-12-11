@@ -24,15 +24,19 @@ class ProviderMembers {
   Function(MatchModel) get matchSink => _matchStreamController.sink.add;
   Stream<MatchModel> get matchStream => _matchStreamController.stream;
 
-  Future getMembers({required int idMvp}) async {
+  Future getMembers({required int idMvp, bool normalGet = false}) async {
     final List<dynamic> response = await _supabase.client
         .from('player')
         .select('id,name,number,position,date_match, attributes');
 
     MembersModel membersResponse = MembersModel.fromJson(response);
-
+    print(membersResponse);
     if (membersResponse.members.isNotEmpty) {
-      getListMembers(membersCurrents: membersResponse.members, idMvp: idMvp);
+      getListMembers(
+        membersCurrents: membersResponse.members,
+        idMvp: idMvp,
+        normalGet: normalGet,
+      );
     }
   }
 
@@ -48,42 +52,46 @@ class ProviderMembers {
   getListMembers({
     required List<MemberModel> membersCurrents,
     required int idMvp,
+    required bool normalGet,
   }) {
-    _member = membersCurrents
-        .firstWhere((element) => element.name == _prefs.userName);
+    if (!normalGet) {
+      _member = membersCurrents
+          .firstWhere((element) => element.name == _prefs.userName);
 
-    members = membersCurrents;
-    members.removeWhere((element) => element.name == _member.name);
-    if (_member.included) {
-      members.add(_member);
-    }
+      members = membersCurrents;
+      members.removeWhere((element) => element.name == _member.name);
+      if (_member.included) {
+        members.add(_member);
+      }
 
-    if (match != null) {
-      for (var i = 0; i < members.length; i++) {
-        if (match!.assistants.containsKey(members[i].id)) {
-          members[i].setPositionNew(pos: match!.assistants[members[i].id]!);
-          members[i].titular = true;
-          members[i].included = true;
+      if (match != null) {
+        for (var i = 0; i < members.length; i++) {
+          if (match!.assistants.containsKey(members[i].id)) {
+            members[i].setPositionNew(pos: match!.assistants[members[i].id]!);
+            members[i].titular = true;
+            members[i].included = true;
+          }
+        }
+        for (var i = 0; i < members.length; i++) {
+          if (match!.substitutes.containsKey(members[i].id)) {
+            members[i].titular = false;
+            members[i].added = true;
+            members[i].included = true;
+          }
         }
       }
-      for (var i = 0; i < members.length; i++) {
-        if (match!.substitutes.containsKey(members[i].id)) {
-          members[i].titular = false;
-          members[i].added = true;
-          members[i].included = true;
+      membersCurrents.removeWhere((element) => !element.included);
+      _prefs.userId = _member.id;
+      members = members.reversed.toList();
+      for (var element in membersCurrents) {
+        if (element.id == idMvp) {
+          element.isMPV = true;
+          break;
         }
       }
+    } else {
+      members = membersCurrents;
     }
-    membersCurrents.removeWhere((element) => !element.included);
-    _prefs.userId = _member.id;
-    members = members.reversed.toList();
-    for (var element in membersCurrents) {
-      if (element.id == idMvp) {
-        element.isMPV = true;
-        break;
-      }
-    }
-
     membersSink(members);
   }
 

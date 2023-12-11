@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../login/models/match_model.dart';
 import '../../../login/models/member_model.dart';
 import '../../../login/providers/provider_members.dart';
 import '../../../login/widgets/card_member/card_member.dart';
+import '../../provider/provider_match.dart';
 
 class PlayersSection extends StatefulWidget {
   final ProviderMembers provider;
@@ -24,7 +24,7 @@ class PlayersSection extends StatefulWidget {
 
 class PlayersSectionState extends State<PlayersSection> {
   final ValueNotifier<bool> _buttonNotifier = ValueNotifier(false);
-
+  final ProviderMatch _providerMatch = ProviderMatch();
   @override
   void initState() {
     _getMembers();
@@ -160,12 +160,30 @@ class PlayersSectionState extends State<PlayersSection> {
       return Padding(
         padding: EdgeInsets.symmetric(vertical: isSpecial ? 0.0 : 10.0),
         child: CardMember(
+          idMatch: widget.provider.match!.id,
           member: member,
           isSpecial: isSpecial,
           height: isSpecial ? 290.0 : 270.0,
           width: isSpecial ? 160.0 : 150.0,
+          performance: widget.isFinishedMatch
+              ? widget.provider.match!.listPerformance[member.id.toString()] ??
+                  {-1: 5}
+              : {},
+          updatePerformance: _updatePerformance,
         ),
       );
     }).toList();
+  }
+
+  Future<bool> _updatePerformance({
+    required Map<dynamic, dynamic> performance,
+    required int idMatch,
+    required int idMember,
+  }) async {
+    widget.provider.match!.listPerformance[idMember.toString()] = performance;
+    return await _providerMatch.updatePerformance(
+      performance: widget.provider.match!.listPerformance,
+      idMatch: idMatch,
+    );
   }
 }

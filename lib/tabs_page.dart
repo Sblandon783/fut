@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:soccer/pages/align/align_page.dart';
 import 'package:soccer/pages/home/home_page.dart';
 
 import 'package:soccer/user_preferences.dart';

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:soccer/pages/login/models/atribbute_model.dart';
 import 'package:soccer/user_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

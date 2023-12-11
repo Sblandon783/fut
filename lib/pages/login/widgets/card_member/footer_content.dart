@@ -6,13 +6,18 @@ class FooterContent extends StatelessWidget {
   final MemberModel member;
   final double width;
   final String _incognite = '???';
-
-  const FooterContent({super.key, required this.member, required this.width});
+  final double bottom;
+  const FooterContent({
+    super.key,
+    required this.member,
+    required this.width,
+    required this.bottom,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: 10.0,
+      bottom: bottom,
       left: 0.0,
       child: Container(
         width: width,

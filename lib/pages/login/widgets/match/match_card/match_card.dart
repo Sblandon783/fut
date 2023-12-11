@@ -67,6 +67,7 @@ class MatchCardState extends State<MatchCard> {
           match: widget.match,
           fields: widget.fields,
           providerMembers: widget.providerMembers,
+          disabledOnTap: widget.redirect,
         )
       ],
     );

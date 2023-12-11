@@ -28,8 +28,7 @@ class AlignTypeState extends State<AlignType> {
   @override
   void initState() {
     dropdownValue = widget.type.toString();
-    print(widget.type);
-    print(widget.idField);
+
     super.initState();
   }
 

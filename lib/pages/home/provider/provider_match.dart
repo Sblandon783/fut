@@ -54,6 +54,14 @@ class ProviderMatch {
     matchSink(matchResponse);
   }
 
+  Future getTeam({required int id}) async {
+    final List<dynamic> response =
+        await _supabase.client.from('match').select().eq("id", id);
+    MatchModel matchResponse = MatchModel.fromJson(response.first);
+    match = matchResponse;
+    matchSink(matchResponse);
+  }
+
   Future getFields() async {
     final List<dynamic> response =
         await _supabase.client.from('field').select();
@@ -63,5 +71,18 @@ class ProviderMatch {
     fields = fieldResponse.fields;
     //match = fieldResponse;
     //matchSink(fieldResponse);
+  }
+
+  Future<bool> updatePerformance({
+    required Map<dynamic, dynamic> performance,
+    required int idMatch,
+  }) async {
+    return await _supabase.client
+        .from('match')
+        .update({
+          'list_performance': performance,
+        })
+        .eq('id', idMatch)
+        .then((value) => true);
   }
 }

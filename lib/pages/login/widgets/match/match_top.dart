@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:soccer/pages/login/login_page.dart';
 
-import '../../../../user_preferences.dart';
-import '../../../align/align_page.dart';
 import '../../models/field_model.dart';
 import '../../models/field_notifier.dart';
 import '../../models/match_model.dart';
 
 import '../../providers/provider_members.dart';
-import '../custom_toggle.dart';
-import 'match_card/match_card.dart';
 
-import '../../../home/widgets/players/players_section.dart';
+import 'match_card/match_card.dart';
 
 class MatchTop extends StatefulWidget {
   final MatchModel match;

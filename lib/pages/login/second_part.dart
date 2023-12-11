@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/providers/provider_match.dart';
-import 'package:soccer/pages/align/align_section.dart';
-import 'package:soccer/pages/login/widgets/custom_toggle.dart';
-import 'package:soccer/pages/login/widgets/match/match_info.dart';
 
-import '../home/widgets/players/players_section.dart';
+import 'package:soccer/pages/login/widgets/custom_toggle.dart';
+
 import 'models/field_model.dart';
 import 'models/field_notifier.dart';
 import 'models/match_model.dart';

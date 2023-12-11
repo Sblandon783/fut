@@ -11,11 +11,13 @@ class MatchCardBottomContent extends StatefulWidget {
   final MatchModel match;
   final List<FieldModel> fields;
   final ProviderMembers providerMembers;
+  final bool disabledOnTap;
   const MatchCardBottomContent({
     super.key,
     required this.match,
     required this.fields,
     required this.providerMembers,
+    required this.disabledOnTap,
   });
 
   @override
@@ -43,6 +45,7 @@ class MatchCardBottomContentState extends State<MatchCardBottomContent> {
       mapMVP: widget.match.mapMVP,
       teamOneGoals: widget.match.teamOneGoals,
       teamSecondGoals: widget.match.teamSecondGoals,
+      listPerformance: widget.match.listPerformance,
     );
 
     _setDate();
@@ -138,7 +141,8 @@ class MatchCardBottomContentState extends State<MatchCardBottomContent> {
         ),
       ],
     );
-    return widget.match.isFinished
+
+    return widget.match.isFinished || widget.disabledOnTap
         ? child
         : GestureDetector(onTap: onTap, child: child);
   }
@@ -228,29 +232,31 @@ class MatchCardBottomContentState extends State<MatchCardBottomContent> {
     String name = widget.fields
         .firstWhere((field) => field.id == widget.match.idField)
         .name;
-
-    return GestureDetector(
-      onTap: () => _onTap(content: _fieldContent()),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.location_on_outlined,
-            size: 20.0,
+    Widget child = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.location_on_outlined,
+          size: 20.0,
+          color: Colors.green.shade300,
+        ),
+        Text(
+          name,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
             color: Colors.green.shade300,
+            fontSize: 13.0,
           ),
-          Text(
-            name,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.green.shade300,
-              fontSize: 13.0,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
+    return widget.match.isFinished || widget.disabledOnTap
+        ? child
+        : GestureDetector(
+            onTap: () => _onTap(content: _fieldContent()),
+            child: child,
+          );
   }
 
   Future<void> _onTap({required Widget content}) {

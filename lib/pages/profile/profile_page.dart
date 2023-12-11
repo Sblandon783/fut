@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/profile/team/team_view.dart';
 
 import '../../user_preferences.dart';
 
@@ -62,8 +63,80 @@ class ProfilePageState extends State<ProfilePage> {
               ProfileAttributes(member: member),
             ],
           )),
-        )
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: SizedBox(
+            width: 320,
+            child: Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              color: Colors.blue,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Mis equipos",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: _onTap,
+                      child: SizedBox(
+                        width: 100.0,
+                        height: 100.0,
+                        child: Card(
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          color: Colors.white,
+                          child: Center(
+                            child: SizedBox(
+                              height: 70.0,
+                              width: 70.0,
+                              child: _teamImage(image: 'assets/logo.png'),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
+  }
+
+  Widget _teamImage({required String image}) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(300.0),
+      child: Image(
+        height: double.infinity,
+        image: AssetImage(image),
+      ),
+    );
+  }
+
+  void _onTap() {
+    final route = MaterialPageRoute(
+      builder: (context) => TeamView(
+        key: UniqueKey(),
+        id: 1,
+      ),
+    );
+    Navigator.push(context, route).then((value) {});
   }
 }

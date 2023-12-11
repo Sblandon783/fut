@@ -27,6 +27,7 @@ class MatchModel {
   bool isFinished;
   int teamOneGoals;
   int teamSecondGoals;
+  Map<dynamic, dynamic> listPerformance;
 
   MatchModel({
     required this.id,
@@ -43,6 +44,7 @@ class MatchModel {
     this.isFinished = false,
     required this.teamOneGoals,
     required this.teamSecondGoals,
+    required this.listPerformance,
   });
 
   factory MatchModel.fromJson(dynamic json) => MatchModel(
@@ -62,6 +64,7 @@ class MatchModel {
         isFinished: json["isFinished"],
         teamOneGoals: json["team_1_goals"] ?? 0,
         teamSecondGoals: json["team_2_goals"] ?? 0,
+        listPerformance: setPerformance(json["list_performance"]),
       );
 
   setDate({required List<DateTime?> dates}) {
@@ -74,4 +77,13 @@ class MatchModel {
     date = Utils().getDate(date: currentDate);
     parsedDate = Utils().getParsedDate(date: currentDate);
   }
+}
+
+setPerformance(dynamic perfomance) {
+  Map<dynamic, dynamic> map = {};
+  if (perfomance == null || perfomance == {}) {
+    return map;
+  }
+
+  return perfomance;
 }

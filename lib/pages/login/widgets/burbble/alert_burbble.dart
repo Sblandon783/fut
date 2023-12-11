@@ -69,6 +69,7 @@ class BAlertBurbbleState extends State<AlertBurbble> {
               height: 190.0,
               width: 130.0,
               isSmall: true,
+              updatePerformance: _updatePerformance,
             ),
             GestureDetector(
               onTap: () => Navigator.pop(context, _member),
@@ -84,6 +85,7 @@ class BAlertBurbbleState extends State<AlertBurbble> {
             height: 190.0,
             width: 130.0,
             isSmall: true,
+            updatePerformance: _updatePerformance,
           ),
           SizedBox(
             width: 150.0,
@@ -129,5 +131,13 @@ class BAlertBurbbleState extends State<AlertBurbble> {
       _member = newMember;
     }
     setState(() {});
+  }
+
+  Future<bool> _updatePerformance({
+    required int idMember,
+    required Map<dynamic, dynamic> performance,
+    required int idMatch,
+  }) async {
+    return true;
   }
 }
