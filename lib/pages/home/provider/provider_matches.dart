@@ -17,8 +17,10 @@ class ProviderMatches {
   List<FieldModel> fields = [];
 
   Future getMatches() async {
-    final List<dynamic> response =
-        await _supabase.client.from('match').select();
+    final List<dynamic> response = await _supabase.client
+        .from('match')
+        .select()
+        .order('id', ascending: false);
     MatchesModel matchesResponse = MatchesModel.fromJson(response);
     matches = matchesResponse.matches;
     matchesSink(matchesResponse);

@@ -49,6 +49,7 @@ class ProviderMatch {
   Future getMatch() async {
     final List<dynamic> response =
         await _supabase.client.from('match').select();
+
     MatchModel matchResponse = MatchModel.fromJson(response.first);
     match = matchResponse;
     matchSink(matchResponse);

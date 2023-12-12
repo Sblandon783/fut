@@ -96,8 +96,9 @@ class ProviderMatch {
     final List<dynamic> response = await _supabase.client
         .from('match')
         .select('id,team_1_goals,team_2_goals')
-        .eq("idTeamOne", id);
-    print(response);
+        .eq("idTeamOne", id)
+        .order('id', ascending: false);
+
     MatchesModel matchesResponse = MatchesModel.fromJson(response);
     matches = matchesResponse.matches;
     matchesSink(matches);
