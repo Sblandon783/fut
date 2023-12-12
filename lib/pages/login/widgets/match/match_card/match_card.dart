@@ -39,11 +39,14 @@ class MatchCardState extends State<MatchCard> {
 
   @override
   Widget build(BuildContext context) {
-    final bool myTeamWin =
-        widget.match.teamOneGoals > widget.match.teamSecondGoals;
+    final int idType = widget.match.teamOneGoals < widget.match.teamSecondGoals
+        ? 0
+        : widget.match.teamOneGoals > widget.match.teamSecondGoals
+            ? 1
+            : 2;
     final Widget child = Column(
       children: [
-        if (widget.match.isFinished) MatchTopContent(myTeamWin: myTeamWin),
+        if (widget.match.isFinished) MatchTopContent(idType: idType),
         Container(
           width: double.infinity,
           height: 80.0,

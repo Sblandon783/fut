@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/login_page.dart';
 import 'package:soccer/pages/profile/models/team_model.dart';
-import 'package:soccer/pages/profile/team/team_top.dart';
+import 'package:soccer/pages/profile/widgets/team/team_top.dart';
 
-import '../../../../../user_preferences.dart';
-import '../../login/models/member_model.dart';
-import '../../login/providers/provider_members.dart';
-import '../../login/providers/provider_team.dart';
-import '../../login/widgets/card_member/card_member.dart';
+import '../../../../../../user_preferences.dart';
+import '../../../login/models/member_model.dart';
+import '../../../login/providers/provider_members.dart';
+import '../../../login/providers/provider_team.dart';
+import '../../../login/widgets/card_member/card_member.dart';
+import '../performance/performance_by_team.dart';
 
 class TeamView extends StatefulWidget {
   final int id;
@@ -106,33 +107,41 @@ class TeamViewState extends State<TeamView> {
                     children: [
                       TeamTop(team: team),
                       Flexible(
-                        child: Container(
-                          color: Colors.white,
-                          height: 326.0,
+                        child: SingleChildScrollView(
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  "Jugadores",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey,
-                                    fontSize: 17.0,
-                                  ),
-                                  textAlign: TextAlign.start,
+                              Container(
+                                color: Colors.white,
+                                height: 326.0,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "Jugadores",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey,
+                                          fontSize: 17.0,
+                                        ),
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: ListView(
+                                        scrollDirection: Axis.horizontal,
+                                        children: _generateMembers(
+                                          members: snapshot.data ?? [],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Flexible(
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: _generateMembers(
-                                    members: snapshot.data ?? [],
-                                  ),
-                                ),
-                              ),
+                              PerformanceByTeam(id: widget.id),
+                              const SizedBox(height: 10.0),
                             ],
                           ),
                         ),

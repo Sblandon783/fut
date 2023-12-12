@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/team_model.dart';
+import '../../models/team_model.dart';
 
 class TeamTop extends StatefulWidget {
   final TeamModel team;
@@ -25,7 +25,7 @@ class TeamTopState extends State<TeamTop> {
       bottomRight: Radius.circular(20.0),
     );
     return SizedBox(
-      height: 230.0,
+      height: 210.0,
       child: Stack(
         alignment: Alignment.topCenter,
         children: [

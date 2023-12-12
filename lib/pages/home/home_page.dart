@@ -133,7 +133,7 @@ class HomePageState extends State<HomePage> {
       ? const Padding(
           padding: EdgeInsets.only(top: 50.0),
           child: Text(
-            "No hay partidos disponnibles",
+            "No hay partidos disponibles",
             textAlign: TextAlign.center,
           ),
         )

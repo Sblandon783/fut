@@ -49,11 +49,11 @@ class MatchModel {
 
   factory MatchModel.fromJson(dynamic json) => MatchModel(
         id: json["id"],
-        idField: json["id_field"],
-        idAlign: json["id_align"],
+        idField: json["id_field"] ?? -1,
+        idAlign: json["id_align"] ?? -1,
         name: "",
-        date: Utils().getDate(date: json["date"]),
-        hour: Utils().getHour(date: json["date"]),
+        date: json["date"] != null ? Utils().getDate(date: json["date"]) : '',
+        hour: json["date"] != null ? Utils().getHour(date: json["date"]) : '',
         assistants: Utils().getMap(text: json['list_assistants']),
         substitutes: Utils().getMap(text: json['list_substitutes']),
         parsedDate: Utils().getParsedDate(date: json["date"]),
@@ -61,7 +61,7 @@ class MatchModel {
         mapMVP: json["list_mvp"] != ""
             ? Utils().getMap(text: json["list_mvp"])
             : {},
-        isFinished: json["isFinished"],
+        isFinished: json["isFinished"] ?? false,
         teamOneGoals: json["team_1_goals"] ?? 0,
         teamSecondGoals: json["team_2_goals"] ?? 0,
         listPerformance: setPerformance(json["list_performance"]),

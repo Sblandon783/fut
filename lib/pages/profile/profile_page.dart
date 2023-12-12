@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:soccer/pages/profile/team/team_view.dart';
+import 'package:soccer/pages/profile/widgets/team/team_view.dart';
 
 import '../../user_preferences.dart';
 

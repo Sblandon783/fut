@@ -167,8 +167,8 @@ class Utils {
     return member;
   }
 
-  Map<int, int> getMap({required String text}) {
-    if (text.isEmpty) return {};
+  Map<int, int> getMap({required dynamic text}) {
+    if (text == null || text.isEmpty) return {};
     List<String> list = json.decode(text).cast<String>();
     Map<int, int> map = {
       for (String v in list)
@@ -179,13 +179,19 @@ class Utils {
   }
 
   getDate({required String date}) {
+    if (date.isEmpty) {
+      return DateTime.now();
+    }
     final DateTime parsedDateCurrent = DateTime.parse(date);
 
     initializeDateFormatting('es');
     return DateFormat.MMMEd('es').format(parsedDateCurrent).toUpperCase();
   }
 
-  getParsedDate({required String date}) {
+  getParsedDate({required dynamic date}) {
+    if (date == null) {
+      return DateTime.now();
+    }
     final DateTime parsedDateCurrent = DateTime.parse(date);
     return parsedDateCurrent;
   }
@@ -208,7 +214,7 @@ class Utils {
   }
 
   getMVP(dynamic value) {
-    if (value == "") {
+    if (value == null || value == "") {
       return -1;
     }
     Map<int, int> map = Utils().getMap(text: value);

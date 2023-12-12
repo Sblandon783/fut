@@ -17,6 +17,12 @@ class ProviderMatch {
   Function(MatchModel) get matchSink => _matchStreamController.sink.add;
   Stream<MatchModel> get matchStream => _matchStreamController.stream;
 
+  final _matchesStreamController =
+      StreamController<List<MatchModel>>.broadcast();
+  Function(List<MatchModel>) get matchesSink =>
+      _matchesStreamController.sink.add;
+  Stream<List<MatchModel>> get matchesStream => _matchesStreamController.stream;
+  List<MatchModel> matches = [];
   List<FieldModel> fields = [];
 
   Future<bool> addMe() async {
@@ -84,5 +90,16 @@ class ProviderMatch {
         })
         .eq('id', idMatch)
         .then((value) => true);
+  }
+
+  Future getMatches({required int id}) async {
+    final List<dynamic> response = await _supabase.client
+        .from('match')
+        .select('id,team_1_goals,team_2_goals')
+        .eq("idTeamOne", id);
+    print(response);
+    MatchesModel matchesResponse = MatchesModel.fromJson(response);
+    matches = matchesResponse.matches;
+    matchesSink(matches);
   }
 }

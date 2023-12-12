@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 
 class MatchTopContent extends StatelessWidget {
-  final bool myTeamWin;
+  final int idType;
 
-  const MatchTopContent({super.key, required this.myTeamWin});
+  const MatchTopContent({super.key, required this.idType});
   @override
   Widget build(BuildContext context) {
     return Text(
-      myTeamWin ? "GANADO" : "DERROTA",
+      idType == 0
+          ? "DERROTA"
+          : idType == 1
+              ? "GANADO"
+              : "EMPATE",
       style: TextStyle(
-        color: myTeamWin ? Colors.green : Colors.red,
+        color: idType == 0
+            ? Colors.red
+            : idType == 1
+                ? Colors.green
+                : Colors.blue,
         fontWeight: FontWeight.w800,
       ),
     );
