@@ -13,7 +13,7 @@ class TabsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: _generateTabs().length,
-      initialIndex: 1,
+      initialIndex: 0,
       child: Scaffold(
         body: _createBody(),
         bottomNavigationBar: _createTabs(),

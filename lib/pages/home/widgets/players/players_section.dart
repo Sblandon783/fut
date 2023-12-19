@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../CustomWidgets/empty_data.dart';
 import '../../../login/models/member_model.dart';
 import '../../../login/providers/provider_members.dart';
 import '../../../login/widgets/card_member/card_member.dart';
@@ -34,7 +35,9 @@ class PlayersSectionState extends State<PlayersSection> {
   @override
   Widget build(BuildContext context) => _playersSection();
 
-  void _getMembers() async => widget.provider.getMembers(idMvp: widget.idMVP);
+  void _getMembers() async => widget.provider.getMembers(
+        idMvp: widget.idMVP,
+      );
 
   Widget _playersSection() {
     return Column(
@@ -121,7 +124,12 @@ class PlayersSectionState extends State<PlayersSection> {
                           ],
                         ),
                       )
-                    : const Text("Se el primero en enlistarte");
+                    : EmptyData(
+                        text: widget.isFinishedMatch
+                            ? "Partido finalizado"
+                            : "Se el primero en enlistarte",
+                        image: "section_players1.jpeg",
+                      );
               } else {
                 return const Center(child: CircularProgressIndicator());
               }
@@ -135,12 +143,9 @@ class PlayersSectionState extends State<PlayersSection> {
                       backgroundColor: show ? Colors.red : Colors.blue,
                     ),
                     onPressed: () async {
-                      bool addMe = await (show
-                          ? widget.provider.deleteMe()
-                          : widget.provider.addMe());
-                      if (addMe) {
-                        _getMembers();
-                      } else {
+                      bool addMe = await widget.provider.updateAssistants(
+                          idMatch: widget.provider.match!.id, isAdd: !show);
+                      if (!addMe) {
                         _buttonNotifier.value = widget.provider.isIncluded();
                       }
                     },
@@ -154,8 +159,9 @@ class PlayersSectionState extends State<PlayersSection> {
   List<Widget> _generateMembers({required List<MemberModel> members}) {
     Future.delayed(const Duration(microseconds: 50))
         .then((value) => _buttonNotifier.value = widget.provider.isIncluded());
-
-    return members.map((member) {
+    List<MemberModel> membersCurrent = List.from(members);
+    membersCurrent.removeWhere((member) => !member.included);
+    return membersCurrent.map((member) {
       bool isSpecial = member.id == widget.provider.myIdMember;
       return Padding(
         padding: EdgeInsets.symmetric(vertical: isSpecial ? 0.0 : 10.0),

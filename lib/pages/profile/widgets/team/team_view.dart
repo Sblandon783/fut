@@ -4,11 +4,14 @@ import 'package:soccer/pages/profile/models/team_model.dart';
 import 'package:soccer/pages/profile/widgets/team/team_top.dart';
 
 import '../../../../../../user_preferences.dart';
+import '../../../home/provider/provider_match.dart';
+import '../../../login/models/match_model.dart';
 import '../../../login/models/member_model.dart';
 import '../../../login/providers/provider_members.dart';
 import '../../../login/providers/provider_team.dart';
 import '../../../login/widgets/card_member/card_member.dart';
 import '../performance/performance_by_team.dart';
+import 'team_top_data.dart';
 
 class TeamView extends StatefulWidget {
   final int id;
@@ -25,15 +28,26 @@ class TeamViewState extends State<TeamView> {
   final UserPreferences _prefs = UserPreferences();
   final ProviderMembers _providerMembers = ProviderMembers();
   final ProviderTeam _providerTeam = ProviderTeam();
+  final ProviderMatch _providerMatch = ProviderMatch();
+  final ScrollController _controller = ScrollController();
+  final ValueNotifier<bool> _titleNotifier = ValueNotifier(false);
 
   @override
   void initState() {
     super.initState();
+    _controller.addListener(() {
+      if (_controller.position.pixels > 170.0 && !_titleNotifier.value) {
+        _titleNotifier.value = true;
+      } else if (_controller.position.pixels < 170.0 && _titleNotifier.value) {
+        _titleNotifier.value = false;
+      }
+    });
     _calls();
   }
 
   void _calls() async {
     await _providerTeam.getTeam(id: widget.id);
+    await _providerMatch.getMatches(id: widget.id);
     _providerMembers.getMembers(idMvp: -1, normalGet: true);
   }
 
@@ -46,6 +60,7 @@ class TeamViewState extends State<TeamView> {
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           elevation: 0,
+          toolbarHeight: 40.0,
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 10.0),
@@ -62,6 +77,19 @@ class TeamViewState extends State<TeamView> {
                   )),
             )
           ],
+          title: ValueListenableBuilder(
+            valueListenable: _titleNotifier,
+            builder: (context, show, child) => show
+                ? Text(
+                    "NotFaps",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  )
+                : SizedBox.shrink(),
+          ),
           leading: Padding(
             padding: const EdgeInsets.only(left: 10.0),
             child: GestureDetector(
@@ -102,6 +130,105 @@ class TeamViewState extends State<TeamView> {
             (BuildContext context, AsyncSnapshot<List<MemberModel>> snapshot) {
           if (snapshot.hasData) {
             team.totalMembers = snapshot.data!.length;
+            team.winner = 0;
+            team.loose = 0;
+
+            for (MatchModel element in _providerMatch.matches) {
+              {
+                if (element.teamOneGoals > element.teamSecondGoals) {
+                  team.winner++;
+                } else if (element.teamOneGoals == element.teamSecondGoals) {
+                  team.equals++;
+                } else if (element.teamOneGoals < element.teamSecondGoals) {
+                  team.loose++;
+                }
+              }
+            }
+            return CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              controller: _controller,
+              slivers: <Widget>[
+                SliverAppBar(
+                  stretch: true,
+                  onStretchTrigger: () async {
+                    print("object");
+                  },
+                  stretchTriggerOffset: 300.0,
+                  expandedHeight: 215.0,
+                  centerTitle: true,
+                  floating: true,
+                  pinned: true,
+                  titleSpacing: 0.0,
+                  leading: const SizedBox.shrink(),
+                  flexibleSpace: FlexibleSpaceBar(
+                    title: TeamTopData(team: team),
+                    titlePadding: EdgeInsets.zero,
+                    centerTitle: true,
+                    expandedTitleScale: 1.3,
+                    background: TeamTop(team: team),
+                  ),
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.blue,
+                  toolbarHeight: 40.0,
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return Column(
+                        children: [
+                          Container(
+                            color: Colors.white,
+                            height: 326.0,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Jugadores",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey,
+                                      fontSize: 17.0,
+                                    ),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ),
+                                Flexible(
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: snapshot.data!.length,
+                                    itemBuilder: (context, index) {
+                                      final MemberModel member =
+                                          snapshot.data![index];
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10.0),
+                                        child: CardMember(
+                                          member: member,
+                                          height: 270.0,
+                                          width: 150.0,
+                                          updatePerformance: _updatePerformance,
+                                        ),
+                                      );
+                                      ;
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          PerformanceByTeam(provider: _providerMatch),
+                          const SizedBox(height: 10.0),
+                        ],
+                      );
+                    },
+                    childCount: 1,
+                  ),
+                ),
+              ],
+            );
             return snapshot.data!.isNotEmpty
                 ? Column(
                     children: [
@@ -140,7 +267,7 @@ class TeamViewState extends State<TeamView> {
                                   ],
                                 ),
                               ),
-                              PerformanceByTeam(id: widget.id),
+                              PerformanceByTeam(provider: _providerMatch),
                               const SizedBox(height: 10.0),
                             ],
                           ),

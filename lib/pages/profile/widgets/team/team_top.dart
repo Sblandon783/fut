@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/profile/widgets/team/team_top_data.dart';
 
 import '../../models/team_model.dart';
 
@@ -24,36 +25,27 @@ class TeamTopState extends State<TeamTop> {
       bottomLeft: Radius.circular(20.0),
       bottomRight: Radius.circular(20.0),
     );
-    return SizedBox(
-      height: 210.0,
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          //const Background(),
-          Positioned(
-            top: 125.0,
-            left: 0.0,
-            right: 0.0,
-            child: Container(
-              height: 80.0,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Container(
+        height: 210.0,
+        color: Colors.white,
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            //const Background(),
+
+            Container(
               width: double.maxFinite,
+              height: 140.0,
               decoration: const BoxDecoration(
                 borderRadius: radius,
-                color: Colors.blue,
+                color: Colors.white,
               ),
-              child: _generateData(),
+              child: _generateCard(),
             ),
-          ),
-          Container(
-            width: double.maxFinite,
-            height: 140.0,
-            decoration: const BoxDecoration(
-              borderRadius: radius,
-              color: Colors.white,
-            ),
-            child: _generateCard(),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -121,6 +113,10 @@ class TeamTopState extends State<TeamTop> {
             _icon(
               icon: Icons.thumb_down_alt_rounded,
               text: widget.team.loose.toString(),
+            ),
+            _icon(
+              icon: Icons.sports_soccer_rounded,
+              text: widget.team.equals.toString(),
             ),
             _icon(
               icon: Icons.person,

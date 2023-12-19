@@ -132,14 +132,14 @@ class Utils {
 
   final Map<int, String> _images = {
     1: 'portero.png', //'POR',
-    2: 'player_lt.png', //'LTD',
-    3: 'player_lt.png', //'LTI',
-    4: 'player_lt.png', //'DFC',
-    5: 'player_mcd.png', //'MD',
+    2: 'player_lt_small.png', //'LTD',
+    3: 'player_lt_small.png', //'LTI',
+    4: 'player_lt_small.png', //'DFC',
+    5: 'player_mcd_small.png', //'MD',
     6: 'player_mc.png', // 'MC',
-    7: 'player_mcd.png', //'MI',
-    8: 'player_mcd.png', //'MD',
-    9: 'player_dc.png', //'DC'
+    7: 'player_mcd_small.png', //'MI',
+    8: 'player_mcd_small.png', //'MD',
+    9: 'player_dc_small.png', //'DC'
   };
 
   get images => _images;
@@ -170,9 +170,10 @@ class Utils {
   Map<int, int> getMap({required dynamic text}) {
     if (text == null || text.isEmpty) return {};
     List<String> list = json.decode(text).cast<String>();
+
     Map<int, int> map = {
       for (String v in list)
-        int.parse(v.split('-').first): int.parse(v.split('-').last)
+        int.parse(v.split('/').first): int.parse(v.split('/').last)
     };
 
     return map;

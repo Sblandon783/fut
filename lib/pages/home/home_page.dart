@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/CustomWidgets/empty_data.dart';
 import 'package:soccer/pages/home/widgets/match_of_day.dart';
 import 'package:soccer/pages/login/login_page.dart';
 import 'package:soccer/pages/login/widgets/custom_toggle.dart';
@@ -130,23 +131,19 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget _column({required List<MatchModel> matches}) => matches.isEmpty
-      ? const Padding(
-          padding: EdgeInsets.only(top: 50.0),
-          child: Text(
-            "No hay partidos disponibles",
-            textAlign: TextAlign.center,
+      ? const Flexible(
+          child: EmptyData(
+            text: "No hay partidos disponibles",
+            image: "there_aren't_match.jpeg",
           ),
         )
       : Flexible(
-          child: SingleChildScrollView(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: matches
-                    .map(
-                      (match) => _generateMatch(match: match),
-                    )
-                    .toList()),
+          child: ListView.builder(
+            itemCount: matches.length,
+            itemBuilder: (context, index) {
+              final MatchModel match = matches[index];
+              return _generateMatch(match: match);
+            },
           ),
         );
 

@@ -17,8 +17,9 @@ class TeamModel {
   final String image;
   final int idCaptain;
 
-  final int winner;
-  final int loose;
+  int winner;
+  int loose;
+  int equals;
   int totalMembers;
 
   TeamModel({
@@ -28,6 +29,7 @@ class TeamModel {
     required this.idCaptain,
     required this.winner,
     required this.loose,
+    this.equals = 0,
     this.totalMembers = 0,
   });
 

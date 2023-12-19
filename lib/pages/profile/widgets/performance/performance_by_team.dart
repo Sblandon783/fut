@@ -4,22 +4,17 @@ import 'package:soccer/pages/login/models/match_model.dart';
 import 'package:soccer/pages/profile/widgets/performance/performance_card.dart';
 
 class PerformanceByTeam extends StatefulWidget {
-  final int id;
-  const PerformanceByTeam({
-    Key? key,
-    required this.id,
-  }) : super(key: key);
+  final ProviderMatch provider;
+  const PerformanceByTeam({Key? key, required this.provider}) : super(key: key);
 
   @override
   PerformanceByTeamState createState() => PerformanceByTeamState();
 }
 
 class PerformanceByTeamState extends State<PerformanceByTeam> {
-  final ProviderMatch _providerMatch = ProviderMatch();
   @override
   void initState() {
     super.initState();
-    _providerMatch.getMatches(id: widget.id);
   }
 
   @override
@@ -28,7 +23,7 @@ class PerformanceByTeamState extends State<PerformanceByTeam> {
       padding: const EdgeInsets.only(top: 10.0),
       child: Container(
         color: Colors.white,
-        height: 326.0,
+        height: 426.0,
         width: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -43,33 +38,32 @@ class PerformanceByTeamState extends State<PerformanceByTeam> {
   }
 
   Widget _generateContent() {
-    return StreamBuilder(
-        stream: _providerMatch.matchesStream,
-        builder:
-            (BuildContext context, AsyncSnapshot<List<MatchModel>> snapshot) {
-          if (snapshot.hasData) {
-            return snapshot.data != null
-                ? Flexible(
-                    child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      mainAxisExtent: 70, // here set custom Height You Want
-                    ),
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      MatchModel match = snapshot.data![index];
-                      return PerformanceCard(
-                        name: match.name,
-                        goalsOneTeam: match.teamOneGoals,
-                        goalsSecondTeam: match.teamSecondGoals,
-                      );
-                    },
-                  )
+    return widget.provider.matches.isNotEmpty
+        ? Flexible(
+            child: GridView.builder(
+            controller: null,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              mainAxisExtent: 70, // here set custom Height You Want
+            ),
+            shrinkWrap: false,
+            itemCount: widget.provider.matches.length > 6
+                ? 6
+                : widget.provider.matches.length,
+            itemBuilder: (BuildContext context, int index) {
+              MatchModel match = widget.provider.matches[index];
+              return PerformanceCard(
+                name: match.name,
+                goalsOneTeam: match.teamOneGoals,
+                goalsSecondTeam: match.teamSecondGoals,
+              );
+            },
+          )
 
-                    /*ListView(
+            /*ListView(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       children: _generateMatches(
@@ -77,12 +71,8 @@ class PerformanceByTeamState extends State<PerformanceByTeam> {
                       ),
                     ),
                     */
-                    )
-                : const SizedBox.shrink();
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+            )
+        : const SizedBox.shrink();
   }
 
   List<Widget> _generateMatches({required List<MatchModel> matches}) {

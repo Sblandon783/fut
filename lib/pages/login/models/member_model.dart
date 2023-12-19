@@ -37,7 +37,7 @@ class MemberModel {
     required this.position,
     required this.idPosition,
     required this.date,
-    required this.included,
+    this.included = false,
     this.added = false,
     this.titular = false,
     this.isMPV = false,
@@ -51,7 +51,6 @@ class MemberModel {
         idPosition: json["position"],
         position: _getPosition(position: json["position"]),
         date: json["date_match"] ?? '',
-        included: _isIncluded(date: json["date_match"]),
         attributes: json["attributes"] != null
             ? AttributesModel.fromJson(json["attributes"])
             : AttributesModel.fromJson(Utils().attributesDefault),
@@ -78,13 +77,3 @@ class MemberModel {
 
 _getPosition({required int position}) =>
     Utils().mapPosition[position] ?? Utils().mapPosition[1];
-
-_isIncluded({required dynamic date}) {
-  if (date == null || date == "") {
-    return false;
-  }
-  DateTime now = DateTime.now();
-  DateTime dateCurrent = DateTime(now.year, now.month, now.day);
-  DateTime dt1 = DateTime.parse(date);
-  return !(dateCurrent.compareTo(dt1) > 0);
-}

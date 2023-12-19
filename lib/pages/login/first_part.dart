@@ -103,12 +103,12 @@ class FirstPartState extends State<FirstPart> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Container(
-                        width: 80.0,
+                        width: 110.0,
                         padding: const EdgeInsets.only(left: 10.0, top: 5),
                         child: TextField(
                           controller: widget.numberController,
                           decoration:
-                              const InputDecoration(labelText: "Número"),
+                              const InputDecoration(labelText: "Nº De Dorsal"),
                           keyboardType: TextInputType.number,
                           inputFormatters: <TextInputFormatter>[
                             FilteringTextInputFormatter.digitsOnly

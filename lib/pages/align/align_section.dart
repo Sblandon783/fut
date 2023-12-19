@@ -4,6 +4,7 @@ import 'package:soccer/pages/align/align_field/align_field.dart';
 import 'package:soccer/pages/align/list_player_content.dart';
 import 'package:soccer/pages/align/list_player_top.dart';
 
+import '../CustomWidgets/empty_data.dart';
 import '../login/models/match_model.dart';
 import '../login/models/member_model.dart';
 
@@ -86,7 +87,12 @@ class AlignSectionState extends State<AlignSection> {
                           ),
                         ],
                       )
-                    : const Text("Se el primero en enlistarte");
+                    : EmptyData(
+                        text: widget.match.isFinished
+                            ? "Partido finalizado"
+                            : "Se el primero en enlistarte",
+                        image: "section_align_small.jpeg",
+                      );
               } else {
                 return const Center(child: CircularProgressIndicator());
               }

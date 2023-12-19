@@ -80,9 +80,20 @@ class ProviderMembers {
           }
         }
       }
+
+      if (match!.substitutes.containsKey(_member.id) &&
+          !members.contains(_member)) {
+        _member.titular = false;
+        _member.added = true;
+        _member.included = true;
+        members.add(_member);
+      }
+
       membersCurrents.removeWhere((element) => !element.included);
       _prefs.userId = _member.id;
+      members = membersCurrents;
       members = members.reversed.toList();
+
       for (var element in membersCurrents) {
         if (element.id == idMvp) {
           element.isMPV = true;
@@ -95,15 +106,37 @@ class ProviderMembers {
     membersSink(members);
   }
 
-  Future<bool> addMe() async {
-    DateTime now = DateTime.now();
-    DateTime date = DateTime(now.year, now.month, now.day);
+  Future<bool> updateAssistants(
+      {required int idMatch, required bool isAdd}) async {
+    List<String> listSubstitutes = [];
+    Map<int, int> mapSubstitutes = {};
 
-    await _supabase.client
-        .from('player')
-        .update({'date_match': date.toString()}).eq('name', _prefs.userName);
+    for (var i = 0; i < members.length; i++) {
+      if (!members[i].titular && (isAdd && members[i].id == _prefs.userId)) {
+        listSubstitutes.add('${members[i].id}/${members[i].idPositionNew}');
+        mapSubstitutes[members[i].id] = members[i].idPositionNew;
+      }
+    }
+    if (isAdd) {
+      listSubstitutes.add('${_prefs.userId}/-1');
+      mapSubstitutes[_prefs.userId] = -1;
+      match!.substitutes = mapSubstitutes;
+      members.add(_member);
+      getListMembers(membersCurrents: members, idMvp: -1, normalGet: false);
+    } else {
+      members.removeWhere((element) => element.name == _prefs.userName);
+      membersSink(members);
+      _member.included = false;
+      match!.substitutes = mapSubstitutes;
+    }
 
-    return true;
+    return await _supabase.client
+        .from('match')
+        .update({
+          'list_substitutes': listSubstitutes,
+        })
+        .eq('id', idMatch)
+        .then((value) => isAdd);
   }
 
   Future<bool> createAccount({
@@ -141,7 +174,7 @@ class ProviderMembers {
     return response.isNotEmpty;
   }
 
-  Future<bool> deleteMe() async {
+  Future<bool> deleteMe({required int idMatch}) async {
     await _supabase.client
         .from('player')
         .update({'date_match': null}).eq('name', _prefs.userName);
@@ -189,10 +222,10 @@ class ProviderMembers {
     Map<int, int> mapSubstitutes = {};
     for (var i = 0; i < members.length; i++) {
       if (members[i].titular) {
-        listAssistants.add('${members[i].id}-${members[i].idPositionNew}');
+        listAssistants.add('${members[i].id}/${members[i].idPositionNew}');
         mapAssistants[members[i].id] = members[i].idPositionNew;
       } else {
-        listSubstitutes.add('${members[i].id}-${members[i].idPositionNew}');
+        listSubstitutes.add('${members[i].id}/${members[i].idPositionNew}');
         mapSubstitutes[members[i].id] = members[i].idPositionNew;
       }
     }
