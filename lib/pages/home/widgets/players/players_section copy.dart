@@ -125,6 +125,7 @@ class PlayersSectionState extends State<PlayersSection> {
                     backgroundColor: show ? Colors.red : Colors.blue,
                   ),
                   onPressed: () async {
+                    /*
                     bool addMe =
                         await (show ? _provider.deleteMe() : _provider.addMe());
                     if (addMe) {
@@ -132,6 +133,7 @@ class PlayersSectionState extends State<PlayersSection> {
                     } else {
                       _buttonNotifier.value = _provider.isIncluded();
                     }
+                    */
                   },
                   child:
                       Text(show ? "Darme de baja" : "Agregarme como leyenda"))),

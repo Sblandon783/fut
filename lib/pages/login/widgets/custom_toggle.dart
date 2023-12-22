@@ -26,7 +26,6 @@ class CustomToggleState extends State<CustomToggle> {
       padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: Row(children: _tabs()));
   List<Widget> _tabs() {
-    print(widget.tabs.length);
     List<Widget> listWidgets = [];
     widget.tabs
         .forEach((key, value) => listWidgets.add(_tab(key: key, text: value)));

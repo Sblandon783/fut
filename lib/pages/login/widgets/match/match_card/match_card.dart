@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/models/field_model.dart';
 import 'package:soccer/pages/login/widgets/match/match_card/match_card_bottom_content.dart';
 import 'package:soccer/pages/login/widgets/match/match_top_content.dart';
+import 'package:soccer/user_preferences.dart';
 
 import '../match_view.dart';
 import '../../../models/field_notifier.dart';
@@ -30,6 +31,7 @@ class MatchCard extends StatefulWidget {
 
 class MatchCardState extends State<MatchCard> {
   final List<DateTime?> _dates = [];
+  final UserPreferences _prefs = UserPreferences();
 
   @override
   void initState() {
@@ -56,13 +58,13 @@ class MatchCardState extends State<MatchCard> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  _teamImage(image: 'assets/logo.png'),
+                  _teamImage(image: widget.match.imageOneTeam),
                   MatchCardCenterContent(
                     isFinished: widget.match.isFinished,
                     goalsTeamOne: widget.match.teamOneGoals,
                     goalsTeamSecond: widget.match.teamSecondGoals,
                   ),
-                  _teamImage(image: 'assets/question_mark.jpeg')
+                  _teamImage(image: widget.match.imageSecondTeam)
                 ]),
           ),
         ),
@@ -71,7 +73,18 @@ class MatchCardState extends State<MatchCard> {
           fields: widget.fields,
           providerMembers: widget.providerMembers,
           disabledOnTap: widget.redirect,
-        )
+        ),
+        if (!widget.match.isFinished &&
+            !widget.redirect &&
+            (_prefs.userId == 23 || _prefs.userId == 25))
+          ElevatedButton(
+            onPressed: () {
+              widget.match.isFinished = true;
+              widget.providerMembers.saveMatch(match: widget.match);
+              setState(() {});
+            },
+            child: const Text('Finalizar Partido'),
+          )
       ],
     );
     return Padding(
@@ -93,10 +106,12 @@ class MatchCardState extends State<MatchCard> {
   Widget _teamImage({required String image}) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(300.0),
-      child: Image(
-        height: double.infinity,
-        image: AssetImage(image),
-      ),
+      child: image.isEmpty
+          ? const Image(
+              height: double.infinity,
+              image: AssetImage('assets/question_mark.jpeg'),
+            )
+          : Image.network(height: double.infinity, image),
     );
   }
 

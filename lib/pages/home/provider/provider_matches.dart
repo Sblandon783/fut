@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:soccer/pages/login/models/field_model.dart';
+import 'package:soccer/user_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../login/models/match_model.dart';
@@ -8,6 +9,7 @@ import '../../login/models/match_model.dart';
 class ProviderMatches {
   ProviderMatches();
   final Supabase _supabase = Supabase.instance;
+  final UserPreferences _prefs = UserPreferences();
 
   List<MatchModel> matches = [];
   final _matchesStreamController = StreamController<MatchesModel>.broadcast();
@@ -18,9 +20,8 @@ class ProviderMatches {
 
   Future getMatches() async {
     final List<dynamic> response = await _supabase.client
-        .from('match')
-        .select()
-        .order('id', ascending: false);
+        .rpc('get_matches_by_team', params: {'_id_team': _prefs.teamId});
+
     MatchesModel matchesResponse = MatchesModel.fromJson(response);
     matches = matchesResponse.matches;
     matchesSink(matchesResponse);

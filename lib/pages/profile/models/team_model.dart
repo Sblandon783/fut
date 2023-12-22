@@ -37,8 +37,8 @@ class TeamModel {
         id: json["id"],
         name: json["name"],
         image: json["image"] ?? '',
-        idCaptain: json["captain"],
-        winner: json["winner"],
-        loose: json["loose"],
+        idCaptain: json["captain"] ?? -1,
+        winner: json["winner"] ?? 0,
+        loose: json["loose"] ?? 0,
       );
 }

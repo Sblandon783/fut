@@ -32,21 +32,22 @@ class MatchCardBottomContentState extends State<MatchCardBottomContent> {
   @override
   void initState() {
     _match = MatchModel(
-      id: widget.match.id,
-      idField: widget.match.idField,
-      idAlign: widget.match.idAlign,
-      date: widget.match.date,
-      hour: widget.match.hour,
-      name: widget.match.name,
-      parsedDate: widget.match.parsedDate,
-      assistants: widget.match.assistants,
-      substitutes: widget.match.substitutes,
-      idMPV: widget.match.idMPV,
-      mapMVP: widget.match.mapMVP,
-      teamOneGoals: widget.match.teamOneGoals,
-      teamSecondGoals: widget.match.teamSecondGoals,
-      listPerformance: widget.match.listPerformance,
-    );
+        id: widget.match.id,
+        idField: widget.match.idField,
+        idAlign: widget.match.idAlign,
+        date: widget.match.date,
+        hour: widget.match.hour,
+        name: widget.match.name,
+        parsedDate: widget.match.parsedDate,
+        assistants: widget.match.assistants,
+        substitutes: widget.match.substitutes,
+        idMPV: widget.match.idMPV,
+        mapMVP: widget.match.mapMVP,
+        teamOneGoals: widget.match.teamOneGoals,
+        teamSecondGoals: widget.match.teamSecondGoals,
+        listPerformance: widget.match.listPerformance,
+        imageOneTeam: widget.match.imageOneTeam,
+        imageSecondTeam: widget.match.imageSecondTeam);
 
     _setDate();
     super.initState();

@@ -41,4 +41,7 @@ class UserPreferences with ChangeNotifier {
   String get nextDatePayment => _prefs.getString('nextDatePayment') ?? '';
   set nextDatePayment(String value) =>
       _prefs.setString('nextDatePayment', value);
+
+  int get teamId => _prefs.getInt('teamId') ?? 1;
+  set teamId(int value) => _prefs.setInt('teamId', value);
 }

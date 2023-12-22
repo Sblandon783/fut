@@ -251,6 +251,7 @@ class ProviderMembers {
         .update({
           'id_field': match.idField,
           'date': match.parsedDate.toString(),
+          'isFinished': match.isFinished,
         })
         .eq('id', match.id)
         .then((value) => true);

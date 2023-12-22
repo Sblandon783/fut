@@ -58,9 +58,11 @@ class MatchOfDay extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                const Text(
-                  "Partido del día",
-                  style: TextStyle(
+                Text(
+                  match.isFinished
+                      ? "Votaciones: Rendimiento por jugador"
+                      : "Partido del día",
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w900,
                     fontSize: 15.0,

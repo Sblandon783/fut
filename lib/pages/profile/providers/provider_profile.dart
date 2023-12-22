@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:soccer/pages/profile/models/team_model.dart';
 import 'package:soccer/user_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

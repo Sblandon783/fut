@@ -5,6 +5,7 @@ import '../../user_preferences.dart';
 
 import '../login/models/member_model.dart';
 
+import 'my_teams.dart';
 import 'widgets/attributes/profile_attributes.dart';
 import 'profile_top.dart';
 import 'providers/provider_profile.dart';
@@ -64,58 +65,7 @@ class ProfilePageState extends State<ProfilePage> {
             ],
           )),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: SizedBox(
-            width: 320,
-            child: Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              color: Colors.blue,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Mis equipos",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.start,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: _onTap,
-                      child: SizedBox(
-                        width: 100.0,
-                        height: 100.0,
-                        child: Card(
-                          elevation: 5,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          color: Colors.white,
-                          child: Center(
-                            child: SizedBox(
-                              height: 70.0,
-                              width: 70.0,
-                              child: _teamImage(image: 'assets/logo.png'),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
+        const MyTeams(),
       ],
     );
   }

@@ -28,6 +28,8 @@ class MatchModel {
   int teamOneGoals;
   int teamSecondGoals;
   Map<dynamic, dynamic> listPerformance;
+  String imageOneTeam;
+  String imageSecondTeam;
 
   MatchModel({
     required this.id,
@@ -45,27 +47,29 @@ class MatchModel {
     required this.teamOneGoals,
     required this.teamSecondGoals,
     required this.listPerformance,
+    required this.imageOneTeam,
+    required this.imageSecondTeam,
   });
 
   factory MatchModel.fromJson(dynamic json) => MatchModel(
-        id: json["id"],
-        idField: json["id_field"] ?? -1,
-        idAlign: json["id_align"] ?? -1,
-        name: "",
-        date: json["date"] != null ? Utils().getDate(date: json["date"]) : '',
-        hour: json["date"] != null ? Utils().getHour(date: json["date"]) : '',
-        assistants: Utils().getMap(text: json['list_assistants']),
-        substitutes: Utils().getMap(text: json['list_substitutes']),
-        parsedDate: Utils().getParsedDate(date: json["date"]),
-        idMPV: Utils().getMVP(json["list_mvp"]),
-        mapMVP: json["list_mvp"] != ""
-            ? Utils().getMap(text: json["list_mvp"])
-            : {},
-        isFinished: json["isFinished"] ?? false,
-        teamOneGoals: json["team_1_goals"] ?? 0,
-        teamSecondGoals: json["team_2_goals"] ?? 0,
-        listPerformance: setPerformance(json["list_performance"]),
-      );
+      id: json["id"],
+      idField: json["id_field"] ?? -1,
+      idAlign: json["id_align"] ?? -1,
+      name: "",
+      date: json["date"] != null ? Utils().getDate(date: json["date"]) : '',
+      hour: json["date"] != null ? Utils().getHour(date: json["date"]) : '',
+      assistants: Utils().getMap(text: json['list_assistants']),
+      substitutes: Utils().getMap(text: json['list_substitutes']),
+      parsedDate: Utils().getParsedDate(date: json["date"]),
+      idMPV: Utils().getMVP(json["list_mvp"]),
+      mapMVP:
+          json["list_mvp"] != "" ? Utils().getMap(text: json["list_mvp"]) : {},
+      isFinished: json["is_finished"] ?? false,
+      teamOneGoals: json["team_1_goals"] ?? 0,
+      teamSecondGoals: json["team_2_goals"] ?? 0,
+      listPerformance: setPerformance(json["list_performance"]),
+      imageOneTeam: json["image"] ?? '',
+      imageSecondTeam: '');
 
   setDate({required List<DateTime?> dates}) {
     String day = dates.first!.day < 10
