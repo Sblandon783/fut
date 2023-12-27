@@ -81,15 +81,15 @@ class MatchInfonState extends State<MatchInfo> {
               colors: widget.match.isFinished
                   ? [
                       Colors.red,
-                      Color.fromARGB(255, 73, 149, 211),
-                      Color.fromARGB(255, 32, 129, 209),
-                      Color.fromARGB(255, 32, 129, 209),
+                      const Color.fromARGB(255, 73, 149, 211),
+                      const Color.fromARGB(255, 32, 129, 209),
+                      const Color.fromARGB(255, 32, 129, 209),
                     ]
                   : [
                       Colors.purple,
-                      Color.fromARGB(255, 32, 129, 209),
-                      Color.fromARGB(255, 32, 129, 209),
-                      Color.fromARGB(255, 32, 129, 209),
+                      const Color.fromARGB(255, 32, 129, 209),
+                      const Color.fromARGB(255, 32, 129, 209),
+                      const Color.fromARGB(255, 32, 129, 209),
                     ]),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),

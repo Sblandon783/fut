@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:soccer/pages/profile/widgets/team/team_top_data.dart';
 
 import '../../models/team_model.dart';
 
@@ -66,18 +65,21 @@ class TeamTopState extends State<TeamTop> {
                 width: 90.0,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(300.0),
-                  child: const Image(
-                    height: double.infinity,
-                    image: AssetImage('assets/logo.png'),
-                  ),
+                  child: widget.team.image.isEmpty
+                      ? const Image(
+                          height: double.infinity,
+                          image: AssetImage('assets/question_mark.jpeg'),
+                        )
+                      : Image.network(
+                          height: double.infinity, widget.team.image),
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(top: 5.0),
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
               child: Text(
-                "NotFap",
-                style: TextStyle(
+                widget.team.name,
+                style: const TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.w900,
                 ),

@@ -48,8 +48,8 @@ class MemberModel {
         id: json["id"],
         name: json["name"],
         number: json["number"],
-        idPosition: json["position"],
-        position: _getPosition(position: json["position"]),
+        idPosition: json["position"] ?? json["pos"],
+        position: _getPosition(position: json["position"] ?? json["pos"]),
         date: json["date_match"] ?? '',
         attributes: json["attributes"] != null
             ? AttributesModel.fromJson(json["attributes"])

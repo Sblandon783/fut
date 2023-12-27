@@ -17,25 +17,47 @@ void main() async {
   final prefs = UserPreferences();
   await prefs.initPrefs();
 
-  return runApp(MyApp());
+  return runApp(const App());
 }
 
 // ignore: use_key_in_widget_constructors, must_be_immutable
-class MyApp extends StatelessWidget {
+
+class App extends StatefulWidget {
+  const App({Key? key}) : super(key: key);
+
+  @override
+  AppState createState() => AppState();
+
+  static void setTheme(BuildContext context, Color newColor) {
+    AppState? state = context.findAncestorStateOfType<AppState>();
+    if (state != null) {
+      // ignore: invalid_use_of_protected_member
+      state.setState(() {
+        state._primary = newColor;
+      });
+    }
+  }
+}
+
+class AppState extends State<App> {
   bool isLogin = false;
   String initialRoute = "/login";
   final UserPreferences _prefs = UserPreferences();
+  Color _primary =
+      Colors.blue; // This will hold the value of the app main color
+
   @override
   Widget build(BuildContext context) {
     if (_prefs.isLogin) {
       initialRoute = "/login";
     }
-
+    ThemeData lightTheme = ThemeData.light().copyWith(primaryColor: _primary);
     return MaterialApp(
       title: 'Componets App',
       debugShowCheckedModeBanner: false,
       initialRoute: initialRoute,
       routes: getAplicationRoutes(),
+      theme: lightTheme,
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(builder: (context) => const HomePage());
       },

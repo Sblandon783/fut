@@ -24,13 +24,16 @@ class ProviderMembers {
   Function(MatchModel) get matchSink => _matchStreamController.sink.add;
   Stream<MatchModel> get matchStream => _matchStreamController.stream;
 
-  Future getMembers({required int idMvp, bool normalGet = false}) async {
+  Future getMembers({
+    required int idMvp,
+    bool normalGet = false,
+    int teamId = 0,
+  }) async {
+    final int id = teamId == 0 ? _prefs.teamId : teamId;
     final List<dynamic> response = await _supabase.client
-        .from('player')
-        .select('id,name,number,position,date_match, attributes');
-
+        .rpc('get_players_by_team', params: {'_id_team': id});
     MembersModel membersResponse = MembersModel.fromJson(response);
-    print(membersResponse);
+
     if (membersResponse.members.isNotEmpty) {
       getListMembers(
         membersCurrents: membersResponse.members,
@@ -251,7 +254,7 @@ class ProviderMembers {
         .update({
           'id_field': match.idField,
           'date': match.parsedDate.toString(),
-          'isFinished': match.isFinished,
+          'is_finished': match.isFinished,
         })
         .eq('id', match.id)
         .then((value) => true);

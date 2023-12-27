@@ -13,7 +13,7 @@ class TabsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: _generateTabs().length,
-      initialIndex: 0,
+      initialIndex: 1,
       child: Scaffold(
         body: _createBody(),
         bottomNavigationBar: _createTabs(),
@@ -49,11 +49,13 @@ class TabsPage extends StatelessWidget {
 
   List<Widget> _generateTabs() {
     return <Widget>[
-      const Tab(icon: Icon(Icons.home)),
+      const Tab(icon: Icon(Icons.home, color: Colors.white)),
       //const Tab(icon: Icon(Icons.note_alt_sharp)),
-      const Tab(icon: Icon(Icons.person_rounded)),
+      const Tab(icon: Icon(Icons.person_rounded, color: Colors.white)),
       if (_prefs.isAdmin)
-        const Tab(icon: Icon(Icons.admin_panel_settings_rounded)),
+        const Tab(
+            icon:
+                Icon(Icons.admin_panel_settings_rounded, color: Colors.white)),
     ];
   }
 }

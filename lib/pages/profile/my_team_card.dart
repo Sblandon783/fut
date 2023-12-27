@@ -52,7 +52,7 @@ class MyTeamCard extends StatelessWidget {
     final route = MaterialPageRoute(
       builder: (context) => TeamView(
         key: UniqueKey(),
-        id: team.id,
+        team: team,
       ),
     );
     Navigator.push(context, route).then((value) {});

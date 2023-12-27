@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 
 class Background extends StatelessWidget {
-  const Background({super.key});
+  final String imageTeam;
+  const Background({super.key, required this.imageTeam});
 
   @override
   Widget build(BuildContext context) {
-    return const Material(
-      elevation: 2,
-      child: Image(
-        width: double.maxFinite,
-        height: 170.0,
-        fit: BoxFit.fill,
-        image: AssetImage('assets/background_profile.jpeg'),
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 95.0),
+      child: imageTeam.isEmpty
+          ? const Image(
+              width: double.maxFinite,
+              height: double.infinity,
+              image: AssetImage('assets/question_mark.jpeg'),
+            )
+          : Image.network(
+              width: double.maxFinite,
+              height: 300.0,
+              imageTeam,
+              fit: BoxFit.fitWidth,
+              color: Colors.white.withOpacity(0.06),
+              colorBlendMode: BlendMode.modulate,
+            ),
     );
   }
 }

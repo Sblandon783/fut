@@ -42,7 +42,7 @@ class MyTeamsState extends State<MyTeams> {
       padding: const EdgeInsets.only(top: 8.0),
       child: SizedBox(
         width: 320,
-        height: 150.0,
+        height: 200.0,
         child: Card(
           elevation: 2,
           shape: RoundedRectangleBorder(
@@ -65,14 +65,16 @@ class MyTeamsState extends State<MyTeams> {
                   ),
                 ),
                 Flexible(
-                  child: Container(
-                    height: 100.0,
-                    alignment: Alignment.center,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: teams.length,
-                      itemBuilder: (context, index) =>
-                          MyTeamCard(team: teams[index]),
+                  child: Center(
+                    child: Container(
+                      height: 100.0,
+                      alignment: Alignment.center,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: teams.length,
+                        itemBuilder: (context, index) =>
+                            MyTeamCard(team: teams[index]),
+                      ),
                     ),
                   ),
                 ),

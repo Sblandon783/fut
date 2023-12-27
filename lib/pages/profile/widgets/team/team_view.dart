@@ -4,6 +4,7 @@ import 'package:soccer/pages/profile/models/team_model.dart';
 import 'package:soccer/pages/profile/widgets/team/team_top.dart';
 
 import '../../../../../../user_preferences.dart';
+import '../../../../main.dart';
 import '../../../home/provider/provider_match.dart';
 import '../../../login/models/match_model.dart';
 import '../../../login/models/member_model.dart';
@@ -14,10 +15,10 @@ import '../performance/performance_by_team.dart';
 import 'team_top_data.dart';
 
 class TeamView extends StatefulWidget {
-  final int id;
+  final TeamModel team;
   const TeamView({
     Key? key,
-    required this.id,
+    required this.team,
   }) : super(key: key);
 
   @override
@@ -46,13 +47,19 @@ class TeamViewState extends State<TeamView> {
   }
 
   void _calls() async {
-    await _providerTeam.getTeam(id: widget.id);
-    await _providerMatch.getMatches(id: widget.id);
-    _providerMembers.getMembers(idMvp: -1, normalGet: true);
+    await _providerTeam.getTeam(id: widget.team.id);
+    await _providerMatch.getMatches(id: widget.team.id);
+    _providerMembers.getMembers(
+      idMvp: -1,
+      normalGet: true,
+      teamId: widget.team.id,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(const Duration(seconds: 5))
+        .then((value) => App.setTheme(context, Colors.white));
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -81,14 +88,14 @@ class TeamViewState extends State<TeamView> {
             valueListenable: _titleNotifier,
             builder: (context, show, child) => show
                 ? Text(
-                    "NotFaps",
-                    style: TextStyle(
+                    widget.team.name,
+                    style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 20.0,
                       fontWeight: FontWeight.w800,
                     ),
                   )
-                : SizedBox.shrink(),
+                : const SizedBox.shrink(),
           ),
           leading: Padding(
             padding: const EdgeInsets.only(left: 10.0),
@@ -151,7 +158,7 @@ class TeamViewState extends State<TeamView> {
                 SliverAppBar(
                   stretch: true,
                   onStretchTrigger: () async {
-                    print("object");
+                    //print("object");
                   },
                   stretchTriggerOffset: 300.0,
                   expandedHeight: 215.0,

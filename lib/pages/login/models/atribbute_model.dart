@@ -35,6 +35,15 @@ class AttributesModel {
         "creative": creative.total,
         "technique": technique.total
       };
+
+  double getMedium() {
+    int performance = attack.total +
+        technique.total +
+        creative.total +
+        tactic.total +
+        defense.total;
+    return performance / 5;
+  }
 }
 
 class AttributeModel {
