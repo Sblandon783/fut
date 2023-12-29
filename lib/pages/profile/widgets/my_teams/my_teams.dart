@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/profile/models/team_model.dart';
-import 'package:soccer/pages/profile/my_team_card.dart';
+import 'package:soccer/pages/profile/widgets/my_teams/my_team_card.dart';
+import 'package:soccer/pages/profile/widgets/my_teams/my_teams_top.dart';
 
-import 'providers/provider_teams.dart';
+import '../../providers/provider_teams.dart';
 
 class MyTeams extends StatefulWidget {
   const MyTeams({Key? key}) : super(key: key);
@@ -16,11 +17,11 @@ class MyTeamsState extends State<MyTeams> {
 
   @override
   void initState() {
-    getTeamsByPlayer();
+    _getTeamsByPlayer();
     super.initState();
   }
 
-  void getTeamsByPlayer() => _provider.getTeamsByPlayer();
+  void _getTeamsByPlayer() => _provider.getTeamsByPlayer();
 
   @override
   Widget build(BuildContext context) => _generateContent();
@@ -53,17 +54,7 @@ class MyTeamsState extends State<MyTeams> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Mis equipos",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.start,
-                  ),
-                ),
+                MyTeamsTop(onTap: _addTeamByPlayer),
                 Flexible(
                   child: Center(
                     child: Container(
@@ -72,8 +63,10 @@ class MyTeamsState extends State<MyTeams> {
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: teams.length,
-                        itemBuilder: (context, index) =>
-                            MyTeamCard(team: teams[index]),
+                        itemBuilder: (context, index) => MyTeamCard(
+                          team: teams[index],
+                          exitTeam: _exitTeam,
+                        ),
                       ),
                     ),
                   ),
@@ -85,4 +78,15 @@ class MyTeamsState extends State<MyTeams> {
       ),
     );
   }
+
+  void _addTeamByPlayer({required int idTeam}) async {
+    bool isAdd = await _provider.addTeamsByPlayer(idTeam: idTeam);
+
+    if (isAdd) {
+      _getTeamsByPlayer();
+    }
+  }
+
+  void _exitTeam({required int idTeam}) async =>
+      await _provider.exitTeam(idTeam: idTeam);
 }

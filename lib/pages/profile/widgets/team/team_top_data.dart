@@ -40,7 +40,7 @@ class TeamTopData extends StatelessWidget {
                 _icon(
                   icon: Icons.person,
                   text: team.totalMembers.toString(),
-                )
+                ),
               ],
             ),
           ),

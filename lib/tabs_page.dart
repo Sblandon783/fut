@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/activities/activities_page.dart';
 import 'package:soccer/pages/home/home_page.dart';
-
-import 'package:soccer/user_preferences.dart';
 
 import 'pages/profile/profile_page.dart';
 
 class TabsPage extends StatelessWidget {
-  final UserPreferences _prefs = UserPreferences();
-
-  TabsPage({super.key});
+  const TabsPage({super.key});
   @override
   Widget build(BuildContext context) {
+    final List<Widget> tabs = _generateTabs();
     return DefaultTabController(
-      length: _generateTabs().length,
-      initialIndex: 1,
+      length: tabs.length,
+      initialIndex: 0,
       child: Scaffold(
         body: _createBody(),
-        bottomNavigationBar: _createTabs(),
+        bottomNavigationBar: _createTabs(tabs: tabs),
       ),
     );
   }
 
-  Widget _createTabs() {
+  Widget _createBody() {
+    return const TabBarView(
+      children: <Widget>[
+        Center(child: ActivitiesPage()),
+        Center(child: HomePage()),
+        Center(child: ProfilePage()),
+      ],
+    );
+  }
+
+  Widget _createTabs({required List<Widget> tabs}) {
     return Container(
       color: Colors.blue,
       height: 55,
@@ -30,32 +38,20 @@ class TabsPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(3),
           color: Colors.blue.shade800,
         ),
-        tabs: _generateTabs(),
+        tabs: tabs,
       ),
-    );
-  }
-
-  Widget _createBody() {
-    return const TabBarView(
-      children: <Widget>[
-        //Center(child: HomePage()),
-        Center(child: HomePage()),
-        //Center(child: AlignPage()),
-        Center(child: ProfilePage()),
-        // if (_prefs.isAdmin) const Center(child: AdminPage()),
-      ],
     );
   }
 
   List<Widget> _generateTabs() {
     return <Widget>[
-      const Tab(icon: Icon(Icons.home, color: Colors.white)),
-      //const Tab(icon: Icon(Icons.note_alt_sharp)),
+      const Tab(icon: Icon(Icons.local_activity_rounded, color: Colors.white)),
+      const Tab(
+          icon: Icon(
+        Icons.home,
+        color: Colors.white,
+      )),
       const Tab(icon: Icon(Icons.person_rounded, color: Colors.white)),
-      if (_prefs.isAdmin)
-        const Tab(
-            icon:
-                Icon(Icons.admin_panel_settings_rounded, color: Colors.white)),
     ];
   }
 }

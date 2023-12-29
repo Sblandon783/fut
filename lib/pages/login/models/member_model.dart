@@ -29,6 +29,8 @@ class MemberModel {
   bool titular;
   bool isMPV;
   AttributesModel attributes;
+  bool isCaptain;
+  int status;
 
   MemberModel({
     required this.id,
@@ -42,6 +44,8 @@ class MemberModel {
     this.titular = false,
     this.isMPV = false,
     required this.attributes,
+    this.isCaptain = false,
+    this.status = 1,
   });
 
   factory MemberModel.fromJson(Map<String, dynamic> json) => MemberModel(
@@ -54,6 +58,8 @@ class MemberModel {
         attributes: json["attributes"] != null
             ? AttributesModel.fromJson(json["attributes"])
             : AttributesModel.fromJson(Utils().attributesDefault),
+        isCaptain: json["is_captain"] ?? false,
+        status: json["status"] ?? 1,
       );
 
   json() => {

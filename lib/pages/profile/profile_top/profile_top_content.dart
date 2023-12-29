@@ -84,13 +84,19 @@ class ProfileTopContentState extends State<ProfileTopContent> {
     return Stack(
       children: [
         //Background(imageTeam: image),
+
         TopContent(
           idPosition: widget.member.idPosition,
           width: widget.width,
           height: widget.height,
           utils: _utils,
         ),
-        CenterContentProfile(name: widget.member.name, width: widget.width),
+        CenterContentProfile(
+          name: widget.member.name,
+          width: widget.width,
+          isCaptain: widget.member.isCaptain,
+          status: widget.member.status,
+        ),
         /*
         FooterContent(
           member: widget.member,

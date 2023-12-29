@@ -5,7 +5,6 @@ import 'package:soccer/pages/home/widgets/match_of_day.dart';
 import 'package:soccer/pages/login/login_page.dart';
 import 'package:soccer/pages/login/widgets/custom_toggle.dart';
 
-import '../../main.dart';
 import '../../user_preferences.dart';
 
 import '../login/models/field_notifier.dart';
@@ -34,6 +33,11 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     _prefs.isModeAdmin = false;
+    /*
+    ThemeCubit c = BlocProvider.of<ThemeCubit>(context, listen: false);
+    c.changeTheme();
+    */
+    _prefs.pageId = '/home';
 
     _getMatches();
     super.initState();
@@ -41,9 +45,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 5))
-        .then((value) => App.setTheme(context, Colors.blue));
-
+    print("Home");
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(

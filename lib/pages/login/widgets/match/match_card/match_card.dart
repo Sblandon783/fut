@@ -4,6 +4,7 @@ import 'package:soccer/pages/login/widgets/match/match_card/match_card_bottom_co
 import 'package:soccer/pages/login/widgets/match/match_top_content.dart';
 import 'package:soccer/user_preferences.dart';
 
+import '../../../../../main.dart';
 import '../match_view.dart';
 import '../../../models/field_notifier.dart';
 import '../../../models/match_model.dart';
@@ -121,6 +122,7 @@ class MatchCardState extends State<MatchCard> {
   void _onTap() {
     final int id = widget.match.idField;
     final DateTime parsedDate = widget.match.parsedDate;
+    //App.setTheme(context, Colors.blue.shade700);
     final route = MaterialPageRoute(
       builder: (context) => MatchView(
         key: UniqueKey(),

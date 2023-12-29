@@ -19,7 +19,8 @@ class ProviderProfile {
   Future getMyProfile() async {
     final List<dynamic> response = await _supabase.client
         .from('player')
-        .select('id,name,number,position,date_match, attributes')
+        .select(
+            'id,name,number,position,date_match, attributes,is_captain, status')
         .eq('id', _prefs.userId);
 
     MemberModel memberResponse = MemberModel.fromJson(response.first);
@@ -34,5 +35,14 @@ class ProviderProfile {
         .update({'attributes': attributes}).eq('id', _prefs.userId);
 
     return true;
+  }
+
+  updateMember({required MemberModel newMember}) async {
+    await _supabase.client
+        .from('player')
+        .update({'status': newMember.status}).eq('id', _prefs.userId);
+
+    _member = newMember;
+    memberSink(_member);
   }
 }

@@ -33,4 +33,17 @@ class ProviderTeams {
     teamsSink(_teams);
     return;
   }
+
+  Future<bool> addTeamsByPlayer({required int idTeam}) async {
+    final List<dynamic> response = await _supabase.client.rpc(
+        'add_players_by_team',
+        params: {'_id_team': idTeam, '_id_player': _prefs.userId});
+
+    return response.first['is_add'] ?? false;
+  }
+
+  Future<void> exitTeam({required int idTeam}) async {
+    _teams.removeWhere((team) => team.id == idTeam);
+    teamsSink(_teams);
+  }
 }

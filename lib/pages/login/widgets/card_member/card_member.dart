@@ -55,7 +55,16 @@ class CardMember extends StatefulWidget {
 class CardMemberState extends State<CardMember> {
   final UserPreferences _prefs = UserPreferences();
   final Utils _utils = Utils();
-
+  final Map<int, Color> _statusColor = {
+    1: Colors.green,
+    2: Colors.orange,
+    3: Colors.red,
+  };
+  final Map<int, IconData> _statusIcon = {
+    1: Icons.local_fire_department_outlined,
+    2: Icons.sensor_occupied_rounded,
+    3: Icons.arrow_downward_outlined,
+  };
   double _performance = 0.0;
   late Color _color;
   @override
@@ -128,6 +137,20 @@ class CardMemberState extends State<CardMember> {
           width: widget.width,
           height: widget.isSmall ? 60.0 : widget.height - 150.0,
           utils: _utils,
+        ),
+        Positioned(
+          top: 7.0,
+          right: 1.0,
+          child: Container(
+            color: const Color.fromARGB(145, 0, 0, 0),
+            padding: const EdgeInsets.symmetric(vertical: 2.0),
+            width: 50.0,
+            child: Icon(
+              _statusIcon[widget.member.status],
+              color: _statusColor[widget.member.status],
+              size: 15.0,
+            ),
+          ),
         ),
         if (widget.member.isMPV) MVPContent(width: widget.width),
         CenterContent(name: widget.member.name, width: widget.width),

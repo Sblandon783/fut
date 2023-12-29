@@ -4,14 +4,16 @@ import 'package:soccer/pages/profile/models/team_model.dart';
 import 'package:soccer/pages/profile/widgets/team/team_top.dart';
 
 import '../../../../../../user_preferences.dart';
-import '../../../../main.dart';
+
 import '../../../home/provider/provider_match.dart';
 import '../../../login/models/match_model.dart';
 import '../../../login/models/member_model.dart';
 import '../../../login/providers/provider_members.dart';
 import '../../../login/providers/provider_team.dart';
 import '../../../login/widgets/card_member/card_member.dart';
+import '../../nav_bar/exit_button.dart';
 import '../performance/performance_by_team.dart';
+import 'team_my_status.dart';
 import 'team_top_data.dart';
 
 class TeamView extends StatefulWidget {
@@ -56,10 +58,17 @@ class TeamViewState extends State<TeamView> {
     );
   }
 
+  void _changeStatus({required int status}) {
+    if (status == 1) {
+      _providerTeam.exitTeam(idTeam: widget.team.id);
+      Navigator.pop(context, widget.team.id);
+    } else if (status == 2) {
+      _providerTeam.addTeam(idTeam: widget.team.id);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 5))
-        .then((value) => App.setTheme(context, Colors.white));
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -69,20 +78,8 @@ class TeamViewState extends State<TeamView> {
           elevation: 0,
           toolbarHeight: 40.0,
           actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: GestureDetector(
-                  onTap: () {
-                    _prefs.isLogin = false;
-                    final route = MaterialPageRoute(
-                        builder: (context) => const LoginPage());
-                    Navigator.push(context, route);
-                  },
-                  child: Icon(
-                    Icons.exit_to_app_rounded,
-                    color: Colors.grey.shade700,
-                  )),
-            )
+            TeamMyStatus(onTap: _changeStatus),
+            ExitButton(color: Colors.grey.shade700),
           ],
           title: ValueListenableBuilder(
             valueListenable: _titleNotifier,

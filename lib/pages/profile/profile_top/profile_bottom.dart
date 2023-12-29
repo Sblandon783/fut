@@ -41,7 +41,7 @@ class ProfileBottom extends StatelessWidget {
           _card(title: 'Posición', subTitle: member.position, left: 10.0),
           _card(title: 'Rendimiento', subTitle: performance.toString()),
           _card(
-              title: 'Dorsal', subTitle: member.number.toString(), right: 10.0)
+              title: 'Dorsal', subTitle: member.number.toString(), right: 10.0),
         ],
       ),
     );

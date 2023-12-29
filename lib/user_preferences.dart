@@ -44,4 +44,8 @@ class UserPreferences with ChangeNotifier {
 
   int get teamId => _prefs.getInt('teamId') ?? 1;
   set teamId(int value) => _prefs.setInt('teamId', value);
+
+  String get colorBackground => _prefs.getString('colorBackground') ?? '';
+  set colorBackground(String value) =>
+      _prefs.setString('colorBackground', value);
 }

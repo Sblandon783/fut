@@ -5,10 +5,11 @@ import 'package:soccer/pages/profile/profile_top/profile_bottom.dart';
 import '../../main.dart';
 import '../../user_preferences.dart';
 
-import '../login/login_page.dart';
 import '../login/models/member_model.dart';
 
-import 'my_teams.dart';
+import 'widgets/my_teams/my_teams.dart';
+import 'nav_bar/edit_profile_button.dart';
+import 'nav_bar/exit_button.dart';
 import 'widgets/attributes/profile_attributes.dart';
 import 'profile_top/profile_top.dart';
 import 'providers/provider_profile.dart';
@@ -25,10 +26,11 @@ class ProfilePageState extends State<ProfilePage> {
   final ProviderProfile _provider = ProviderProfile();
   final ScrollController _controller = ScrollController();
   final ValueNotifier<bool> _titleNotifier = ValueNotifier(false);
-
+  late Color _color;
   @override
   void initState() {
     _prefs.isModeAdmin = false;
+    _prefs.pageId = '/profile';
     _getMyProfile();
     super.initState();
     _controller.addListener(() {
@@ -38,6 +40,7 @@ class ProfilePageState extends State<ProfilePage> {
         _titleNotifier.value = false;
       }
     });
+    print("object");
   }
 
   @override
@@ -54,19 +57,25 @@ class ProfilePageState extends State<ProfilePage> {
   }
 
   Widget c({required MemberModel member}) {
-    final Color color = Utils().mapPosSevenColors[member.idPosition];
-    Future.delayed(const Duration(seconds: 5))
-        .then((value) => App.setTheme(context, color));
-
+    _color = Utils().mapPosSevenColors[member.idPosition];
+    /*
+    if (_prefs.colorBackground != _color.toString()) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        App.setTheme(context, _color);
+        _prefs.colorBackground = _color.value.toString();
+      });
+    }
+    print(_prefs.colorBackground);
+    print(_color.value.toString());
+    */
+//Steven Blandón
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       controller: _controller,
       slivers: <Widget>[
         SliverAppBar(
           stretch: true,
-          onStretchTrigger: () async {
-            //print("object");
-          },
+          onStretchTrigger: () async {},
           stretchTriggerOffset: 300.0,
           expandedHeight: 300.0,
           centerTitle: true,
@@ -95,36 +104,13 @@ class ProfilePageState extends State<ProfilePage> {
           ),
           toolbarHeight: 40.0,
           actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: GestureDetector(
-                  onTap: () {
-                    _prefs.isLogin = false;
-                    final route = MaterialPageRoute(
-                        builder: (context) => const LoginPage());
-                    Navigator.push(context, route);
-                  },
-                  child: const Icon(
-                    Icons.exit_to_app_rounded,
-                    color: Colors.white,
-                  )),
-            )
+            EditProfileButton(provider: _provider, member: member),
+            ExitButton()
           ],
-          backgroundColor: color,
+          backgroundColor: _color,
           foregroundColor: Colors.blue,
         ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              return SizedBox(
-                height: 700,
-                width: double.infinity,
-                child: _generateCard(member: member),
-              );
-            },
-            childCount: 1,
-          ),
-        ),
+        _generateCard(member: member),
       ],
     );
   }
@@ -133,6 +119,7 @@ class ProfilePageState extends State<ProfilePage> {
       stream: _provider.memberStream,
       builder: (BuildContext context, AsyncSnapshot<MemberModel> snapshot) {
         if (snapshot.hasData) {
+          print(snapshot.data);
           return snapshot.data != null
               ? c(member: snapshot.data!)
               : const SizedBox.shrink();
@@ -142,18 +129,24 @@ class ProfilePageState extends State<ProfilePage> {
       });
 
   Widget _generateCard({required MemberModel member}) {
-    return Column(
-      children: [
-        Flexible(
-          child: SingleChildScrollView(
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (BuildContext context, int index) {
+          return SizedBox(
+            height: 700,
+            width: double.infinity,
+            child: SingleChildScrollView(
               child: Column(
-            children: [
-              ProfileAttributes(member: member),
-            ],
-          )),
-        ),
-        const MyTeams(),
-      ],
+                children: [
+                  ProfileAttributes(member: member),
+                  const MyTeams(),
+                ],
+              ),
+            ),
+          );
+        },
+        childCount: 1,
+      ),
     );
   }
 }

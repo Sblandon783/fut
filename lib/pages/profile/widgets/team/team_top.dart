@@ -27,7 +27,7 @@ class TeamTopState extends State<TeamTop> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
       child: Container(
-        height: 210.0,
+        height: 215.0,
         color: Colors.white,
         child: Stack(
           alignment: Alignment.topCenter,
@@ -36,7 +36,7 @@ class TeamTopState extends State<TeamTop> {
 
             Container(
               width: double.maxFinite,
-              height: 140.0,
+              height: 145.0,
               decoration: const BoxDecoration(
                 borderRadius: radius,
                 color: Colors.white,
@@ -51,12 +51,12 @@ class TeamTopState extends State<TeamTop> {
 
   Widget _generateCard() {
     return SizedBox(
-      width: 200.0,
+      width: 205.0,
       height: double.infinity,
       child: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.only(bottom: 5.0),
@@ -84,6 +84,14 @@ class TeamTopState extends State<TeamTop> {
                   fontWeight: FontWeight.w900,
                 ),
               ),
+            ),
+            Text(
+              '#${widget.team.id}',
+              style: const TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey),
+              textAlign: TextAlign.center,
             ),
           ],
         ),

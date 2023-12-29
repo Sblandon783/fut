@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/profile/models/team_model.dart';
 import 'package:soccer/pages/profile/widgets/team/team_view.dart';
+import 'package:soccer/user_preferences.dart';
+
+import '../../../../main.dart';
 
 class MyTeamCard extends StatelessWidget {
   final TeamModel team;
+  final Function({required int idTeam}) exitTeam;
+  final UserPreferences _prefs = UserPreferences();
 
-  const MyTeamCard({super.key, required this.team});
+  MyTeamCard({super.key, required this.team, required this.exitTeam});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -49,12 +54,23 @@ class MyTeamCard extends StatelessWidget {
   }
 
   void _onTap({required BuildContext context}) {
+    // App.setTheme(context, Colors.white);
     final route = MaterialPageRoute(
       builder: (context) => TeamView(
         key: UniqueKey(),
         team: team,
       ),
     );
-    Navigator.push(context, route).then((value) {});
+    Navigator.push(context, route).then((value) {
+      if (value != null) {
+        Future.delayed(const Duration(milliseconds: 500)).then(
+          (value) => exitTeam(idTeam: team.id),
+        );
+      }
+    }); /*.then((value) =>
+        Future.delayed(const Duration(milliseconds: 500))
+       .then((value) =>
+            App.setTheme(context, Color(int.parse(_prefs.colorBackground)))));
+            */
   }
 }

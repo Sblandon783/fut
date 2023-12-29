@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 
+import 'status_tag.dart';
+
 class CenterContentProfile extends StatelessWidget {
   final String name;
   final double width;
+  final bool isCaptain;
+  final int status;
 
-  const CenterContentProfile(
-      {super.key, required this.name, required this.width});
+  const CenterContentProfile({
+    super.key,
+    required this.name,
+    required this.width,
+    required this.isCaptain,
+    required this.status,
+  });
 
   @override
   Widget build(BuildContext context) {
     List<String> nameList = name.split(' ');
     return Positioned(
-      bottom: 180.0,
+      bottom: 110.0,
       left: 10.0,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -47,7 +56,8 @@ class CenterContentProfile extends StatelessWidget {
                 fontWeight: FontWeight.w800,
                 fontSize: 30.0,
               ),
-            )
+            ),
+          StatusTag(status: status, isCaptain: isCaptain),
         ],
       ),
     );

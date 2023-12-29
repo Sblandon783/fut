@@ -47,8 +47,7 @@ class MatchViewState extends State<MatchView> {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 5))
-        .then((value) => App.setTheme(context, Colors.blue));
+    print("match");
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(

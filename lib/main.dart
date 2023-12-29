@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:soccer/routes/routes.dart';
+import 'package:soccer/tabs_page.dart';
 import 'package:soccer/user_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'pages/home/home_page.dart';
+import 'controller/cubit/theme_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,49 +19,39 @@ void main() async {
   final prefs = UserPreferences();
   await prefs.initPrefs();
 
-  return runApp(const App());
+  return runApp(
+    MultiBlocProvider(
+      providers: [BlocProvider(create: (coontext) => ThemeCubit())],
+      child: App(),
+    ),
+  );
 }
 
 // ignore: use_key_in_widget_constructors, must_be_immutable
 
-class App extends StatefulWidget {
-  const App({Key? key}) : super(key: key);
-
-  @override
-  AppState createState() => AppState();
-
-  static void setTheme(BuildContext context, Color newColor) {
-    AppState? state = context.findAncestorStateOfType<AppState>();
-    if (state != null) {
-      // ignore: invalid_use_of_protected_member
-      state.setState(() {
-        state._primary = newColor;
-      });
-    }
-  }
-}
-
-class AppState extends State<App> {
-  bool isLogin = false;
-  String initialRoute = "/login";
+class App extends StatelessWidget {
   final UserPreferences _prefs = UserPreferences();
-  Color _primary =
-      Colors.blue; // This will hold the value of the app main color
+
+  App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (_prefs.isLogin) {
+    print("sasdsada");
+    String initialRoute = "/home";
+    if (!_prefs.isLogin) {
       initialRoute = "/login";
+    } else {
+      initialRoute = _prefs.pageId;
     }
-    ThemeData lightTheme = ThemeData.light().copyWith(primaryColor: _primary);
+    //ThemeCubit theme = BlocProvider.of<ThemeCubit>(context, listen: true);
     return MaterialApp(
       title: 'Componets App',
       debugShowCheckedModeBanner: false,
       initialRoute: initialRoute,
       routes: getAplicationRoutes(),
-      theme: lightTheme,
+      //theme: theme.isDark ? ThemeData.dark() : ThemeData.light(),
       onGenerateRoute: (RouteSettings settings) {
-        return MaterialPageRoute(builder: (context) => const HomePage());
+        return MaterialPageRoute(builder: (context) => const TabsPage());
       },
     );
   }
