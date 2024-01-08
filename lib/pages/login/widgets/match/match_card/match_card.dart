@@ -4,7 +4,6 @@ import 'package:soccer/pages/login/widgets/match/match_card/match_card_bottom_co
 import 'package:soccer/pages/login/widgets/match/match_top_content.dart';
 import 'package:soccer/user_preferences.dart';
 
-import '../../../../../main.dart';
 import '../match_view.dart';
 import '../../../models/field_notifier.dart';
 import '../../../models/match_model.dart';
@@ -17,6 +16,7 @@ class MatchCard extends StatefulWidget {
   final List<FieldModel> fields;
   final ProviderMembers providerMembers;
   final bool redirect;
+  final bool createMatch;
   const MatchCard({
     super.key,
     required this.match,
@@ -24,6 +24,7 @@ class MatchCard extends StatefulWidget {
     required this.fields,
     required this.providerMembers,
     this.redirect = true,
+    this.createMatch = false,
   });
 
   @override
@@ -74,10 +75,12 @@ class MatchCardState extends State<MatchCard> {
           fields: widget.fields,
           providerMembers: widget.providerMembers,
           disabledOnTap: widget.redirect,
+          createMatch: widget.createMatch,
         ),
         if (!widget.match.isFinished &&
             !widget.redirect &&
-            (_prefs.userId == 23 || _prefs.userId == 25))
+            (_prefs.userId == 23 || _prefs.userId == 25) &&
+            !widget.createMatch)
           ElevatedButton(
             onPressed: () {
               widget.match.isFinished = true;

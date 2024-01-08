@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:soccer/pages/login/login_page.dart';
+
 import 'package:soccer/pages/profile/models/team_model.dart';
 import 'package:soccer/pages/profile/widgets/team/team_top.dart';
-
-import '../../../../../../user_preferences.dart';
 
 import '../../../home/provider/provider_match.dart';
 import '../../../login/models/match_model.dart';
@@ -28,7 +26,6 @@ class TeamView extends StatefulWidget {
 }
 
 class TeamViewState extends State<TeamView> {
-  final UserPreferences _prefs = UserPreferences();
   final ProviderMembers _providerMembers = ProviderMembers();
   final ProviderTeam _providerTeam = ProviderTeam();
   final ProviderMatch _providerMatch = ProviderMatch();
@@ -51,7 +48,7 @@ class TeamViewState extends State<TeamView> {
   void _calls() async {
     await _providerTeam.getTeam(id: widget.team.id);
     await _providerMatch.getMatches(id: widget.team.id);
-    _providerMembers.getMembers(
+    await _providerMembers.getMembers(
       idMvp: -1,
       normalGet: true,
       teamId: widget.team.id,
@@ -64,53 +61,14 @@ class TeamViewState extends State<TeamView> {
       Navigator.pop(context, widget.team.id);
     } else if (status == 2) {
       _providerTeam.addTeam(idTeam: widget.team.id);
+      _providerMembers.setMemberStatus = 1;
+      Navigator.pop(context, widget.team.id);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          toolbarHeight: 40.0,
-          actions: [
-            TeamMyStatus(onTap: _changeStatus),
-            ExitButton(color: Colors.grey.shade700),
-          ],
-          title: ValueListenableBuilder(
-            valueListenable: _titleNotifier,
-            builder: (context, show, child) => show
-                ? Text(
-                    widget.team.name,
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  )
-                : const SizedBox.shrink(),
-          ),
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 10.0),
-            child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Icon(
-                    Icons.arrow_back_ios_new_outlined,
-                    color: Colors.grey.shade700,
-                  ),
-                )),
-          ),
-        ),
-        backgroundColor: Colors.grey.shade300,
-        body: _generateContent(),
-      ),
-    );
+    return _generateContent();
   }
 
   Widget _generateContent() {
@@ -148,98 +106,79 @@ class TeamViewState extends State<TeamView> {
                 }
               }
             }
-            return CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              controller: _controller,
-              slivers: <Widget>[
-                SliverAppBar(
-                  stretch: true,
-                  onStretchTrigger: () async {
-                    //print("object");
-                  },
-                  stretchTriggerOffset: 300.0,
-                  expandedHeight: 215.0,
-                  centerTitle: true,
-                  floating: true,
-                  pinned: true,
-                  titleSpacing: 0.0,
-                  leading: const SizedBox.shrink(),
-                  flexibleSpace: FlexibleSpaceBar(
-                    title: TeamTopData(team: team),
-                    titlePadding: EdgeInsets.zero,
-                    centerTitle: true,
-                    expandedTitleScale: 1.3,
-                    background: TeamTop(team: team),
-                  ),
+            return WillPopScope(
+              onWillPop: () async => false,
+              child: Scaffold(
+                appBar: AppBar(
                   backgroundColor: Colors.white,
-                  foregroundColor: Colors.blue,
+                  automaticallyImplyLeading: false,
+                  elevation: 0,
                   toolbarHeight: 40.0,
-                ),
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                      return Column(
-                        children: [
-                          Container(
-                            color: Colors.white,
-                            height: 326.0,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text(
-                                    "Jugadores",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey,
-                                      fontSize: 17.0,
-                                    ),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ),
-                                Flexible(
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: snapshot.data!.length,
-                                    itemBuilder: (context, index) {
-                                      final MemberModel member =
-                                          snapshot.data![index];
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10.0),
-                                        child: CardMember(
-                                          member: member,
-                                          height: 270.0,
-                                          width: 150.0,
-                                          updatePerformance: _updatePerformance,
-                                        ),
-                                      );
-                                      ;
-                                    },
-                                  ),
-                                ),
-                              ],
+                  actions: [
+                    TeamMyStatus(
+                      onTap: _changeStatus,
+                      status: _providerMembers.memberStatus,
+                    ),
+                    ExitButton(color: Colors.grey.shade700),
+                  ],
+                  title: ValueListenableBuilder(
+                    valueListenable: _titleNotifier,
+                    builder: (context, show, child) => show
+                        ? Text(
+                            widget.team.name,
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w800,
                             ),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                  leading: Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Icon(
+                            Icons.arrow_back_ios_new_outlined,
+                            color: Colors.grey.shade700,
                           ),
-                          PerformanceByTeam(provider: _providerMatch),
-                          const SizedBox(height: 10.0),
-                        ],
-                      );
-                    },
-                    childCount: 1,
+                        )),
                   ),
                 ),
-              ],
-            );
-            return snapshot.data!.isNotEmpty
-                ? Column(
-                    children: [
-                      TeamTop(team: team),
-                      Flexible(
-                        child: SingleChildScrollView(
-                          child: Column(
+                backgroundColor: Colors.grey.shade300,
+                body: CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  controller: _controller,
+                  slivers: <Widget>[
+                    SliverAppBar(
+                      stretch: true,
+                      onStretchTrigger: () async {
+                        //print("object");
+                      },
+                      stretchTriggerOffset: 300.0,
+                      expandedHeight: 215.0,
+                      centerTitle: true,
+                      floating: true,
+                      pinned: true,
+                      titleSpacing: 0.0,
+                      leading: const SizedBox.shrink(),
+                      flexibleSpace: FlexibleSpaceBar(
+                        title: TeamTopData(team: team),
+                        titlePadding: EdgeInsets.zero,
+                        centerTitle: true,
+                        expandedTitleScale: 1.3,
+                        background: TeamTop(team: team),
+                      ),
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.blue,
+                      toolbarHeight: 40.0,
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          return Column(
                             children: [
                               Container(
                                 color: Colors.white,
@@ -260,12 +199,39 @@ class TeamViewState extends State<TeamView> {
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
-                                    Flexible(
-                                      child: ListView(
-                                        scrollDirection: Axis.horizontal,
-                                        children: _generateMembers(
-                                          members: snapshot.data ?? [],
+                                    if (snapshot.data!.isEmpty)
+                                      const Center(
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top: 100.0),
+                                          child: Text(
+                                            "No hay jugadores en este equipo",
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17.0,
+                                            ),
+                                          ),
                                         ),
+                                      ),
+                                    Flexible(
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: snapshot.data!.length,
+                                        itemBuilder: (context, index) {
+                                          final MemberModel member =
+                                              snapshot.data![index];
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10.0),
+                                            child: CardMember(
+                                              member: member,
+                                              height: 270.0,
+                                              width: 150.0,
+                                              updatePerformance:
+                                                  _updatePerformance,
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ),
                                   ],
@@ -274,30 +240,19 @@ class TeamViewState extends State<TeamView> {
                               PerformanceByTeam(provider: _providerMatch),
                               const SizedBox(height: 10.0),
                             ],
-                          ),
-                        ),
+                          );
+                        },
+                        childCount: 1,
                       ),
-                    ],
-                  )
-                : const Text("Se el primero en enlistarte");
+                    ),
+                  ],
+                ),
+              ),
+            );
           } else {
             return const Center(child: CircularProgressIndicator());
           }
         });
-  }
-
-  List<Widget> _generateMembers({required List<MemberModel> members}) {
-    return members.map((member) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0),
-        child: CardMember(
-          member: member,
-          height: 270.0,
-          width: 150.0,
-          updatePerformance: _updatePerformance,
-        ),
-      );
-    }).toList();
   }
 
   Future<bool> _updatePerformance({

@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/utils/utils.dart';
 
 import 'package:soccer/pages/profile/profile_top/top_content.dart';
-import 'package:soccer/user_preferences.dart';
 
 import '../../login/models/member_model.dart';
-import '../../login/widgets/card_member/alert_poll_performance.dart';
 import '../../login/widgets/card_member/animated_bounce.dart';
 
 import 'center_content.dart';
@@ -46,7 +44,6 @@ class ProfileTopContent extends StatefulWidget {
 }
 
 class ProfileTopContentState extends State<ProfileTopContent> {
-  final UserPreferences _prefs = UserPreferences();
   final Utils _utils = Utils();
   final String image =
       'https://wphnxtpgvkcouhktmews.supabase.co/storage/v1/object/public/teams_images/notFap.png?t=2023-12-22T18%3A37%3A58.527Z';
@@ -97,54 +94,8 @@ class ProfileTopContentState extends State<ProfileTopContent> {
           isCaptain: widget.member.isCaptain,
           status: widget.member.status,
         ),
-        /*
-        FooterContent(
-          member: widget.member,
-          width: widget.width,
-          bottom: widget.performance.isNotEmpty ? 30.0 : 10.0,
-        ),
-        */
       ],
     );
-  }
-
-  _onTap() {
-    if (_prefs.userId == widget.member.id) {
-      return;
-    }
-
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) => AlertDialog(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(5.0))),
-        titlePadding: EdgeInsets.zero,
-        contentPadding: EdgeInsets.zero,
-        content: AlertPollPerformance(changePerformace: _changePerformance),
-        insetPadding: EdgeInsets.zero,
-      ),
-    ).then((dynamic value) {});
-  }
-
-  _changePerformance({required String value}) async {
-    double performance = value.isEmpty ? 5.0 : double.parse(value);
-
-    widget.performance[_prefs.userId.toString()] = performance;
-
-    if (widget.performance[-1] != null) {
-      widget.performance.remove(-1);
-    }
-    bool response = await widget.updatePerformance(
-        idMember: widget.member.id,
-        performance: widget.performance,
-        idMatch: widget.idMatch);
-    if (response) {
-      _getPerformance();
-      setState(() {});
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context);
-    }
   }
 
   _getPerformance() {

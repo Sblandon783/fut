@@ -36,7 +36,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("sasdsada");
     String initialRoute = "/home";
     if (!_prefs.isLogin) {
       initialRoute = "/login";

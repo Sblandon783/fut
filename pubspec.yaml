@@ -53,6 +53,7 @@ dependencies:
   radar_chart: ^2.1.0
   step_progress_indicator: ^1.0.2
   flutter_bloc: ^8.1.3
+  bloc: ^8.1.2
 
 dev_dependencies:
   flutter_test:

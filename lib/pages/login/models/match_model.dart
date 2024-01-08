@@ -52,7 +52,7 @@ class MatchModel {
   });
 
   factory MatchModel.fromJson(dynamic json) => MatchModel(
-      id: json["id"],
+      id: json["id"] ?? -1,
       idField: json["id_field"] ?? -1,
       idAlign: json["id_align"] ?? -1,
       name: "",
@@ -75,7 +75,10 @@ class MatchModel {
     String day = dates.first!.day < 10
         ? '0${dates.first!.day}'
         : dates.first!.day.toString();
-    String dateN = '${dates.first!.year}-${dates.first!.month}-$day';
+    String month = dates.first!.month < 10
+        ? '0${dates.first!.month}'
+        : dates.first!.month.toString();
+    String dateN = '${dates.first!.year}-$month-$day';
 
     final String currentDate = '$dateN $hour';
     date = Utils().getDate(date: currentDate);

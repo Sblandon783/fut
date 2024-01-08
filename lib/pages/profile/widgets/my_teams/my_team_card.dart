@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/profile/models/team_model.dart';
 import 'package:soccer/pages/profile/widgets/team/team_view.dart';
-import 'package:soccer/user_preferences.dart';
-
-import '../../../../main.dart';
 
 class MyTeamCard extends StatelessWidget {
   final TeamModel team;
   final Function({required int idTeam}) exitTeam;
-  final UserPreferences _prefs = UserPreferences();
 
-  MyTeamCard({super.key, required this.team, required this.exitTeam});
+  const MyTeamCard({super.key, required this.team, required this.exitTeam});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

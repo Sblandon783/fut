@@ -15,7 +15,6 @@ class EditProfile extends StatefulWidget {
 }
 
 class EditProfileState extends State<EditProfile> {
-  final TextEditingController _performanceController = TextEditingController();
   bool _showLoaded = false;
   final Map<int, String> _list = {
     1: 'Buena condición',

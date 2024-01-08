@@ -27,19 +27,29 @@ class ProviderTeams {
   Future<void> getTeamsByPlayer() async {
     final List<dynamic> response = await _supabase.client
         .rpc('get_team_by_player', params: {'_id_user': _prefs.userId});
-    print(response);
+
     TeamsModel teamResponse = TeamsModel.fromJson(response);
     _teams = teamResponse.teams;
     teamsSink(_teams);
     return;
   }
 
-  Future<bool> addTeamsByPlayer({required int idTeam}) async {
+  Future<void> getAllTeams() async {
+    final List<dynamic> response = await _supabase.client
+        .rpc('get_team_by_player', params: {'_id_user': -1});
+
+    TeamsModel teamResponse = TeamsModel.fromJson(response);
+    _teams = teamResponse.teams;
+    teamsSink(_teams);
+    return;
+  }
+
+  Future<int> addTeamsByPlayer({required int idTeam}) async {
     final List<dynamic> response = await _supabase.client.rpc(
         'add_players_by_team',
         params: {'_id_team': idTeam, '_id_player': _prefs.userId});
 
-    return response.first['is_add'] ?? false;
+    return response.first['status'] ?? false;
   }
 
   Future<void> exitTeam({required int idTeam}) async {

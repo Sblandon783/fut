@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/activities/widgets/all_teams/all_teams.dart';
+import 'package:soccer/pages/activities/widgets/new_challenges/new_challenges.dart';
+
+import 'new_players/new_players.dart';
 
 class CardActivities extends StatelessWidget {
+  final int id;
   final String title;
   final String subTitle;
   final IconData icon;
+  final int count;
   const CardActivities({
     super.key,
+    required this.id,
     required this.title,
     required this.subTitle,
     required this.icon,
+    required this.count,
   });
   static const TextStyle _styletTitle = TextStyle(
     color: Colors.black,
@@ -19,27 +27,30 @@ class CardActivities extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-      child: Container(
-        width: double.infinity,
-        height: 180.0,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          color: Colors.white,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _icon(),
-                _title(),
-                _subTitle(),
-              ],
-            ),
-            _rightContent()
-          ],
+      child: GestureDetector(
+        onTap: () => _onTap(context: context),
+        child: Container(
+          width: double.infinity,
+          height: 180.0,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+            color: Colors.white,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _icon(),
+                  _title(),
+                  _subTitle(),
+                ],
+              ),
+              _rightContent()
+            ],
+          ),
         ),
       ),
     );
@@ -129,12 +140,12 @@ class CardActivities extends StatelessWidget {
             bottomRight: Radius.circular(20.0)),
         color: Colors.red.shade400,
       ),
-      child: const Padding(
-        padding: EdgeInsets.only(left: 5.0),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 5.0),
         child: Center(
           child: Text(
-            "2",
-            style: TextStyle(
+            count.toString(),
+            style: const TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 15.0,
                 color: Colors.white),
@@ -142,5 +153,15 @@ class CardActivities extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _onTap({required BuildContext context}) {
+    Map<int, dynamic> mapView = {
+      1: NewPlayers(key: UniqueKey()),
+      2: NewChallenges(key: UniqueKey()),
+      3: AllTeams(key: UniqueKey()),
+    };
+    final route = MaterialPageRoute(builder: (context) => mapView[id]);
+    Navigator.push(context, route).then((value) {});
   }
 }

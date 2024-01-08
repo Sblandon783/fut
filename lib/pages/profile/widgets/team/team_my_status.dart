@@ -4,8 +4,17 @@ import 'alert_my_status_team.dart';
 
 class TeamMyStatus extends StatelessWidget {
   final Function({required int status}) onTap;
-  const TeamMyStatus({super.key, required this.onTap});
+  final int status;
+  TeamMyStatus({
+    super.key,
+    required this.onTap,
+    required this.status,
+  });
 
+  final Map<int, IconData> _mapIcons = {
+    1: Icons.check_circle_outline,
+    2: Icons.add_circle_outline_rounded,
+  };
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -13,7 +22,7 @@ class TeamMyStatus extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(right: 15.0),
         child: Icon(
-          Icons.check_circle_outline,
+          _mapIcons[status],
           color: Colors.grey.shade700,
         ),
       ),
@@ -24,12 +33,12 @@ class TeamMyStatus extends StatelessWidget {
     return showDialog<void>(
       context: context,
       barrierDismissible: true,
-      builder: (BuildContext context) => const AlertDialog(
-        shape: RoundedRectangleBorder(
+      builder: (BuildContext context) => AlertDialog(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(5.0))),
         titlePadding: EdgeInsets.zero,
         contentPadding: EdgeInsets.zero,
-        content: AlertMyStatus(status: 1),
+        content: AlertMyStatus(status: status),
         insetPadding: EdgeInsets.zero,
       ),
     ).then((dynamic value) {

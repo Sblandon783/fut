@@ -12,6 +12,8 @@ class ProviderMembers {
   final Supabase _supabase = Supabase.instance;
   List<MemberModel> members = [];
   late MemberModel _member;
+  int _memberStatus = 2;
+
   MatchModel? match;
 
   final _memberStreamController =
@@ -40,6 +42,25 @@ class ProviderMembers {
         idMvp: idMvp,
         normalGet: normalGet,
       );
+    } else {
+      membersSink([]);
+    }
+  }
+
+  Future getMembersInvitation() async {
+    final List<dynamic> response = await _supabase.client.rpc(
+        'get_players_by_team_invitation',
+        params: {'_id_team': _prefs.teamId});
+    MembersModel membersResponse = MembersModel.fromJson(response);
+
+    if (membersResponse.members.isNotEmpty) {
+      getListMembers(
+        membersCurrents: membersResponse.members,
+        idMvp: -1,
+        normalGet: true,
+      );
+    } else {
+      membersSink([]);
     }
   }
 
@@ -105,6 +126,12 @@ class ProviderMembers {
       }
     } else {
       members = membersCurrents;
+      for (var i = 0; i < members.length; i++) {
+        if (members[i].id == _prefs.userId) {
+          _memberStatus = 1;
+          break;
+        }
+      }
     }
     membersSink(members);
   }
@@ -284,5 +311,29 @@ class ProviderMembers {
     return true;
   }
 
+  Future<void> accepteMember({required int idMember}) async {
+    await _supabase.client.from('user_team').insert({
+      'id_user': idMember,
+      'id_team': _prefs.teamId,
+    });
+
+    await deleteMember(idMember: idMember);
+
+    return;
+  }
+
+  Future deleteMember({required int idMember}) async {
+    await _supabase.client
+        .from('user_team_invitation')
+        .delete()
+        .eq('id_user', idMember)
+        .eq('id_team', _prefs.teamId);
+    members.removeWhere((member) => member.id == idMember);
+    membersSink(members);
+  }
+
   get myIdMember => _member.id;
+
+  set setMemberStatus(int value) => _memberStatus = value;
+  get memberStatus => _memberStatus;
 }

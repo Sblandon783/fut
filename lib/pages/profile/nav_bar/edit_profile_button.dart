@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/models/member_model.dart';
-import 'package:soccer/user_preferences.dart';
 
 import '../providers/provider_profile.dart';
 import 'alert_edit_profile.dart';
 
 class EditProfileButton extends StatelessWidget {
-  final UserPreferences _prefs = UserPreferences();
   final ProviderProfile provider;
   final MemberModel member;
-  EditProfileButton({
+  const EditProfileButton({
     super.key,
     required this.provider,
     required this.member,

@@ -12,12 +12,14 @@ class MatchCardBottomContent extends StatefulWidget {
   final List<FieldModel> fields;
   final ProviderMembers providerMembers;
   final bool disabledOnTap;
+  final bool createMatch;
   const MatchCardBottomContent({
     super.key,
     required this.match,
     required this.fields,
     required this.providerMembers,
     required this.disabledOnTap,
+    required this.createMatch,
   });
 
   @override
@@ -86,7 +88,7 @@ class MatchCardBottomContentState extends State<MatchCardBottomContent> {
               _generateField(),
             ],
           ),
-          if (_show)
+          if (_show && !widget.createMatch)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -170,6 +172,7 @@ class MatchCardBottomContentState extends State<MatchCardBottomContent> {
               value: _dates,
               onValueChanged: (dates) {
                 _show = true;
+
                 widget.match.setDate(dates: dates);
 
                 _dates.clear();
@@ -233,6 +236,7 @@ class MatchCardBottomContentState extends State<MatchCardBottomContent> {
     String name = widget.fields
         .firstWhere((field) => field.id == widget.match.idField)
         .name;
+
     Widget child = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -335,6 +339,7 @@ class MatchCardBottomContentState extends State<MatchCardBottomContent> {
     _show = true;
     Map<int, String> map = _getHour();
     widget.match.hour = map[pos]!;
+
     widget.match.setDate(dates: [widget.match.parsedDate]);
     setState(() {});
     Navigator.pop(context, widget.match);

@@ -13,6 +13,10 @@ class MyTeams extends StatefulWidget {
 }
 
 class MyTeamsState extends State<MyTeams> {
+  static const int addStatus = 1;
+  static const int notExistTeamStatus = 2;
+  static const int existInTeamStatus = 3;
+  static const int existInvitationStatus = 4;
   final ProviderTeams _provider = ProviderTeams();
 
   @override
@@ -80,11 +84,27 @@ class MyTeamsState extends State<MyTeams> {
   }
 
   void _addTeamByPlayer({required int idTeam}) async {
-    bool isAdd = await _provider.addTeamsByPlayer(idTeam: idTeam);
+    Map<int, String> mapMessage = {
+      addStatus: "Solicitud enviada",
+      notExistTeamStatus: "El equipo buscado no existe",
+      existInTeamStatus: "Ya perteneces a este equipo",
+      existInvitationStatus: "Ya has enviado una solicitud a este equipo",
+    };
+    int status = await _provider.addTeamsByPlayer(idTeam: idTeam);
 
-    if (isAdd) {
-      _getTeamsByPlayer();
-    }
+    _showSnackBar(message: mapMessage[status]!);
+  }
+
+  _showSnackBar({required String message}) {
+    SnackBar snackBar = SnackBar(
+      content: Text(message),
+      action: SnackBarAction(
+        label: 'OK',
+        onPressed: () {},
+      ),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   void _exitTeam({required int idTeam}) async =>

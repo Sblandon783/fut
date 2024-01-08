@@ -9,21 +9,26 @@ class AlertMyStatus extends StatefulWidget {
 }
 
 class AlertMyStatusState extends State<AlertMyStatus> {
-  final TextEditingController _idTeamController = TextEditingController();
   final Map<int, String> _mapText = {
     1: "Ya eres parte del equipo",
     2: "Envíar solicitud"
   };
   final Map<int, String> _mapButton = {
     1: "Salir del equipo",
-    2: "Envíar solicitud"
+    2: "Unirme al equipo"
   };
-  final Map<int, Color> _mapColor = {
+  final Map<int, Color> _mapColors = {
     1: Colors.red,
     2: Colors.green,
   };
-  bool _showLoaded = false;
-
+  final Map<int, IconData> _mapIcons = {
+    1: Icons.check_circle_outline,
+    2: Icons.add_circle_outline_rounded,
+  };
+  final Map<int, Color> _mapIconColors = {
+    1: Colors.green,
+    2: Colors.blue,
+  };
   @override
   void initState() {
     super.initState();
@@ -42,39 +47,36 @@ class AlertMyStatusState extends State<AlertMyStatus> {
       child: Column(
         children: [
           Align(
-              alignment: Alignment.centerRight,
-              child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: const Padding(
-                  padding: EdgeInsets.all(5.0),
-                  child: Icon(Icons.close, color: Colors.grey),
-                ),
-              )),
-          if (widget.status == 1) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Container(
-                padding: const EdgeInsets.only(top: 5, bottom: 5.0),
-                child: Text(_mapText[widget.status]!),
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: const Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Icon(Icons.close, color: Colors.grey),
               ),
             ),
-            const Icon(
-              Icons.check_circle_outline,
-              color: Colors.green,
-              size: 45.0,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Container(
+              padding: const EdgeInsets.only(top: 5, bottom: 5.0),
+              child: Text(_mapText[widget.status]!),
             ),
-          ],
-          _showLoaded
-              ? const Center(child: CircularProgressIndicator())
-              : ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context, widget.status);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _mapColor[widget.status],
-                  ),
-                  child: Text(_mapButton[widget.status]!),
-                )
+          ),
+          Icon(
+            _mapIcons[widget.status],
+            color: _mapIconColors[widget.status],
+            size: 45.0,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context, widget.status);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _mapColors[widget.status],
+            ),
+            child: Text(_mapButton[widget.status]!),
+          )
         ],
       ),
     );

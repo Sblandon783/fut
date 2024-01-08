@@ -37,4 +37,13 @@ class ProviderMatches {
     //match = fieldResponse;
     //matchSink(fieldResponse);
   }
+
+  Future createMatch({required MatchModel match}) async {
+    await _supabase.client.from('match').insert({
+      'id_team_one': _prefs.teamId,
+      'id_align': match.idAlign,
+      'id_field': match.idField,
+      'date': match.parsedDate.toString(),
+    });
+  }
 }

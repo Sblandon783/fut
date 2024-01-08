@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/login_page.dart';
 import 'package:soccer/pages/login/widgets/match/match_top.dart';
 
-import '../../../../main.dart';
 import '../../../../user_preferences.dart';
 import '../../../align/align_page.dart';
 import '../../models/field_model.dart';
@@ -47,7 +46,6 @@ class MatchViewState extends State<MatchView> {
 
   @override
   Widget build(BuildContext context) {
-    print("match");
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(

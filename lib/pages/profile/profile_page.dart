@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:soccer/pages/login/utils/utils.dart';
 import 'package:soccer/pages/profile/profile_top/profile_bottom.dart';
 
-import '../../main.dart';
 import '../../user_preferences.dart';
 
 import '../login/models/member_model.dart';
@@ -40,7 +39,6 @@ class ProfilePageState extends State<ProfilePage> {
         _titleNotifier.value = false;
       }
     });
-    print("object");
   }
 
   @override
@@ -119,7 +117,6 @@ class ProfilePageState extends State<ProfilePage> {
       stream: _provider.memberStream,
       builder: (BuildContext context, AsyncSnapshot<MemberModel> snapshot) {
         if (snapshot.hasData) {
-          print(snapshot.data);
           return snapshot.data != null
               ? c(member: snapshot.data!)
               : const SizedBox.shrink();

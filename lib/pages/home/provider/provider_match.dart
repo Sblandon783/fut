@@ -99,7 +99,7 @@ class ProviderMatch {
         .eq("id_team_one", id)
         .eq("is_finished", true)
         .order('id', ascending: false);
-    print(response);
+
     MatchesModel matchesResponse = MatchesModel.fromJson(response);
     matches = matchesResponse.matches;
     matchesSink(matches);

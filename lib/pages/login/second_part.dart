@@ -96,19 +96,6 @@ class SecondPartState extends State<SecondPart> {
         ),
       );
 
-  Widget _generateCard({required Widget child}) {
-    return Container(
-      width: 330.0,
-      height: _tabIndex == 0 ? 430.0 : 420.0,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      padding:
-          const EdgeInsets.only(top: 10, left: 10, right: 10.0, bottom: 20.0),
-      child: child,
-    );
-  }
-
   void _changeIndex({required int tabIndex}) {
     setState(() => _tabIndex = tabIndex);
   }

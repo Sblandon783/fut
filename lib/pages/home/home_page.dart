@@ -45,7 +45,6 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("Home");
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(

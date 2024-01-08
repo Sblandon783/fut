@@ -8,11 +8,7 @@ class StatusTag extends StatelessWidget {
     required this.status,
     required this.isCaptain,
   });
-  final Map<int, String> _status = {
-    1: "Buenas condición",
-    2: "Optima condición",
-    3: "Lesionado"
-  };
+
   final Map<int, Color> _statusColor = {
     1: Colors.green,
     2: Colors.orange,

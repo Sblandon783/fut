@@ -41,51 +41,29 @@ class PerformanceByTeamState extends State<PerformanceByTeam> {
     return widget.provider.matches.isNotEmpty
         ? Flexible(
             child: GridView.builder(
-            controller: null,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              mainAxisExtent: 70, // here set custom Height You Want
+              controller: null,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                mainAxisExtent: 70, // here set custom Height You Want
+              ),
+              shrinkWrap: false,
+              itemCount: widget.provider.matches.length > 6
+                  ? 6
+                  : widget.provider.matches.length,
+              itemBuilder: (BuildContext context, int index) {
+                MatchModel match = widget.provider.matches[index];
+                return PerformanceCard(
+                  name: match.name,
+                  goalsOneTeam: match.teamOneGoals,
+                  goalsSecondTeam: match.teamSecondGoals,
+                );
+              },
             ),
-            shrinkWrap: false,
-            itemCount: widget.provider.matches.length > 6
-                ? 6
-                : widget.provider.matches.length,
-            itemBuilder: (BuildContext context, int index) {
-              MatchModel match = widget.provider.matches[index];
-              return PerformanceCard(
-                name: match.name,
-                goalsOneTeam: match.teamOneGoals,
-                goalsSecondTeam: match.teamSecondGoals,
-              );
-            },
           )
-
-            /*ListView(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      children: _generateMatches(
-                        matches: snapshot.data ?? [],
-                      ),
-                    ),
-                    */
-            )
         : const SizedBox.shrink();
-  }
-
-  List<Widget> _generateMatches({required List<MatchModel> matches}) {
-    return matches.map((match) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0),
-        child: PerformanceCard(
-          name: match.name,
-          goalsOneTeam: match.teamOneGoals,
-          goalsSecondTeam: match.teamSecondGoals,
-        ),
-      );
-    }).toList();
   }
 
   Widget _title() {

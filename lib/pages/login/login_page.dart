@@ -37,7 +37,7 @@ class LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     if (_prefs.isLogin) {
       Future.delayed(const Duration(milliseconds: 10), () {
-        final route = MaterialPageRoute(builder: (context) => TabsPage());
+        final route = MaterialPageRoute(builder: (context) => const TabsPage());
         Navigator.push(context, route);
       });
     }
@@ -123,7 +123,8 @@ class LoginPageState extends State<LoginPage> {
       barrierDismissible: false,
       builder: (context) {
         Future.delayed(const Duration(seconds: 3), () {
-          final route = MaterialPageRoute(builder: (context) => TabsPage());
+          final route =
+              MaterialPageRoute(builder: (context) => const TabsPage());
           Navigator.push(context, route);
           /*
           setState(() => _firstPart = false);
