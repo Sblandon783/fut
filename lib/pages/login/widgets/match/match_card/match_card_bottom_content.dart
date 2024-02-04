@@ -48,7 +48,9 @@ class MatchCardBottomContentState extends State<MatchCardBottomContent> {
         teamOneGoals: widget.match.teamOneGoals,
         teamSecondGoals: widget.match.teamSecondGoals,
         listPerformance: widget.match.listPerformance,
+        idOneTeam: widget.match.idOneTeam,
         imageOneTeam: widget.match.imageOneTeam,
+        idSecondTeam: widget.match.idSecondTeam,
         imageSecondTeam: widget.match.imageSecondTeam);
 
     _setDate();
@@ -233,9 +235,12 @@ class MatchCardBottomContentState extends State<MatchCardBottomContent> {
   }
 
   Widget _generateField() {
-    String name = widget.fields
-        .firstWhere((field) => field.id == widget.match.idField)
-        .name;
+    String name = "";
+    for (var i = 0; i < widget.fields.length; i++) {
+      if (widget.fields[i].id == widget.match.idField) {
+        name = widget.fields[i].name;
+      }
+    }
 
     Widget child = Row(
       mainAxisAlignment: MainAxisAlignment.center,

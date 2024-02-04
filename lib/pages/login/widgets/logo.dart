@@ -7,7 +7,7 @@ class Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => const CustomCicularImage(
-        image: 'assets/logo.png',
+        image: 'assets/logo_1.png',
         padding: EdgeInsets.only(top: 80.0),
       );
 }

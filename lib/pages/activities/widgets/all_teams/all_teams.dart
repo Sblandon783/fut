@@ -81,27 +81,6 @@ class AllTeamsState extends State<AllTeams> {
                   return const Center(child: CircularProgressIndicator());
                 }
               })
-
-          /*
-          CardActivities(
-            id: 1,
-            title: "Nuevos jugadores",
-            subTitle: "desean ser parte de equipo",
-            icon: Icons.person_add_alt_1_sharp,
-          ),
-          CardActivities(
-            id: 2,
-            title: "Nuevos retos",
-            subTitle: "para jugar con tu equipo",
-            icon: Icons.note_add_rounded,
-          ),
-          CardActivities(
-            id: 3,
-            title: "Equipos disponibles",
-            subTitle: "ver información de otros equipos",
-            icon: Icons.sports_soccer_outlined,
-          ),
-          */
         ],
       ),
     );

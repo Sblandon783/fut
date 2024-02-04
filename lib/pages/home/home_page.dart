@@ -76,14 +76,15 @@ class HomePageState extends State<HomePage> {
 
   Widget _generateContent() => StreamBuilder(
       stream: _provider.matchesStream,
-      builder: (BuildContext context, AsyncSnapshot<MatchesModel> snapshot) {
+      builder:
+          (BuildContext context, AsyncSnapshot<List<MatchModel>> snapshot) {
         if (snapshot.hasData) {
           return snapshot.data != null
               ? Center(
                   child: Container(
                     constraints:
                         const BoxConstraints(minWidth: 100, maxWidth: 600),
-                    child: _content(matches: snapshot.data!.matches),
+                    child: _content(matches: snapshot.data!),
                   ),
                 )
               : const SizedBox.shrink();

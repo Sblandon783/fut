@@ -8,6 +8,18 @@ import 'package:soccer/pages/login/models/atribbute_model.dart';
 import '../models/member_model.dart';
 
 class Utils {
+  final Map<int, String> _positions = {
+    1: 'POR',
+    2: 'LTD',
+    3: 'LTI',
+    4: 'DFC',
+    5: 'MD',
+    6: 'MC',
+    7: 'DC'
+  };
+
+  Map<int, String> get getPositions => _positions;
+
   final Map<int, dynamic> _mapPosSix = {
     1: {
       "name": "2-1-2-1",

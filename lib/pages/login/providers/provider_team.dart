@@ -37,5 +37,13 @@ class ProviderTeam {
     await _supabase.client
         .from('user_team')
         .insert({'id_user': _prefs.userId, 'id_team': idTeam});
+    await updateTeam(id: idTeam);
+  }
+
+  Future<bool> updateTeam({required int id}) async {
+    await _supabase.client
+        .from('player')
+        .update({'id_team': id}).eq('id', _prefs.userId);
+    return true;
   }
 }

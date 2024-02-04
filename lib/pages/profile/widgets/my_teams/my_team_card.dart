@@ -4,6 +4,7 @@ import 'package:soccer/pages/profile/widgets/team/team_view.dart';
 
 class MyTeamCard extends StatelessWidget {
   final TeamModel team;
+
   final Function({required int idTeam}) exitTeam;
 
   const MyTeamCard({super.key, required this.team, required this.exitTeam});

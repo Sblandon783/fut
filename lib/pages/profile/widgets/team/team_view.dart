@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:soccer/pages/profile/models/team_model.dart';
 import 'package:soccer/pages/profile/widgets/team/team_top.dart';
+import 'package:soccer/user_preferences.dart';
 
+import '../../../../tabs_page.dart';
 import '../../../home/provider/provider_match.dart';
 import '../../../login/models/match_model.dart';
 import '../../../login/models/member_model.dart';
@@ -63,6 +65,12 @@ class TeamViewState extends State<TeamView> {
       _providerTeam.addTeam(idTeam: widget.team.id);
       _providerMembers.setMemberStatus = 1;
       Navigator.pop(context, widget.team.id);
+      final UserPreferences prefs = UserPreferences();
+      if (prefs.teamId == -1) {
+        prefs.teamId = widget.team.id;
+        final route = MaterialPageRoute(builder: (context) => TabsPage());
+        Navigator.push(context, route);
+      }
     }
   }
 

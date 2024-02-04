@@ -152,6 +152,29 @@ class CardMemberState extends State<CardMember> {
             ),
           ),
         ),
+        if (widget.member.goals != 0)
+          Positioned(
+            top: 30.0,
+            right: 1.0,
+            child: Container(
+                color: const Color.fromARGB(145, 0, 0, 0),
+                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                width: 45.0,
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Icon(Icons.sports_soccer, color: Colors.white),
+                    Text(
+                      widget.member.goals.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                )),
+          ),
         if (widget.member.isMPV) MVPContent(width: widget.width),
         CenterContent(name: widget.member.name, width: widget.width),
         FooterContent(

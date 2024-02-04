@@ -56,4 +56,16 @@ class ProviderTeams {
     _teams.removeWhere((team) => team.id == idTeam);
     teamsSink(_teams);
   }
+
+  Future<void> getAllTeamsChallenge() async {
+    final List<dynamic> response = await _supabase.client
+        .rpc('get_team_by_player', params: {'_id_user': -1});
+
+    TeamsModel teamResponse = TeamsModel.fromJson(response);
+
+    _teams = teamResponse.teams;
+    _teams.removeWhere((t) => t.id == _prefs.teamId);
+    teamsSink(_teams);
+    return;
+  }
 }

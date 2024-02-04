@@ -53,7 +53,9 @@ class MatchInfonState extends State<MatchInfo> {
         teamOneGoals: widget.match.teamOneGoals,
         teamSecondGoals: widget.match.teamSecondGoals,
         listPerformance: widget.match.listPerformance,
+        idOneTeam: widget.match.idOneTeam,
         imageOneTeam: widget.match.imageOneTeam,
+        idSecondTeam: widget.match.idSecondTeam,
         imageSecondTeam: widget.match.imageSecondTeam);
 
     _setDate();

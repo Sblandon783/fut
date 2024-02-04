@@ -7,7 +7,7 @@ import 'package:soccer/tabs_page.dart';
 Map<String, WidgetBuilder> getAplicationRoutes() {
   return <String, WidgetBuilder>{
     '/login': (BuildContext context) => const LoginPage(),
-    '/home': (BuildContext context) => const TabsPage(),
-    '/profile': (BuildContext context) => const TabsPage(),
+    '/home': (BuildContext context) => TabsPage(),
+    '/profile': (BuildContext context) => TabsPage(),
   };
 }

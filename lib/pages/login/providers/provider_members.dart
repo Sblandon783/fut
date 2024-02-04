@@ -84,12 +84,14 @@ class ProviderMembers {
 
       members = membersCurrents;
       members.removeWhere((element) => element.name == _member.name);
+
       if (_member.included) {
         members.add(_member);
       }
 
       if (match != null) {
         for (var i = 0; i < members.length; i++) {
+          members[i].goals = 1;
           if (match!.assistants.containsKey(members[i].id)) {
             members[i].setPositionNew(pos: match!.assistants[members[i].id]!);
             members[i].titular = true;
@@ -97,10 +99,12 @@ class ProviderMembers {
           }
         }
         for (var i = 0; i < members.length; i++) {
+          members[i].goals = 1;
           if (match!.substitutes.containsKey(members[i].id)) {
             members[i].titular = false;
             members[i].added = true;
             members[i].included = true;
+            members[i].goals = 1;
           }
         }
       }
@@ -114,6 +118,16 @@ class ProviderMembers {
       }
 
       membersCurrents.removeWhere((element) => !element.included);
+      if (match != null) {
+        for (var element in membersCurrents) {
+          print(element.id);
+          print(match!.listGoals);
+          print(match!.listGoals.containsKey(element.id));
+          if (match!.listGoals.containsKey(element.id.toString())) {
+            element.goals = match!.listGoals[element.id.toString()];
+          }
+        }
+      }
       _prefs.userId = _member.id;
       members = membersCurrents;
       members = members.reversed.toList();
@@ -133,6 +147,7 @@ class ProviderMembers {
         }
       }
     }
+
     membersSink(members);
   }
 
@@ -182,6 +197,8 @@ class ProviderMembers {
       'password': password
     });
 
+    print("sign up");
+
     return true;
   }
 
@@ -197,9 +214,10 @@ class ProviderMembers {
           name,
         )
         .eq("password", password);
-
+    print(response);
     if (response.isNotEmpty) {
       _prefs.userId = response.first["id"] ?? -1;
+      _prefs.teamId = response.first["id_team"] ?? -1;
     }
     return response.isNotEmpty;
   }
@@ -275,16 +293,39 @@ class ProviderMembers {
         .then((value) => true);
   }
 
-  Future<void> saveMatch({required MatchModel match}) async {
+  Future<void> saveMatch({
+    required MatchModel match,
+  }) async {
     return await _supabase.client
         .from('match')
         .update({
           'id_field': match.idField,
           'date': match.parsedDate.toString(),
           'is_finished': match.isFinished,
+          'team_1_goals': match.teamOneGoals,
+          'team_2_goals': match.teamSecondGoals,
         })
         .eq('id', match.id)
         .then((value) => true);
+  }
+
+  Future<bool> saveMatchEnd({
+    required MatchModel match,
+    required Map<dynamic, dynamic> goals,
+  }) async {
+    return await _supabase.client
+        .from('match')
+        .update({
+          'id_field': match.idField,
+          'date': match.parsedDate.toString(),
+          'is_finished': match.isFinished,
+          'team_1_goals': match.teamOneGoals,
+          'team_2_goals': match.teamSecondGoals,
+          'list_goals': goals,
+        })
+        .eq('id', match.id)
+        .then((value) => true)
+        .catchError((e) => false);
   }
 
   Future<void> updateMPV(

@@ -31,6 +31,7 @@ class MemberModel {
   AttributesModel attributes;
   bool isCaptain;
   int status;
+  int goals;
 
   MemberModel({
     required this.id,
@@ -46,20 +47,22 @@ class MemberModel {
     required this.attributes,
     this.isCaptain = false,
     this.status = 1,
+    this.goals = 0,
   });
 
   factory MemberModel.fromJson(Map<String, dynamic> json) => MemberModel(
         id: json["id"],
         name: json["name"],
         number: json["number"],
-        idPosition: json["position"] ?? json["pos"],
-        position: _getPosition(position: json["position"] ?? json["pos"]),
+        idPosition: json["position"] ?? json["pos"] ?? -1,
+        position: _getPosition(position: json["position"] ?? json["pos"] ?? -1),
         date: json["date_match"] ?? '',
         attributes: json["attributes"] != null
             ? AttributesModel.fromJson(json["attributes"])
             : AttributesModel.fromJson(Utils().attributesDefault),
         isCaptain: json["is_captain"] ?? false,
         status: json["status"] ?? 1,
+        goals: json["goals"] ?? 0,
       );
 
   json() => {
@@ -68,6 +71,7 @@ class MemberModel {
         "number": number,
         "position": idPosition,
         "date_match": date,
+        "goals": goals,
       };
 
   setPosition({required int pos}) {

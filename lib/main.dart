@@ -50,7 +50,7 @@ class App extends StatelessWidget {
       routes: getAplicationRoutes(),
       //theme: theme.isDark ? ThemeData.dark() : ThemeData.light(),
       onGenerateRoute: (RouteSettings settings) {
-        return MaterialPageRoute(builder: (context) => const TabsPage());
+        return MaterialPageRoute(builder: (context) => TabsPage());
       },
     );
   }

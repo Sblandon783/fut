@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:soccer/pages/activities/activities_page.dart';
 import 'package:soccer/pages/home/home_page.dart';
+import 'package:soccer/user_preferences.dart';
 
 import 'pages/profile/profile_page.dart';
 
 class TabsPage extends StatelessWidget {
-  const TabsPage({super.key});
+  final UserPreferences _prefs = UserPreferences();
+  TabsPage({super.key});
   @override
   Widget build(BuildContext context) {
     final List<Widget> tabs = _generateTabs();
@@ -20,11 +22,11 @@ class TabsPage extends StatelessWidget {
   }
 
   Widget _createBody() {
-    return const TabBarView(
+    return TabBarView(
       children: <Widget>[
-        Center(child: ActivitiesPage()),
-        Center(child: HomePage()),
-        Center(child: ProfilePage()),
+        const Center(child: ActivitiesPage()),
+        if (_prefs.teamId != -1) const Center(child: HomePage()),
+        if (_prefs.teamId != -1) const Center(child: ProfilePage()),
       ],
     );
   }
@@ -46,12 +48,14 @@ class TabsPage extends StatelessWidget {
   List<Widget> _generateTabs() {
     return <Widget>[
       const Tab(icon: Icon(Icons.local_activity_rounded, color: Colors.white)),
-      const Tab(
-          icon: Icon(
-        Icons.home,
-        color: Colors.white,
-      )),
-      const Tab(icon: Icon(Icons.person_rounded, color: Colors.white)),
+      if (_prefs.teamId != -1)
+        const Tab(
+            icon: Icon(
+          Icons.home,
+          color: Colors.white,
+        )),
+      if (_prefs.teamId != -1)
+        const Tab(icon: Icon(Icons.person_rounded, color: Colors.white)),
     ];
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:soccer/pages/CustomWidgets/custom_loading.dart';
 import 'package:soccer/pages/login/models/match_model.dart';
 import 'package:soccer/pages/login/providers/provider_team.dart';
+import 'package:soccer/pages/login/widgets/match/dialog/end_match/close_icon.dart';
 import 'package:soccer/pages/login/widgets/match/match_card/match_card.dart';
 import 'package:soccer/user_preferences.dart';
 
@@ -9,9 +11,7 @@ import '../../../login/models/field_notifier.dart';
 import '../../../login/providers/provider_members.dart';
 
 class CreateChallenge extends StatefulWidget {
-  const CreateChallenge({
-    super.key,
-  });
+  const CreateChallenge({super.key});
 
   @override
   CreateChallengeState createState() => CreateChallengeState();
@@ -43,7 +43,7 @@ class CreateChallengeState extends State<CreateChallenge> {
     _match = MatchModel.fromJson({
       'id_field': _providerMatches.fields.first.id,
       'date': dateCurrent,
-      'image': _providerTeam.team.image,
+      'image_team_one': _providerTeam.team.image,
     });
 
     setState(() {});
@@ -60,29 +60,12 @@ class CreateChallengeState extends State<CreateChallenge> {
       width: 180.0,
       height: 250.0,
       child: _providerMatches.fields.isEmpty
-          ? const Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(),
-              ),
-            )
+          ? const CustomLoading()
           : Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Align(
-                    alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: const Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: Icon(
-                          Icons.close,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    )),
+                const CloseIcon(),
                 const Padding(
                   padding: EdgeInsets.only(bottom: 5.0),
                   child: Text(
@@ -116,7 +99,13 @@ class CreateChallengeState extends State<CreateChallenge> {
   }
 
   void _createChallenge() async {
-    await _providerMatches.createMatch(match: _match);
-    Navigator.pop(context, true);
+    if (_match.idSecondTeam == -1) {
+      await _providerMatches.createMatch(match: _match);
+      _close();
+    } else {
+      await _providerMatches.addChallenge(match: _match);
+    }
   }
+
+  _close() => Navigator.pop(context, true);
 }
